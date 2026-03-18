@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom'
+import { useEffect } from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import AppShell from './components/AppShell'
 import Login from './pages/Login'
@@ -23,6 +24,12 @@ const queryClient = new QueryClient({
   },
 })
 
+function TitleSync() {
+  const location = useLocation()
+  useEffect(() => { document.title = 'AISIR | Intelligence Agents' }, [location])
+  return null
+}
+
 function isAuth() {
   return !!localStorage.getItem('aisir_auth')
 }
@@ -36,6 +43,7 @@ export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
+        <TitleSync />
         <Routes>
           <Route path="/" element={isAuth() ? <Navigate to="/agentes" replace /> : <Login />} />
           <Route
