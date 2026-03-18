@@ -50,10 +50,7 @@ try {
         ";
 
         if ($where) $sql .= ' WHERE ' . implode(' AND ', $where);
-        $sql .= ' ORDER BY p.fecha_post DESC LIMIT ? OFFSET ?';
-
-        $params[] = $limit;
-        $params[] = $offset;
+        $sql .= ' ORDER BY p.fecha_post DESC LIMIT ' . $limit . ' OFFSET ' . $offset;
 
         $stmt = $pdo->prepare($sql);
         $stmt->execute($params);
