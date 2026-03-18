@@ -8,27 +8,27 @@ import { api } from '@/api/client'
 // ─── Brand constants ────────────────────────────────────────────────────────
 
 const NET_COLORS = {
-  linkedin:   '#0a66c2',
-  instagram:  '#e1306c',
-  x:          '#374151',
-  tiktok:     '#ee1d52',
-  facebook:   '#1877f2',
-  newsletter: '#d97706',
-  articulo:   '#76a72b',
-  carousel:   '#ea580c',
-  whatsapp:   '#16a34a',
+  linkedin:   '#86a43b',
+  instagram:  '#878787',
+  x:          '#373737',
+  tiktok:     '#878787',
+  facebook:   '#86a43b',
+  newsletter: '#86a43b',
+  articulo:   '#86a43b',
+  carousel:   '#86a43b',
+  whatsapp:   '#86a43b',
 }
 
 // ─── Stat card ───────────────────────────────────────────────────────────────
 
-function StatCard({ label, value, color = '#76a72b', sublabel, loading }) {
+function StatCard({ label, value, color = '#86a43b', sublabel, loading }) {
   if (loading) {
     return (
       <div
         className="animate-pulse"
         style={{
           background: '#ffffff',
-          border: '1px solid #e4e1db',
+          border: '1px solid #ababab',
           borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
           height: 96,
@@ -40,7 +40,7 @@ function StatCard({ label, value, color = '#76a72b', sublabel, loading }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
         padding: '18px 22px 16px',
@@ -78,7 +78,7 @@ function CustomTooltip({ active, payload, label }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 6,
         padding: '10px 14px',
         fontFamily: 'Roboto, sans-serif',
@@ -115,7 +115,7 @@ function ChartCard({ title, loading, skeletonHeight = 200, children }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
         overflow: 'hidden',
@@ -124,7 +124,7 @@ function ChartCard({ title, loading, skeletonHeight = 200, children }) {
       <div
         style={{
           padding: '14px 22px',
-          borderBottom: '1px solid #f0eeea',
+          borderBottom: '1px solid #efeded',
         }}
       >
         <p className="label-caps" style={{ margin: 0 }}>{title}</p>
@@ -133,7 +133,7 @@ function ChartCard({ title, loading, skeletonHeight = 200, children }) {
         {loading ? (
           <div
             className="animate-pulse"
-            style={{ height: skeletonHeight, background: '#f7f6f3', borderRadius: 6 }}
+            style={{ height: skeletonHeight, background: '#efeded', borderRadius: 6 }}
           />
         ) : children}
       </div>
@@ -222,10 +222,10 @@ export default function Metricas() {
         <p className="label-caps" style={{ marginBottom: 6 }}>Sistema · Métricas</p>
         <h1
           style={{
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontWeight: 900,
             fontSize: 34,
-            color: '#2a2a2a',
+            color: '#373737',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
           }}
@@ -250,28 +250,28 @@ export default function Metricas() {
         <StatCard
           label="Contenido generado"
           value={isLoading ? null : generado}
-          color="#76a72b"
+          color="#86a43b"
           sublabel="piezas totales"
           loading={isLoading}
         />
         <StatCard
           label="Aprobado"
           value={isLoading ? null : aprobado}
-          color="#16a34a"
+          color="#86a43b"
           sublabel="piezas aprobadas"
           loading={isLoading}
         />
         <StatCard
           label="Rechazado"
           value={isLoading ? null : rechazado}
-          color="#dc2626"
+          color="#878787"
           sublabel="piezas rechazadas"
           loading={isLoading}
         />
         <StatCard
           label="Tasa de aprobación"
           value={isLoading ? null : tasaAprobacion}
-          color="#0a66c2"
+          color="#86a43b"
           sublabel="del contenido generado"
           loading={isLoading}
         />
@@ -308,12 +308,12 @@ export default function Metricas() {
                   tickLine={false}
                   allowDecimals={false}
                 />
-                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f7f6f3' }} />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#efeded' }} />
                 <Bar dataKey="value" radius={[3, 3, 0, 0]} name="Piezas">
                   {barData.map((entry) => (
                     <Cell
                       key={entry.name}
-                      fill={NET_COLORS[entry.name] ?? '#ccc9c2'}
+                      fill={NET_COLORS[entry.name] ?? '#ababab'}
                     />
                   ))}
                 </Bar>
@@ -337,15 +337,15 @@ export default function Metricas() {
                   paddingLeft: 8,
                 }}
               >
-                <LegendItem color="#76a72b" label="Generado" />
-                <LegendItem color="#0a66c2" label="Aprobado" />
+                <LegendItem color="#86a43b" label="Generado" />
+                <LegendItem color="#86a43b" label="Aprobado" />
               </div>
               <ResponsiveContainer width="100%" height={185}>
                 <LineChart
                   data={semanal}
                   margin={{ top: 4, right: 8, left: -24, bottom: 4 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0eeea" vertical={false} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#efeded" vertical={false} />
                   <XAxis
                     dataKey="semana"
                     tick={{ fontFamily: 'Roboto Mono, monospace', fontSize: 9, fill: '#ababab' }}
@@ -362,19 +362,19 @@ export default function Metricas() {
                   <Line
                     type="monotone"
                     dataKey="generado"
-                    stroke="#76a72b"
+                    stroke="#86a43b"
                     strokeWidth={2}
-                    dot={{ fill: '#76a72b', r: 3, strokeWidth: 0 }}
-                    activeDot={{ r: 5, fill: '#76a72b', stroke: '#ffffff', strokeWidth: 2 }}
+                    dot={{ fill: '#86a43b', r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: '#86a43b', stroke: '#ffffff', strokeWidth: 2 }}
                     name="Generado"
                   />
                   <Line
                     type="monotone"
                     dataKey="aprobado"
-                    stroke="#0a66c2"
+                    stroke="#86a43b"
                     strokeWidth={2}
-                    dot={{ fill: '#0a66c2', r: 3, strokeWidth: 0 }}
-                    activeDot={{ r: 5, fill: '#0a66c2', stroke: '#ffffff', strokeWidth: 2 }}
+                    dot={{ fill: '#86a43b', r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: '#86a43b', stroke: '#ffffff', strokeWidth: 2 }}
                     name="Aprobado"
                   />
                 </LineChart>

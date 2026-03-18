@@ -13,10 +13,10 @@ export function EmptyState({ icon, title, message, className }) {
         <div
           className="w-12 h-12 flex items-center justify-center mb-4"
           style={{
-            background: '#0d110d',
-            border: '1px solid #1e2d1a',
+            background: '#373737',
+            border: '1px solid #373737',
             borderRadius: 4,
-            color: '#2a3d24',
+            color: '#373737',
           }}
         >
           {icon}
@@ -24,7 +24,7 @@ export function EmptyState({ icon, title, message, className }) {
       )}
       <p className="font-mono text-xs text-muted mb-1">{title}</p>
       {message && (
-        <p className="font-mono text-[10px]" style={{ color: '#2a3d24' }}>
+        <p className="font-mono text-[10px]" style={{ color: '#373737' }}>
           {message}
         </p>
       )}

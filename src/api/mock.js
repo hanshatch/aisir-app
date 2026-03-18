@@ -1,15 +1,26 @@
 const now = Date.now()
 const t = (min) => new Date(now - min * 60 * 1000).toISOString()
 
-// Array mutable — las mutaciones (add/toggle/delete) se reflejan en memoria
-let _cuentas = [
+// Persistencia en localStorage para desarrollo
+const LS_KEY = 'aisir_mock_cuentas'
+const DEFAULT_CUENTAS = [
   { id: 1, red: 'instagram', username: '@garyvee',         url: 'https://instagram.com/garyvee',        activa: true  },
   { id: 2, red: 'instagram', username: '@neilpatel',        url: 'https://instagram.com/neilpatel',      activa: true  },
   { id: 3, red: 'youtube',   username: 'Marketing con Roi', url: 'https://youtube.com/@marketingconroi', activa: true  },
   { id: 4, red: 'tiktok',    username: '@marketingtok',     url: 'https://tiktok.com/@marketingtok',     activa: false },
   { id: 5, red: 'x',         username: '@MarketingMX',      url: 'https://x.com/MarketingMX',            activa: true  },
 ]
-let _nextId = 6
+
+function loadCuentas() {
+  try { return JSON.parse(localStorage.getItem(LS_KEY)) || DEFAULT_CUENTAS }
+  catch { return DEFAULT_CUENTAS }
+}
+function saveCuentas(cuentas) {
+  localStorage.setItem(LS_KEY, JSON.stringify(cuentas))
+}
+
+let _cuentas = loadCuentas()
+let _nextId = Math.max(..._cuentas.map(c => c.id), 5) + 1
 
 export const MOCK = {
   agentes: [
@@ -17,7 +28,7 @@ export const MOCK = {
     { key: 'huginn',    agente: 'huginn',    ops: 384,   last_at: t(120)        },
     { key: 'bragi',     agente: 'bragi',     ops: 521,   last_at: t(30)         },
     { key: 'loki',      agente: 'loki',      ops: 893,   last_at: t(45)         },
-    { key: 'ratatoskr', agente: 'ratatoskr', ops: 156,   last_at: t(300)        },
+    { key: 'floki', agente: 'floki', ops: 156,   last_at: t(300)        },
     { key: 'kvasir',    agente: 'kvasir',    ops: 47,    last_at: t(60 * 24 * 3) },
     { key: 'idunn',     agente: 'idunn',     ops: 234,   last_at: t(60)         },
     { key: 'odin',      agente: 'odin',      ops: 78,    last_at: t(180)        },
@@ -69,7 +80,7 @@ export const MOCK = {
       { id: 9,  level: 'INFO',    agente: 'aisir',     mensaje: 'Instrucción recibida vía Telegram: /generar "marketing con IA PyMEs"',   created_at: t(8)   },
       { id: 8,  level: 'INFO',    agente: 'loki',      mensaje: 'Contenido adaptado para 4 redes: LinkedIn, Instagram, X, TikTok.',      created_at: t(18)  },
       { id: 7,  level: 'INFO',    agente: 'bragi',     mensaje: 'Artículo generado: "IA y el futuro del marketing MX" — 2,340 palabras.', created_at: t(35)  },
-      { id: 6,  level: 'INFO',    agente: 'ratatoskr', mensaje: 'Brief SEO completado. Score estimado: 94/100.',                         created_at: t(50)  },
+      { id: 6,  level: 'INFO',    agente: 'floki', mensaje: 'Brief SEO completado. Score estimado: 94/100.',                         created_at: t(50)  },
       { id: 5,  level: 'WARNING', agente: 'odin',      mensaje: 'Score 68/100 en post de @marketinglider — por debajo del umbral.',      created_at: t(65)  },
       { id: 4,  level: 'INFO',    agente: 'huginn',    mensaje: 'Brief semanal generado: 8 temas con score ≥70.',                        created_at: t(90)  },
       { id: 3,  level: 'INFO',    agente: 'mimir',     mensaje: 'Consolidación dominical completada. 3 nuevas reglas extraídas.',        created_at: t(180) },
@@ -161,6 +172,7 @@ export function mockFor(path, opts = {}) {
     const body = opts.body ? JSON.parse(opts.body) : {}
     const nueva = { id: _nextId++, activa: true, ...body }
     _cuentas.push(nueva)
+    saveCuentas(_cuentas)
     return nueva
   }
 
@@ -169,6 +181,7 @@ export function mockFor(path, opts = {}) {
     const id = parseInt(base.split('/')[3])
     const cuenta = _cuentas.find((c) => c.id === id)
     if (cuenta) cuenta.activa = !cuenta.activa
+    saveCuentas(_cuentas)
     return { ok: true }
   }
 
@@ -176,6 +189,7 @@ export function mockFor(path, opts = {}) {
   if (base.match(/^\/inspiracion\/cuentas\/\d+$/) && method === 'DELETE') {
     const id = parseInt(base.split('/')[3])
     _cuentas = _cuentas.filter((c) => c.id !== id)
+    saveCuentas(_cuentas)
     return { ok: true }
   }
 

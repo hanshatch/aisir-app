@@ -6,10 +6,10 @@ import { api } from '@/api/client'
 const REDES = ['youtube', 'instagram', 'tiktok', 'x']
 
 const RED_META = {
-  youtube:   { color: '#dc2626', bg: '#fef2f2', label: 'YouTube',    Icon: Youtube },
-  instagram: { color: '#e1306c', bg: '#fff1f5', label: 'Instagram',  Icon: Instagram },
-  tiktok:    { color: '#374151', bg: '#f9fafb', label: 'TikTok',     Icon: null },
-  x:         { color: '#374151', bg: '#f9fafb', label: 'X / Twitter', Icon: null },
+  youtube:   { color: '#878787', bg: '#efeded', label: 'YouTube',    Icon: Youtube },
+  instagram: { color: '#878787', bg: '#efeded', label: 'Instagram',  Icon: Instagram },
+  tiktok:    { color: '#373737', bg: '#efeded', label: 'TikTok',     Icon: null },
+  x:         { color: '#373737', bg: '#efeded', label: 'X / Twitter', Icon: null },
 }
 
 function TikTokIcon({ size = 14, color = 'currentColor' }) {
@@ -44,7 +44,7 @@ function StatCard({ label, value, color, bg }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
         padding: '16px 20px',
@@ -54,7 +54,7 @@ function StatCard({ label, value, color, bg }) {
         className="font-bold uppercase tracking-widest mb-1"
         style={{
           color: '#ababab',
-          fontFamily: '"Nunito Sans", sans-serif',
+          fontFamily: 'Roboto, sans-serif',
           fontSize: 10,
           letterSpacing: '0.09em',
         }}
@@ -64,8 +64,8 @@ function StatCard({ label, value, color, bg }) {
       <p
         className="font-black"
         style={{
-          color: color ?? '#76a72b',
-          fontFamily: '"Nunito Sans", sans-serif',
+          color: color ?? '#86a43b',
+          fontFamily: 'Roboto, sans-serif',
           fontSize: 28,
           lineHeight: 1,
         }}
@@ -78,14 +78,14 @@ function StatCard({ label, value, color, bg }) {
 
 function CuentaCard({ cuenta, onToggle, onDelete }) {
   const red = cuenta.red ?? cuenta.network ?? 'x'
-  const meta = RED_META[red] ?? { color: '#878787', bg: '#f7f6f3', label: red }
+  const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
   const isActive = cuenta.activa ?? cuenta.active ?? true
 
   return (
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderLeft: `3px solid ${meta.color}`,
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
@@ -112,8 +112,8 @@ function CuentaCard({ cuenta, onToggle, onDelete }) {
           <p
             className="font-bold leading-tight truncate"
             style={{
-              color: '#2a2a2a',
-              fontFamily: '"Nunito Sans", sans-serif',
+              color: '#373737',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 14,
             }}
           >
@@ -146,9 +146,9 @@ function CuentaCard({ cuenta, onToggle, onDelete }) {
               width: 30,
               height: 30,
               borderRadius: 7,
-              background: isActive ? '#f0f7e6' : '#f5f4f0',
-              border: `1px solid ${isActive ? '#76a72b40' : '#e4e1db'}`,
-              color: isActive ? '#76a72b' : '#ababab',
+              background: isActive ? '#efeded' : '#efeded',
+              border: `1px solid ${isActive ? '#86a43b40' : '#ababab'}`,
+              color: isActive ? '#86a43b' : '#ababab',
               cursor: 'pointer',
             }}
           >
@@ -162,19 +162,19 @@ function CuentaCard({ cuenta, onToggle, onDelete }) {
               width: 30,
               height: 30,
               borderRadius: 7,
-              background: '#f5f4f0',
-              border: '1px solid #e4e1db',
+              background: '#efeded',
+              border: '1px solid #ababab',
               color: '#ababab',
               cursor: 'pointer',
             }}
             onMouseEnter={(e) => {
-              e.currentTarget.style.background = '#fef2f2'
-              e.currentTarget.style.borderColor = '#dc262640'
-              e.currentTarget.style.color = '#dc2626'
+              e.currentTarget.style.background = '#efeded'
+              e.currentTarget.style.borderColor = '#87878740'
+              e.currentTarget.style.color = '#878787'
             }}
             onMouseLeave={(e) => {
-              e.currentTarget.style.background = '#f5f4f0'
-              e.currentTarget.style.borderColor = '#e4e1db'
+              e.currentTarget.style.background = '#efeded'
+              e.currentTarget.style.borderColor = '#ababab'
               e.currentTarget.style.color = '#ababab'
             }}
           >
@@ -249,9 +249,9 @@ export default function Inspiracion() {
 
   const inputStyle = (fieldName) => ({
     background: '#ffffff',
-    border: `1px solid ${focusedField === fieldName ? '#76a72b' : '#e4e1db'}`,
+    border: `1px solid ${focusedField === fieldName ? '#86a43b' : '#ababab'}`,
     borderRadius: 8,
-    color: '#2a2a2a',
+    color: '#373737',
     fontFamily: 'Roboto, sans-serif',
     fontSize: 13,
     padding: '10px 12px',
@@ -261,15 +261,15 @@ export default function Inspiracion() {
   })
 
   return (
-    <div className="p-6 animate-fade-in" style={{ background: '#f0eeea', minHeight: '100%' }}>
+    <div className="p-6 animate-fade-in" style={{ background: '#efeded', minHeight: '100%' }}>
       {/* Header */}
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1
             className="font-black"
             style={{
-              color: '#2a2a2a',
-              fontFamily: '"Nunito Sans", sans-serif',
+              color: '#373737',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 24,
             }}
           >
@@ -290,12 +290,12 @@ export default function Inspiracion() {
           onClick={() => setShowForm((p) => !p)}
           className="flex items-center gap-2 font-bold transition-all"
           style={{
-            background: showForm ? '#ffffff' : '#76a72b',
+            background: showForm ? '#ffffff' : '#86a43b',
             color: showForm ? '#878787' : '#ffffff',
-            border: `1px solid ${showForm ? '#e4e1db' : '#76a72b'}`,
+            border: `1px solid ${showForm ? '#ababab' : '#86a43b'}`,
             borderRadius: 9,
             padding: '10px 18px',
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontSize: 13,
             cursor: 'pointer',
             boxShadow: showForm ? 'none' : '0 2px 8px rgba(118,167,43,0.25)',
@@ -310,10 +310,10 @@ export default function Inspiracion() {
         <div
           className="mb-4 px-4 py-3"
           style={{
-            background: '#fef2f2',
-            border: '1px solid #dc262640',
+            background: '#efeded',
+            border: '1px solid #87878740',
             borderRadius: 8,
-            color: '#dc2626',
+            color: '#878787',
             fontFamily: 'Roboto, sans-serif',
             fontSize: 13,
           }}
@@ -324,8 +324,8 @@ export default function Inspiracion() {
 
       {/* Stat cards */}
       <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-3 mb-6">
-        <StatCard label="Total" value={cuentas.length} color="#76a72b" />
-        <StatCard label="Activas" value={activas.length} color="#059669" />
+        <StatCard label="Total" value={cuentas.length} color="#86a43b" />
+        <StatCard label="Activas" value={activas.length} color="#86a43b" />
         {REDES.map((r) => (
           <StatCard
             key={r}
@@ -343,7 +343,7 @@ export default function Inspiracion() {
           className="mb-6"
           style={{
             background: '#ffffff',
-            border: '1px solid #e4e1db',
+            border: '1px solid #ababab',
             borderRadius: 10,
             boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
             padding: '20px 24px',
@@ -353,7 +353,7 @@ export default function Inspiracion() {
             className="font-bold uppercase tracking-widest mb-4"
             style={{
               color: '#ababab',
-              fontFamily: '"Nunito Sans", sans-serif',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 10,
               letterSpacing: '0.09em',
             }}
@@ -401,12 +401,12 @@ export default function Inspiracion() {
                 disabled={addMut.isPending || !form.username}
                 className="font-bold transition-all"
                 style={{
-                  background: addMut.isPending || !form.username ? '#f7f6f3' : '#76a72b',
+                  background: addMut.isPending || !form.username ? '#efeded' : '#86a43b',
                   color: addMut.isPending || !form.username ? '#ababab' : '#ffffff',
                   border: '1px solid transparent',
                   borderRadius: 8,
                   padding: '10px 18px',
-                  fontFamily: '"Nunito Sans", sans-serif',
+                  fontFamily: 'Roboto, sans-serif',
                   fontSize: 13,
                   cursor: addMut.isPending ? 'wait' : !form.username ? 'not-allowed' : 'pointer',
                   boxShadow: !form.username ? 'none' : '0 2px 8px rgba(118,167,43,0.25)',
@@ -426,7 +426,7 @@ export default function Inspiracion() {
             <div key={i}>
               <div
                 className="h-4 w-28 animate-pulse mb-3"
-                style={{ background: '#e4e1db', borderRadius: 6 }}
+                style={{ background: '#ababab', borderRadius: 6 }}
               />
               <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
                 {[...Array(2)].map((_, j) => (
@@ -435,9 +435,9 @@ export default function Inspiracion() {
                     className="animate-pulse"
                     style={{
                       height: 72,
-                      background: '#f7f6f3',
+                      background: '#efeded',
                       borderRadius: 10,
-                      border: '1px solid #e4e1db',
+                      border: '1px solid #ababab',
                     }}
                   />
                 ))}
@@ -450,7 +450,7 @@ export default function Inspiracion() {
           {REDES.map((red) => {
             const items = byRed[red] ?? []
             if (items.length === 0) return null
-            const meta = RED_META[red] ?? { color: '#878787', bg: '#f5f4f0', label: red }
+            const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
             return (
               <div key={red}>
                 <div className="flex items-center gap-2.5 mb-3">
@@ -470,8 +470,8 @@ export default function Inspiracion() {
                   <p
                     className="font-bold"
                     style={{
-                      color: '#2a2a2a',
-                      fontFamily: '"Nunito Sans", sans-serif',
+                      color: '#373737',
+                      fontFamily: 'Roboto, sans-serif',
                       fontSize: 14,
                     }}
                   >
@@ -485,7 +485,7 @@ export default function Inspiracion() {
                       border: `1px solid ${meta.color}30`,
                       borderRadius: 6,
                       padding: '2px 8px',
-                      fontFamily: '"Nunito Sans", sans-serif',
+                      fontFamily: 'Roboto, sans-serif',
                       fontSize: 11,
                     }}
                   >
@@ -511,7 +511,7 @@ export default function Inspiracion() {
               className="text-center py-16"
               style={{
                 background: '#ffffff',
-                border: '1px solid #e4e1db',
+                border: '1px solid #ababab',
                 borderRadius: 10,
               }}
             >
@@ -521,7 +521,7 @@ export default function Inspiracion() {
                   width: 56,
                   height: 56,
                   borderRadius: 14,
-                  background: '#f7f6f3',
+                  background: '#efeded',
                 }}
               >
                 <Instagram size={24} color="#ababab" />
@@ -529,8 +529,8 @@ export default function Inspiracion() {
               <p
                 className="font-bold mb-1"
                 style={{
-                  color: '#2a2a2a',
-                  fontFamily: '"Nunito Sans", sans-serif',
+                  color: '#373737',
+                  fontFamily: 'Roboto, sans-serif',
                   fontSize: 15,
                 }}
               >

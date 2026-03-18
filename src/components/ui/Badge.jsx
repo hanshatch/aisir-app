@@ -2,19 +2,19 @@ import { cn } from '@/lib/utils'
 
 const VARIANTS = {
   default: {
-    bg: '#111611',
+    bg: '#373737',
     color: '#8aab78',
-    border: '#2a3d24',
+    border: '#373737',
   },
   green: {
     bg: '#0d1f08',
-    color: '#7ec832',
-    border: '#7ec83240',
+    color: '#86a43b',
+    border: '#86a43b40',
   },
   red: {
     bg: '#1a0808',
-    color: '#e04545',
-    border: '#e0454540',
+    color: '#878787',
+    border: '#87878740',
   },
   amber: {
     bg: '#2a1f00',
@@ -23,8 +23,8 @@ const VARIANTS = {
   },
   blue: {
     bg: '#081420',
-    color: '#4f9eff',
-    border: '#4f9eff40',
+    color: '#86a43b',
+    border: '#86a43b40',
   },
   purple: {
     bg: '#1a0f2e',
@@ -32,9 +32,9 @@ const VARIANTS = {
     border: '#9b72e840',
   },
   muted: {
-    bg: '#111611',
+    bg: '#373737',
     color: '#5c7a50',
-    border: '#2a3d24',
+    border: '#373737',
   },
 }
 

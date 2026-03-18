@@ -9,8 +9,8 @@ export function Card({ accentColor, className, children, style, ...rest }) {
     <div
       className={cn('relative', className)}
       style={{
-        background: '#0d110d',
-        border: '1px solid #1e2d1a',
+        background: '#373737',
+        border: '1px solid #373737',
         borderRadius: 4,
         ...style,
       }}
@@ -35,7 +35,7 @@ export function CardHeader({ className, children, style, ...rest }) {
   return (
     <div
       className={cn('px-4 py-3', className)}
-      style={{ borderBottom: '1px solid #1e2d1a', ...style }}
+      style={{ borderBottom: '1px solid #373737', ...style }}
       {...rest}
     >
       {children}

@@ -67,28 +67,16 @@ export default function AppShell() {
           padding: '24px 20px 20px',
           borderBottom: '1px solid rgba(255,255,255,0.08)',
         }}>
-          {/* Sistema label */}
-          <p style={{
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: 9, fontWeight: 500,
-            letterSpacing: '0.15em',
-            textTransform: 'uppercase',
-            color: 'rgba(255,255,255,0.25)',
-            marginBottom: 14,
-          }}>
-            AiSir · Ecosistema
-          </p>
-
-          {/* Logotipo — "hans" blanco + "hatch" verde, tal como el manual */}
+          {/* Logotipo */}
           <h1 style={{
-            fontFamily: '"Nunito Sans", "Avenir Next", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontWeight: 700,
             fontSize: 26,
             lineHeight: 1,
             letterSpacing: '-0.01em',
           }}>
             <span style={{ color: '#ffffff' }}>hans</span>
-            <span style={{ color: '#76a72b' }}>hatch</span>
+            <span style={{ color: '#86a43b' }}>hatch</span>
           </h1>
 
           <p style={{
@@ -96,7 +84,7 @@ export default function AppShell() {
             fontSize: 10, color: 'rgba(255,255,255,0.25)',
             marginTop: 5, letterSpacing: '0.03em',
           }}>
-            Norse Intelligence Agents
+            AISIR | Intelligence Agents
           </p>
 
           {/* Status */}
@@ -109,7 +97,7 @@ export default function AppShell() {
           }}>
             <span
               className="status-dot animate-pulse-dot"
-              style={{ background: '#76a72b' }}
+              style={{ background: '#86a43b' }}
             />
             <span style={{
               fontFamily: 'Roboto, sans-serif', fontSize: 10,
@@ -219,7 +207,7 @@ export default function AppShell() {
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.borderColor = 'rgba(244,63,94,0.5)'
-              e.currentTarget.style.color = '#f43f5e'
+              e.currentTarget.style.color = '#878787'
               e.currentTarget.style.background = 'rgba(244,63,94,0.08)'
             }}
             onMouseLeave={(e) => {
@@ -239,7 +227,7 @@ export default function AppShell() {
         flex: 1,
         overflowY: 'auto',
         overflowX: 'hidden',
-        background: '#f0eeea',
+        background: '#efeded',
       }}>
         <Outlet />
       </main>

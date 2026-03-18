@@ -7,21 +7,21 @@ import { ago, RED_COLORS } from '@/lib/utils'
 const REDES = ['linkedin', 'instagram', 'x', 'tiktok', 'facebook', 'newsletter', 'articulo']
 
 const RED_META = {
-  linkedin:   { label: 'LinkedIn',    color: '#0a66c2', bg: '#eff6ff' },
-  instagram:  { label: 'Instagram',   color: '#e1306c', bg: '#fff1f5' },
-  x:          { label: 'X',           color: '#374151', bg: '#f9fafb' },
-  tiktok:     { label: 'TikTok',      color: '#ee1d52', bg: '#fff1f2' },
-  facebook:   { label: 'Facebook',    color: '#1877f2', bg: '#eff6ff' },
-  newsletter: { label: 'Newsletter',  color: '#d97706', bg: '#fffbeb' },
-  articulo:   { label: 'Artículo',    color: '#76a72b', bg: '#f0f7e6' },
+  linkedin:   { label: 'LinkedIn',    color: '#86a43b', bg: '#efeded' },
+  instagram:  { label: 'Instagram',   color: '#878787', bg: '#efeded' },
+  x:          { label: 'X',           color: '#373737', bg: '#efeded' },
+  tiktok:     { label: 'TikTok',      color: '#878787', bg: '#efeded' },
+  facebook:   { label: 'Facebook',    color: '#86a43b', bg: '#efeded' },
+  newsletter: { label: 'Newsletter',  color: '#86a43b', bg: '#efeded' },
+  articulo:   { label: 'Artículo',    color: '#86a43b', bg: '#efeded' },
 }
 
 const STATUS_STYLES = {
-  pendiente_aprobacion: { color: '#d97706', bg: '#fffbeb', label: 'Pendiente' },
-  aprobado:             { color: '#16a34a', bg: '#f0fdf4', label: 'Aprobado' },
-  rechazado:            { color: '#dc2626', bg: '#fef2f2', label: 'Rechazado' },
-  borrador:             { color: '#878787', bg: '#f5f4f0', label: 'Borrador' },
-  publicado:            { color: '#0a66c2', bg: '#eff6ff', label: 'Publicado' },
+  pendiente_aprobacion: { color: '#86a43b', bg: '#efeded', label: 'Pendiente' },
+  aprobado:             { color: '#86a43b', bg: '#efeded', label: 'Aprobado' },
+  rechazado:            { color: '#878787', bg: '#efeded', label: 'Rechazado' },
+  borrador:             { color: '#878787', bg: '#efeded', label: 'Borrador' },
+  publicado:            { color: '#86a43b', bg: '#efeded', label: 'Publicado' },
 }
 
 function LinkedInIcon({ size = 14, color = 'currentColor' }) {
@@ -101,7 +101,7 @@ function RedIcon({ red, size = 14, color }) {
 
 function PostCard({ item }) {
   const red = item.tipo ?? item.red ?? 'otros'
-  const meta = RED_META[red] ?? { color: '#878787', bg: '#f5f4f0', label: red }
+  const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
   const statusKey = item.estado ?? 'borrador'
   const status = STATUS_STYLES[statusKey] ?? STATUS_STYLES.borrador
   const preview = item.contenido_preview ?? item.preview ?? item.snippet
@@ -110,7 +110,7 @@ function PostCard({ item }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderLeft: `3px solid ${meta.color}`,
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
@@ -135,7 +135,7 @@ function PostCard({ item }) {
               border: `1px solid ${meta.color}30`,
               borderRadius: 6,
               padding: '4px 10px',
-              fontFamily: '"Nunito Sans", sans-serif',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 11,
             }}
           >
@@ -150,7 +150,7 @@ function PostCard({ item }) {
               border: `1px solid ${status.color}30`,
               borderRadius: 6,
               padding: '4px 10px',
-              fontFamily: '"Nunito Sans", sans-serif',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 11,
             }}
           >
@@ -162,8 +162,8 @@ function PostCard({ item }) {
         <p
           className="font-black leading-snug mb-2 line-clamp-2"
           style={{
-            color: '#2a2a2a',
-            fontFamily: '"Nunito Sans", sans-serif',
+            color: '#373737',
+            fontFamily: 'Roboto, sans-serif',
             fontSize: 14,
           }}
         >
@@ -187,7 +187,7 @@ function PostCard({ item }) {
         {/* Footer */}
         <div
           className="flex items-center justify-between pt-2"
-          style={{ borderTop: '1px solid #f0eeea' }}
+          style={{ borderTop: '1px solid #efeded' }}
         >
           <span
             style={{
@@ -201,9 +201,9 @@ function PostCard({ item }) {
           {item.fecha_programada && (
             <span
               style={{
-                background: '#f0f7e6',
-                color: '#76a72b',
-                border: '1px solid #76a72b30',
+                background: '#efeded',
+                color: '#86a43b',
+                border: '1px solid #86a43b30',
                 borderRadius: 5,
                 padding: '2px 7px',
                 fontFamily: '"Roboto Mono", monospace',
@@ -248,14 +248,14 @@ export default function RedSocial() {
   const availableRedes = REDES.filter((r) => counts[r] > 0)
 
   return (
-    <div className="p-6 animate-fade-in" style={{ background: '#f0eeea', minHeight: '100%' }}>
+    <div className="p-6 animate-fade-in" style={{ background: '#efeded', minHeight: '100%' }}>
       {/* Header */}
       <div className="mb-6">
         <h1
           className="font-black"
           style={{
-            color: '#2a2a2a',
-            fontFamily: '"Nunito Sans", sans-serif',
+            color: '#373737',
+            fontFamily: 'Roboto, sans-serif',
             fontSize: 24,
           }}
         >
@@ -277,10 +277,10 @@ export default function RedSocial() {
         <div
           className="mb-4 px-4 py-3"
           style={{
-            background: '#fef2f2',
-            border: '1px solid #dc262640',
+            background: '#efeded',
+            border: '1px solid #87878740',
             borderRadius: 8,
-            color: '#dc2626',
+            color: '#878787',
             fontFamily: 'Roboto, sans-serif',
             fontSize: 13,
           }}
@@ -295,12 +295,12 @@ export default function RedSocial() {
           onClick={() => setActiveRed('all')}
           className="font-bold transition-all"
           style={{
-            background: activeRed === 'all' ? '#76a72b' : '#ffffff',
+            background: activeRed === 'all' ? '#86a43b' : '#ffffff',
             color: activeRed === 'all' ? '#ffffff' : '#878787',
-            border: `1px solid ${activeRed === 'all' ? '#76a72b' : '#e4e1db'}`,
+            border: `1px solid ${activeRed === 'all' ? '#86a43b' : '#ababab'}`,
             borderRadius: 20,
             padding: '7px 16px',
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontSize: 12,
             cursor: 'pointer',
             boxShadow: activeRed === 'all' ? '0 2px 8px rgba(118,167,43,0.25)' : 'none',
@@ -310,7 +310,7 @@ export default function RedSocial() {
         </button>
 
         {availableRedes.map((red) => {
-          const meta = RED_META[red] ?? { color: '#878787', bg: '#f5f4f0', label: red }
+          const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
           const isActive = activeRed === red
           return (
             <button
@@ -320,10 +320,10 @@ export default function RedSocial() {
               style={{
                 background: isActive ? meta.color : '#ffffff',
                 color: isActive ? '#ffffff' : '#878787',
-                border: `1px solid ${isActive ? meta.color : '#e4e1db'}`,
+                border: `1px solid ${isActive ? meta.color : '#ababab'}`,
                 borderRadius: 20,
                 padding: '7px 14px',
-                fontFamily: '"Nunito Sans", sans-serif',
+                fontFamily: 'Roboto, sans-serif',
                 fontSize: 12,
                 cursor: 'pointer',
                 boxShadow: isActive ? `0 2px 8px ${meta.color}40` : 'none',
@@ -345,9 +345,9 @@ export default function RedSocial() {
               className="animate-pulse"
               style={{
                 height: 148,
-                background: '#f7f6f3',
+                background: '#efeded',
                 borderRadius: 10,
-                border: '1px solid #e4e1db',
+                border: '1px solid #ababab',
               }}
             />
           ))}
@@ -357,7 +357,7 @@ export default function RedSocial() {
           className="text-center py-16"
           style={{
             background: '#ffffff',
-            border: '1px solid #e4e1db',
+            border: '1px solid #ababab',
             borderRadius: 10,
             boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
           }}
@@ -368,7 +368,7 @@ export default function RedSocial() {
               width: 56,
               height: 56,
               borderRadius: 14,
-              background: '#f7f6f3',
+              background: '#efeded',
             }}
           >
             <LayoutGrid size={24} color="#ababab" />
@@ -376,8 +376,8 @@ export default function RedSocial() {
           <p
             className="font-bold mb-1"
             style={{
-              color: '#2a2a2a',
-              fontFamily: '"Nunito Sans", sans-serif',
+              color: '#373737',
+              fontFamily: 'Roboto, sans-serif',
               fontSize: 15,
             }}
           >

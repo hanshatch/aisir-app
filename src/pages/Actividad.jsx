@@ -4,17 +4,17 @@ import { api } from '@/api/client'
 import { ago } from '@/lib/utils'
 
 const LEVEL = {
-  INFO:    { color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe', label: 'INFO' },
-  ERROR:   { color: '#dc2626', bg: '#fef2f2', border: '#fecaca', label: 'ERR'  },
-  WARNING: { color: '#d97706', bg: '#fffbeb', border: '#fde68a', label: 'WARN' },
-  WARN:    { color: '#d97706', bg: '#fffbeb', border: '#fde68a', label: 'WARN' },
-  DEBUG:   { color: '#9ca3af', bg: '#f9fafb', border: '#e5e7eb', label: 'DBG'  },
+  INFO:    { color: '#86a43b', bg: '#efeded', border: '#efeded', label: 'INFO' },
+  ERROR:   { color: '#878787', bg: '#efeded', border: '#ababab', label: 'ERR'  },
+  WARNING: { color: '#86a43b', bg: '#efeded', border: '#efeded', label: 'WARN' },
+  WARN:    { color: '#86a43b', bg: '#efeded', border: '#efeded', label: 'WARN' },
+  DEBUG:   { color: '#9ca3af', bg: '#efeded', border: '#e5e7eb', label: 'DBG'  },
 }
 
 const AGENT_COLORS = {
-  aisir: '#2563eb', huginn: '#7c3aed', bragi: '#059669', loki: '#d97706',
-  ratatoskr: '#0891b2', kvasir: '#db2777', idunn: '#ea580c', odin: '#dc2626',
-  frigg: '#0284c7', mimir: '#76a72b',
+  aisir: '#86a43b', huginn: '#86a43b', bragi: '#86a43b', loki: '#86a43b',
+  floki: '#86a43b', kvasir: '#86a43b', idunn: '#86a43b', odin: '#878787',
+  frigg: '#86a43b', mimir: '#86a43b',
 }
 
 function LogLine({ log }) {
@@ -29,10 +29,10 @@ function LogLine({ log }) {
       style={{
         display: 'flex', alignItems: 'flex-start', gap: 10,
         padding: '10px 16px',
-        borderBottom: '1px solid #f0eeea',
+        borderBottom: '1px solid #efeded',
         transition: 'background 0.1s',
       }}
-      onMouseEnter={(e) => { e.currentTarget.style.background = '#f7f6f3' }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#efeded' }}
       onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
     >
       <span style={{
@@ -58,7 +58,7 @@ function LogLine({ log }) {
 
       <span style={{
         flex: 1, fontSize: 13, lineHeight: 1.5,
-        color: '#2a2a2a', fontFamily: 'Roboto, sans-serif',
+        color: '#373737', fontFamily: 'Roboto, sans-serif',
       }}>
         {msg}
       </span>
@@ -96,14 +96,14 @@ export default function Actividad() {
         <div>
           <p className="label-caps" style={{ marginBottom: 6 }}>Sistema · Log</p>
           <h1 style={{
-            fontFamily: '"Nunito Sans", sans-serif', fontWeight: 900,
-            fontSize: 34, color: '#2a2a2a', letterSpacing: '-0.02em',
+            fontFamily: 'Roboto, sans-serif', fontWeight: 900,
+            fontSize: 34, color: '#373737', letterSpacing: '-0.02em',
           }}>
             Actividad
           </h1>
         </div>
         <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-          <span className="status-dot animate-pulse-dot" style={{ background: '#76a72b' }} />
+          <span className="status-dot animate-pulse-dot" style={{ background: '#86a43b' }} />
           <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#878787' }}>
             Live · refresh 30s
           </span>
@@ -122,12 +122,12 @@ export default function Actividad() {
         <div style={{
           display: 'flex', alignItems: 'center', gap: 10,
           padding: '11px 16px',
-          background: '#f7f6f3',
-          borderBottom: '1px solid #e4e1db',
+          background: '#efeded',
+          borderBottom: '1px solid #ababab',
           flexShrink: 0,
         }}>
           <div style={{ display: 'flex', gap: 5 }}>
-            {['#f43f5e', '#f59e0b', '#76a72b'].map((c) => (
+            {['#878787', '#86a43b', '#86a43b'].map((c) => (
               <span key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c, opacity: 0.7, display: 'block' }} />
             ))}
           </div>
@@ -138,10 +138,10 @@ export default function Actividad() {
             marginLeft: 'auto',
             fontFamily: '"Roboto Mono"', fontSize: 10,
             padding: '2px 8px',
-            background: '#f0f7e6',
-            border: '1px solid #76a72b30',
+            background: '#efeded',
+            border: '1px solid #86a43b30',
             borderRadius: 4,
-            color: '#5c8420', fontWeight: 600,
+            color: '#86a43b', fontWeight: 600,
           }}>
             {logs.length} entradas
           </span>
@@ -153,7 +153,7 @@ export default function Actividad() {
             <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
               {[...Array(10)].map((_, i) => (
                 <div key={i} style={{
-                  height: 24, background: '#f7f6f3', borderRadius: 4,
+                  height: 24, background: '#efeded', borderRadius: 4,
                   width: `${50 + (i * 7) % 45}%`,
                 }} />
               ))}

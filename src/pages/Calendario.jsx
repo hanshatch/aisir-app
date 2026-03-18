@@ -5,23 +5,23 @@ import { api } from '@/api/client'
 
 // ─── Colores de redes adaptados al tema claro ──────────────────
 const NET = {
-  linkedin:  { color: '#0a66c2', bg: '#eff6ff', label: 'LinkedIn'  },
-  instagram: { color: '#e1306c', bg: '#fff1f5', label: 'Instagram' },
-  x:         { color: '#374151', bg: '#f9fafb', label: 'X / Twitter' },
-  tiktok:    { color: '#ee1d52', bg: '#fff1f2', label: 'TikTok'    },
-  facebook:  { color: '#1877f2', bg: '#eff6ff', label: 'Facebook'  },
-  newsletter:{ color: '#d97706', bg: '#fffbeb', label: 'Newsletter' },
-  articulo:  { color: '#76a72b', bg: '#f0f7e6', label: 'Artículo'  },
-  carousel:  { color: '#ea580c', bg: '#fff7ed', label: 'Carousel'  },
-  whatsapp:  { color: '#16a34a', bg: '#f0fdf4', label: 'WhatsApp'  },
+  linkedin:  { color: '#86a43b', bg: '#efeded', label: 'LinkedIn'  },
+  instagram: { color: '#878787', bg: '#efeded', label: 'Instagram' },
+  x:         { color: '#373737', bg: '#efeded', label: 'X / Twitter' },
+  tiktok:    { color: '#878787', bg: '#efeded', label: 'TikTok'    },
+  facebook:  { color: '#86a43b', bg: '#efeded', label: 'Facebook'  },
+  newsletter:{ color: '#86a43b', bg: '#efeded', label: 'Newsletter' },
+  articulo:  { color: '#86a43b', bg: '#efeded', label: 'Artículo'  },
+  carousel:  { color: '#86a43b', bg: '#fff7ed', label: 'Carousel'  },
+  whatsapp:  { color: '#86a43b', bg: '#efeded', label: 'WhatsApp'  },
 }
 
 const STATUS = {
-  pendiente_aprobacion: { label: 'Pendiente',  color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
-  aprobado:             { label: 'Aprobado',   color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' },
-  rechazado:            { label: 'Rechazado',  color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
-  borrador:             { label: 'Borrador',   color: '#878787', bg: '#f5f4f0', border: '#e4e1db' },
-  publicado:            { label: 'Publicado',  color: '#0a66c2', bg: '#eff6ff', border: '#bfdbfe' },
+  pendiente_aprobacion: { label: 'Pendiente',  color: '#86a43b', bg: '#efeded', border: '#efeded' },
+  aprobado:             { label: 'Aprobado',   color: '#86a43b', bg: '#efeded', border: '#bbf7d0' },
+  rechazado:            { label: 'Rechazado',  color: '#878787', bg: '#efeded', border: '#ababab' },
+  borrador:             { label: 'Borrador',   color: '#878787', bg: '#efeded', border: '#ababab' },
+  publicado:            { label: 'Publicado',  color: '#86a43b', bg: '#efeded', border: '#efeded' },
 }
 
 const DAYS_ES   = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom']
@@ -55,7 +55,7 @@ function formatDateLong(dateStr) {
 
 // ─── Shared sub-components ─────────────────────────────────────
 function NetBadge({ red }) {
-  const n = NET[red] ?? { color: '#878787', bg: '#f5f4f0', label: red }
+  const n = NET[red] ?? { color: '#878787', bg: '#efeded', label: red }
   return (
     <span style={{
       fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: 700,
@@ -102,14 +102,14 @@ function ApproveRow({ event, onAprobar, onRechazar }) {
             flex: 1, fontFamily: 'Roboto, sans-serif', fontSize: 12,
             padding: '5px 10px',
             border: '1px solid #fca5a5', borderRadius: 5,
-            outline: 'none', background: '#fef2f2', color: '#2a2a2a',
+            outline: 'none', background: '#efeded', color: '#373737',
           }}
         />
         <button
           onClick={() => { onRechazar(event.id, motivo); setRejecting(false) }}
           style={{
             padding: '5px 12px',
-            background: '#dc2626', color: '#fff',
+            background: '#878787', color: '#fff',
             border: 'none', borderRadius: 5,
             fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 600,
             cursor: 'pointer',
@@ -121,8 +121,8 @@ function ApproveRow({ event, onAprobar, onRechazar }) {
           onClick={() => setRejecting(false)}
           style={{
             padding: '5px 10px',
-            background: '#f5f4f0', color: '#878787',
-            border: '1px solid #e4e1db', borderRadius: 5,
+            background: '#efeded', color: '#878787',
+            border: '1px solid #ababab', borderRadius: 5,
             fontFamily: 'Roboto, sans-serif', fontSize: 12,
             cursor: 'pointer',
           }}
@@ -140,13 +140,13 @@ function ApproveRow({ event, onAprobar, onRechazar }) {
         style={{
           display: 'flex', alignItems: 'center', gap: 4,
           padding: '4px 10px',
-          background: '#f0f7e6', color: '#5c8420',
-          border: '1px solid #76a72b40', borderRadius: 5,
+          background: '#efeded', color: '#86a43b',
+          border: '1px solid #86a43b40', borderRadius: 5,
           fontFamily: 'Roboto, sans-serif', fontSize: 11, fontWeight: 600,
           cursor: 'pointer', transition: 'all 0.15s',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#76a72b'; e.currentTarget.style.color = '#fff' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#f0f7e6'; e.currentTarget.style.color = '#5c8420' }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#86a43b'; e.currentTarget.style.color = '#fff' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#efeded'; e.currentTarget.style.color = '#86a43b' }}
       >
         <Check size={11} /> Aprobar
       </button>
@@ -155,13 +155,13 @@ function ApproveRow({ event, onAprobar, onRechazar }) {
         style={{
           display: 'flex', alignItems: 'center', gap: 4,
           padding: '4px 10px',
-          background: '#fef2f2', color: '#dc2626',
-          border: '1px solid #fecaca', borderRadius: 5,
+          background: '#efeded', color: '#878787',
+          border: '1px solid #ababab', borderRadius: 5,
           fontFamily: 'Roboto, sans-serif', fontSize: 11, fontWeight: 600,
           cursor: 'pointer', transition: 'all 0.15s',
         }}
-        onMouseEnter={(e) => { e.currentTarget.style.background = '#dc2626'; e.currentTarget.style.color = '#fff' }}
-        onMouseLeave={(e) => { e.currentTarget.style.background = '#fef2f2'; e.currentTarget.style.color = '#dc2626' }}
+        onMouseEnter={(e) => { e.currentTarget.style.background = '#878787'; e.currentTarget.style.color = '#fff' }}
+        onMouseLeave={(e) => { e.currentTarget.style.background = '#efeded'; e.currentTarget.style.color = '#878787' }}
       >
         <X size={11} /> Rechazar
       </button>
@@ -174,7 +174,7 @@ function ApproveRow({ event, onAprobar, onRechazar }) {
 // ═══════════════════════════════════════════════════════════════
 function CalendarEventChip({ event, onAprobar, onRechazar }) {
   const red   = event.red ?? event.tipo ?? 'otros'
-  const net   = NET[red] ?? { color: '#878787', bg: '#f5f4f0' }
+  const net   = NET[red] ?? { color: '#878787', bg: '#efeded' }
   const isPending = event.estado === 'pendiente_aprobacion'
   const [open, setOpen] = useState(false)
 
@@ -201,14 +201,14 @@ function CalendarEventChip({ event, onAprobar, onRechazar }) {
           </span>
         )}
         {isPending && (
-          <AlertCircle size={9} color="#d97706" style={{ flexShrink: 0 }} />
+          <AlertCircle size={9} color="#86a43b" style={{ flexShrink: 0 }} />
         )}
       </div>
 
       {/* Title */}
       <p style={{
         fontFamily: 'Roboto, sans-serif', fontSize: 11, fontWeight: 600,
-        color: '#2a2a2a', lineHeight: 1.3,
+        color: '#373737', lineHeight: 1.3,
         overflow: 'hidden',
         display: '-webkit-box', WebkitLineClamp: open ? 'unset' : 2, WebkitBoxOrient: 'vertical',
       }}>
@@ -241,8 +241,8 @@ function CalendarView({ weekStart, byDay, onAprobar, onRechazar, isLoading }) {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(7, 1fr)', gap: 8 }}>
         {DAYS_ES.map((d) => (
           <div key={d} className="card" style={{ height: 280, opacity: 0.5 }}>
-            <div style={{ padding: '10px 12px', borderBottom: '1px solid #f0eeea' }}>
-              <div style={{ width: 24, height: 12, background: '#f0eeea', borderRadius: 3 }} />
+            <div style={{ padding: '10px 12px', borderBottom: '1px solid #efeded' }}>
+              <div style={{ width: 24, height: 12, background: '#efeded', borderRadius: 3 }} />
             </div>
           </div>
         ))}
@@ -264,15 +264,15 @@ function CalendarView({ weekStart, byDay, onAprobar, onRechazar, isLoading }) {
             style={{
               overflow: 'hidden',
               opacity: isPast ? 0.7 : 1,
-              border: isToday ? '2px solid #76a72b' : '1px solid #e4e1db',
+              border: isToday ? '2px solid #86a43b' : '1px solid #ababab',
               boxShadow: isToday ? '0 0 0 3px rgba(118,167,43,0.1)' : undefined,
             }}
           >
             {/* Day header */}
             <div style={{
               padding: '8px 10px',
-              background: isToday ? '#76a72b' : '#f7f6f3',
-              borderBottom: `1px solid ${isToday ? 'transparent' : '#f0eeea'}`,
+              background: isToday ? '#86a43b' : '#efeded',
+              borderBottom: `1px solid ${isToday ? 'transparent' : '#efeded'}`,
               display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             }}>
               <span style={{
@@ -283,8 +283,8 @@ function CalendarView({ weekStart, byDay, onAprobar, onRechazar, isLoading }) {
                 {DAYS_ES[i]}
               </span>
               <span style={{
-                fontFamily: '"Nunito Sans", sans-serif', fontWeight: 800, fontSize: 15,
-                color: isToday ? '#ffffff' : '#2a2a2a',
+                fontFamily: 'Roboto, sans-serif', fontWeight: 800, fontSize: 15,
+                color: isToday ? '#ffffff' : '#373737',
               }}>
                 {d.getDate()}
               </span>
@@ -295,7 +295,7 @@ function CalendarView({ weekStart, byDay, onAprobar, onRechazar, isLoading }) {
               {dayEvents.length === 0 ? (
                 <p style={{
                   textAlign: 'center', padding: '16px 0',
-                  fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#e4e1db',
+                  fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#ababab',
                 }}>
                   —
                 </p>
@@ -333,14 +333,14 @@ function CalendarView({ weekStart, byDay, onAprobar, onRechazar, isLoading }) {
 // ═══════════════════════════════════════════════════════════════
 function ListEventRow({ event, onAprobar, onRechazar }) {
   const red    = event.red ?? event.tipo ?? 'otros'
-  const net    = NET[red] ?? { color: '#878787', bg: '#f5f4f0' }
+  const net    = NET[red] ?? { color: '#878787', bg: '#efeded' }
   const status = STATUS[event.estado] ?? STATUS.borrador
 
   return (
     <div style={{
       display: 'flex', alignItems: 'flex-start', gap: 16,
       padding: '14px 20px',
-      borderBottom: '1px solid #f0eeea',
+      borderBottom: '1px solid #efeded',
       transition: 'background 0.1s',
     }}
     onMouseEnter={(e) => { e.currentTarget.style.background = '#fafaf8' }}
@@ -356,7 +356,7 @@ function ListEventRow({ event, onAprobar, onRechazar }) {
             {event.hora}
           </span>
         ) : (
-          <span style={{ fontFamily: '"Roboto Mono"', fontSize: 11, color: '#e4e1db' }}>—:—</span>
+          <span style={{ fontFamily: '"Roboto Mono"', fontSize: 11, color: '#ababab' }}>—:—</span>
         )}
       </div>
 
@@ -369,8 +369,8 @@ function ListEventRow({ event, onAprobar, onRechazar }) {
       {/* Content */}
       <div style={{ flex: 1, minWidth: 0 }}>
         <p style={{
-          fontFamily: '"Nunito Sans", sans-serif', fontWeight: 700, fontSize: 14,
-          color: '#2a2a2a', lineHeight: 1.3, marginBottom: 6,
+          fontFamily: 'Roboto, sans-serif', fontWeight: 700, fontSize: 14,
+          color: '#373737', lineHeight: 1.3, marginBottom: 6,
         }}>
           {event.titulo ?? event.title ?? `Pieza #${event.id}`}
         </p>
@@ -384,7 +384,7 @@ function ListEventRow({ event, onAprobar, onRechazar }) {
       {/* ID */}
       <span style={{
         flexShrink: 0, fontFamily: '"Roboto Mono"', fontSize: 10,
-        color: '#e4e1db', paddingTop: 3,
+        color: '#ababab', paddingTop: 3,
       }}>
         #{event.id}
       </span>
@@ -399,11 +399,11 @@ function ListView({ byDay, onAprobar, onRechazar, isLoading }) {
     return (
       <div className="card" style={{ overflow: 'hidden' }}>
         {[...Array(5)].map((_, i) => (
-          <div key={i} style={{ padding: '14px 20px', borderBottom: '1px solid #f0eeea', display: 'flex', gap: 12 }}>
-            <div style={{ width: 48, height: 16, background: '#f0eeea', borderRadius: 3 }} />
+          <div key={i} style={{ padding: '14px 20px', borderBottom: '1px solid #efeded', display: 'flex', gap: 12 }}>
+            <div style={{ width: 48, height: 16, background: '#efeded', borderRadius: 3 }} />
             <div style={{ flex: 1 }}>
-              <div style={{ width: '60%', height: 14, background: '#f0eeea', borderRadius: 3, marginBottom: 8 }} />
-              <div style={{ width: '30%', height: 10, background: '#f7f6f3', borderRadius: 3 }} />
+              <div style={{ width: '60%', height: 14, background: '#efeded', borderRadius: 3, marginBottom: 8 }} />
+              <div style={{ width: '30%', height: 10, background: '#efeded', borderRadius: 3 }} />
             </div>
           </div>
         ))}
@@ -428,7 +428,7 @@ function ListView({ byDay, onAprobar, onRechazar, isLoading }) {
       <div style={{
         display: 'grid', gridTemplateColumns: '48px 3px 1fr auto',
         gap: 16, padding: '10px 20px',
-        background: '#f7f6f3', borderBottom: '1px solid #e4e1db',
+        background: '#efeded', borderBottom: '1px solid #ababab',
       }}>
         {['Hora', '', 'Publicación', 'ID'].map((h) => (
           <span key={h} className="label-caps" style={{ fontSize: 9 }}>{h}</span>
@@ -445,13 +445,13 @@ function ListView({ byDay, onAprobar, onRechazar, isLoading }) {
             {/* Day separator */}
             <div style={{
               padding: '8px 20px',
-              background: isToday ? '#f0f7e6' : '#fafaf8',
-              borderBottom: '1px solid #f0eeea',
+              background: isToday ? '#efeded' : '#fafaf8',
+              borderBottom: '1px solid #efeded',
               display: 'flex', alignItems: 'center', gap: 10,
             }}>
               <span style={{
-                fontFamily: '"Nunito Sans", sans-serif', fontWeight: 800,
-                fontSize: 12, color: isToday ? '#5c8420' : '#373737',
+                fontFamily: 'Roboto, sans-serif', fontWeight: 800,
+                fontSize: 12, color: isToday ? '#86a43b' : '#373737',
                 textTransform: 'capitalize',
               }}>
                 {formatDateLong(dateStr)}
@@ -459,7 +459,7 @@ function ListView({ byDay, onAprobar, onRechazar, isLoading }) {
               {isToday && (
                 <span style={{
                   fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: 700,
-                  padding: '2px 7px', background: '#76a72b', color: '#fff',
+                  padding: '2px 7px', background: '#86a43b', color: '#fff',
                   borderRadius: 4, letterSpacing: '0.06em', textTransform: 'uppercase',
                 }}>
                   Hoy
@@ -542,9 +542,9 @@ export default function Calendario() {
         <div>
           <p className="label-caps" style={{ marginBottom: 6 }}>Editorial · Planificación</p>
           <h1 style={{
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontWeight: 900, fontSize: 34, lineHeight: 1,
-            color: '#2a2a2a', letterSpacing: '-0.02em',
+            color: '#373737', letterSpacing: '-0.02em',
           }}>
             Calendario
           </h1>
@@ -564,20 +564,20 @@ export default function Calendario() {
             <div style={{ display: 'flex', gap: 6 }}>
               <div style={{
                 padding: '6px 12px', borderRadius: 8,
-                background: '#ffffff', border: '1px solid #e4e1db',
+                background: '#ffffff', border: '1px solid #ababab',
               }}>
                 <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#878787' }}>
-                  <strong style={{ color: '#2a2a2a', fontWeight: 700 }}>{totalThisWeek}</strong> esta semana
+                  <strong style={{ color: '#373737', fontWeight: 700 }}>{totalThisWeek}</strong> esta semana
                 </span>
               </div>
               {pendingCount > 0 && (
                 <div style={{
                   padding: '6px 12px', borderRadius: 8,
-                  background: '#fffbeb', border: '1px solid #fde68a',
+                  background: '#efeded', border: '1px solid #efeded',
                   display: 'flex', alignItems: 'center', gap: 5,
                 }}>
-                  <AlertCircle size={11} color="#d97706" />
-                  <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#d97706', fontWeight: 600 }}>
+                  <AlertCircle size={11} color="#86a43b" />
+                  <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#86a43b', fontWeight: 600 }}>
                     {pendingCount} pendiente{pendingCount > 1 ? 's' : ''}
                   </span>
                 </div>
@@ -586,7 +586,7 @@ export default function Calendario() {
           )}
 
           {/* Week nav */}
-          <div style={{ display: 'flex', gap: 0, border: '1px solid #e4e1db', borderRadius: 8, overflow: 'hidden' }}>
+          <div style={{ display: 'flex', gap: 0, border: '1px solid #ababab', borderRadius: 8, overflow: 'hidden' }}>
             {[
               { onClick: () => setWeekOffset((p) => p - 1), children: <ChevronLeft size={15} />, title: 'Semana anterior' },
               { onClick: () => setWeekOffset(0), children: <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 600 }}>Hoy</span>, title: 'Ir a esta semana' },
@@ -600,11 +600,11 @@ export default function Calendario() {
                   display: 'flex', alignItems: 'center', justifyContent: 'center',
                   padding: '7px 12px',
                   background: '#ffffff', border: 'none',
-                  borderRight: idx < 2 ? '1px solid #e4e1db' : 'none',
+                  borderRight: idx < 2 ? '1px solid #ababab' : 'none',
                   color: '#373737', cursor: 'pointer',
                   transition: 'background 0.15s',
                 }}
-                onMouseEnter={(e) => { e.currentTarget.style.background = '#f7f6f3' }}
+                onMouseEnter={(e) => { e.currentTarget.style.background = '#efeded' }}
                 onMouseLeave={(e) => { e.currentTarget.style.background = '#ffffff' }}
               >
                 {children}
@@ -615,7 +615,7 @@ export default function Calendario() {
           {/* View toggle */}
           <div style={{
             display: 'flex', gap: 0,
-            background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 8, overflow: 'hidden',
+            background: '#ffffff', border: '1px solid #ababab', borderRadius: 8, overflow: 'hidden',
           }}>
             {[
               { key: 'calendar', icon: <LayoutGrid size={14} />, label: 'Calendario' },
@@ -627,15 +627,15 @@ export default function Calendario() {
                 style={{
                   display: 'flex', alignItems: 'center', gap: 6,
                   padding: '7px 14px',
-                  background: view === key ? '#76a72b' : '#ffffff',
+                  background: view === key ? '#86a43b' : '#ffffff',
                   color: view === key ? '#ffffff' : '#878787',
                   border: 'none', cursor: 'pointer',
-                  borderRight: key === 'calendar' ? '1px solid #e4e1db' : 'none',
+                  borderRight: key === 'calendar' ? '1px solid #ababab' : 'none',
                   fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 600,
                   transition: 'all 0.15s',
                 }}
                 onMouseEnter={(e) => {
-                  if (view !== key) { e.currentTarget.style.background = '#f7f6f3'; e.currentTarget.style.color = '#373737' }
+                  if (view !== key) { e.currentTarget.style.background = '#efeded'; e.currentTarget.style.color = '#373737' }
                 }}
                 onMouseLeave={(e) => {
                   if (view !== key) { e.currentTarget.style.background = '#ffffff'; e.currentTarget.style.color = '#878787' }

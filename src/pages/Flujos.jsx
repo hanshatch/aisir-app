@@ -2,20 +2,20 @@ import { useState } from 'react'
 import { GitBranch, Clock } from 'lucide-react'
 
 const AGENT_COLORS = {
-  aisir:     { color: '#2563eb', label: 'AiSir' },
-  huginn:    { color: '#7c3aed', label: 'Huginn' },
-  bragi:     { color: '#059669', label: 'Bragi' },
-  loki:      { color: '#d97706', label: 'Loki' },
-  ratatoskr: { color: '#0891b2', label: 'Ratatoskr' },
-  kvasir:    { color: '#db2777', label: 'Kvasir' },
-  idunn:     { color: '#ea580c', label: 'Idunn' },
-  odin:      { color: '#dc2626', label: 'Odin' },
-  frigg:     { color: '#0284c7', label: 'Frigg' },
-  mimir:     { color: '#76a72b', label: 'Mimir' },
-  hans:      { color: '#76a72b', label: 'Hans' },
-  telegram:  { color: '#2563eb', label: 'Telegram' },
-  publer:    { color: '#d97706', label: 'Publer' },
-  serpapi:   { color: '#059669', label: 'SerpAPI' },
+  aisir:     { color: '#86a43b', label: 'AiSir' },
+  huginn:    { color: '#86a43b', label: 'Huginn' },
+  bragi:     { color: '#86a43b', label: 'Bragi' },
+  loki:      { color: '#86a43b', label: 'Loki' },
+  floki: { color: '#86a43b', label: 'Floki' },
+  kvasir:    { color: '#86a43b', label: 'Kvasir' },
+  idunn:     { color: '#86a43b', label: 'Idunn' },
+  odin:      { color: '#878787', label: 'Odin' },
+  frigg:     { color: '#86a43b', label: 'Frigg' },
+  mimir:     { color: '#86a43b', label: 'Mimir' },
+  hans:      { color: '#86a43b', label: 'Hans' },
+  telegram:  { color: '#86a43b', label: 'Telegram' },
+  publer:    { color: '#86a43b', label: 'Publer' },
+  serpapi:   { color: '#86a43b', label: 'SerpAPI' },
   sistema:   { color: '#878787', label: 'Sistema' },
 }
 
@@ -24,7 +24,7 @@ const FLUJOS = [
     id: 'A',
     titulo: 'Flujo A — Semana Estándar',
     descripcion: 'Ciclo semanal completo: curaduría, redacción, adaptación y programación.',
-    color: '#76a72b',
+    color: '#86a43b',
     pasos: [
       { agente: 'sistema', accion: 'Lunes 6 AM — Trigger automático semanal',                                   tiempo: 'Lun 6:00'   },
       { agente: 'huginn',  accion: 'Curador genera brief con temas y scoring',                                  tiempo: '~20min'     },
@@ -41,7 +41,7 @@ const FLUJOS = [
     id: 'B',
     titulo: 'Flujo B — Modo Momento',
     descripcion: 'Publicación on-demand desde foto o audio enviado por Telegram.',
-    color: '#2563eb',
+    color: '#86a43b',
     pasos: [
       { agente: 'hans',   accion: 'Hans envía foto o audio a Telegram',                                        tiempo: 'On-demand'  },
       { agente: 'aisir',  accion: 'Orquestador detecta media y activa Modo Momento',                           tiempo: '<1s'        },
@@ -55,7 +55,7 @@ const FLUJOS = [
     id: 'C',
     titulo: 'Flujo C — Comentario de Autoridad',
     descripcion: 'Monitoreo de líderes y generación de comentarios estratégicos.',
-    color: '#dc2626',
+    color: '#878787',
     pasos: [
       { agente: 'sistema', accion: '9 AM y 3 PM — Trigger automático Odin',                                   tiempo: '2x/día'     },
       { agente: 'odin',    accion: 'Escanea posts recientes de líderes monitoreados',                          tiempo: '~2min'      },
@@ -68,14 +68,14 @@ const FLUJOS = [
     id: 'E',
     titulo: 'Flujo E — Artículo SM',
     descripcion: 'Producción quincenal: artículo SEO para Soy.Marketing + distribución de piezas por red.',
-    color: '#059669',
+    color: '#86a43b',
     pasos: [
       { agente: 'sistema',   accion: '/proponer_articulo — Jueves 6 PM auto o Hans lo dispara manualmente',   tiempo: 'Jueves'     },
-      { agente: 'ratatoskr', accion: 'Propone 5 temas SEO con keyword, dificultad y justificación (SerpAPI)', tiempo: '~40-60s'    },
+      { agente: 'floki', accion: 'Propone 5 temas SEO con keyword, dificultad y justificación (SerpAPI)', tiempo: '~40-60s'    },
       { agente: 'hans',      accion: 'Hans elige el tema en Telegram (botón de selección)',                   tiempo: 'Manual'     },
-      { agente: 'ratatoskr', accion: '/articulo [tema_id] — Investiga top 10 SERP + PAA + brechas de contenido', tiempo: '~15min' },
+      { agente: 'floki', accion: '/articulo [tema_id] — Investiga top 10 SERP + PAA + brechas de contenido', tiempo: '~15min' },
       { agente: 'bragi',     accion: 'Redacta artículo 2000+ palabras con voz de Hans y Brand Voice',        tiempo: '~20min'     },
-      { agente: 'ratatoskr', accion: 'Audita artículo — score ≥80/100 en 10 criterios (SEO, EEAT, voz…)',    tiempo: '~5min'      },
+      { agente: 'floki', accion: 'Audita artículo — score ≥80/100 en 10 criterios (SEO, EEAT, voz…)',    tiempo: '~5min'      },
       { agente: 'hans',      accion: 'Recibe artículo + score en Telegram — aprueba o rechaza',              tiempo: 'Manual'     },
       { agente: 'sistema',   accion: 'Artículo aprobado se sube a Google Drive (.docx)',                      tiempo: '<10s'       },
       { agente: 'hans',      accion: '/articulo [URL] — Hans publica en Soy.Marketing y envía la URL',       tiempo: 'Manual'     },
@@ -88,10 +88,10 @@ const FLUJOS = [
     id: 'W',
     titulo: 'Flujo W — Artículo HH',
     descripcion: 'Publicación mensual en hanshatch.com (WordPress) con guión de video y distribución por redes.',
-    color: '#7c3aed',
+    color: '#86a43b',
     pasos: [
       { agente: 'sistema',   accion: '/blog [keyword] — Día 1 del mes auto o Hans lo dispara manualmente',   tiempo: 'Mensual'    },
-      { agente: 'ratatoskr', accion: 'Investiga top 10 SERP para la keyword seleccionada',                   tiempo: '~15min'     },
+      { agente: 'floki', accion: 'Investiga top 10 SERP para la keyword seleccionada',                   tiempo: '~15min'     },
       { agente: 'bragi',     accion: 'Redacta artículo blog con HTML listo para WordPress + excerpt + SEO',  tiempo: '~20min'     },
       { agente: 'sistema',   accion: 'Sube borrador a WordPress (draft) — Hans recibe link de edición',      tiempo: '<10s'       },
       { agente: 'bragi',     accion: 'Genera guión de video basado en el artículo → sube a Google Drive',    tiempo: '~10min'     },
@@ -106,7 +106,7 @@ const FLUJOS = [
     id: 'I',
     titulo: 'Flujo I — Inspiración Mensual',
     descripcion: 'Análisis de cuentas referentes y brief de inspiración para el mes siguiente.',
-    color: '#db2777',
+    color: '#86a43b',
     pasos: [
       { agente: 'sistema', accion: 'Días 28-30 del mes — Trigger automático',                                 tiempo: 'Mensual'    },
       { agente: 'kvasir',  accion: 'Descarga los últimos 30 posts de cuentas activas',                        tiempo: '~10min'     },
@@ -151,7 +151,7 @@ function StepItem({ step, index, isLast, flowColor }) {
       <div style={{ flex: 1, paddingBottom: 18, paddingTop: 3 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap', marginBottom: 4 }}>
           <span style={{
-            fontFamily: '"Nunito Sans", sans-serif', fontWeight: 700, fontSize: 11,
+            fontFamily: 'Roboto, sans-serif', fontWeight: 700, fontSize: 11,
             padding: '2px 9px',
             background: agent.color + '12',
             color: agent.color,
@@ -171,7 +171,7 @@ function StepItem({ step, index, isLast, flowColor }) {
         </div>
         <p style={{
           fontFamily: 'Roboto, sans-serif', fontSize: 13, lineHeight: 1.5,
-          color: '#2a2a2a',
+          color: '#373737',
         }}>
           {step.accion}
         </p>
@@ -190,7 +190,7 @@ export default function Flujos() {
       <div style={{
         width: 230, flexShrink: 0,
         background: '#ffffff',
-        borderRight: '1px solid #e4e1db',
+        borderRight: '1px solid #ababab',
         overflowY: 'auto',
         display: 'flex', flexDirection: 'column',
       }}>
@@ -214,7 +214,7 @@ export default function Flujos() {
                       transition: 'all 0.12s',
                     }}
                     onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.background = '#f7f6f3'
+                      if (!isActive) e.currentTarget.style.background = '#efeded'
                     }}
                     onMouseLeave={(e) => {
                       if (!isActive) e.currentTarget.style.background = 'transparent'
@@ -223,16 +223,16 @@ export default function Flujos() {
                     <span style={{
                       fontFamily: '"Roboto Mono", monospace', fontSize: 10, fontWeight: 700,
                       padding: '2px 6px',
-                      background: isActive ? f.color + '18' : '#f7f6f3',
+                      background: isActive ? f.color + '18' : '#efeded',
                       color: isActive ? f.color : '#878787',
-                      border: `1px solid ${isActive ? f.color + '40' : '#e4e1db'}`,
+                      border: `1px solid ${isActive ? f.color + '40' : '#ababab'}`,
                       borderRadius: 4,
                     }}>
                       {f.id}
                     </span>
                     <span style={{
                       fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: isActive ? 600 : 400,
-                      color: isActive ? '#2a2a2a' : '#878787',
+                      color: isActive ? '#373737' : '#878787',
                       lineHeight: 1.3,
                     }}>
                       {f.titulo.split('—')[1]?.trim() ?? f.titulo}
@@ -258,8 +258,8 @@ export default function Flujos() {
                 background: selected.color, flexShrink: 0,
               }} />
               <h1 style={{
-                fontFamily: '"Nunito Sans", sans-serif', fontWeight: 900,
-                fontSize: 28, color: '#2a2a2a', letterSpacing: '-0.02em',
+                fontFamily: 'Roboto, sans-serif', fontWeight: 900,
+                fontSize: 28, color: '#373737', letterSpacing: '-0.02em',
               }}>
                 {selected.titulo}
               </h1>
@@ -282,8 +282,8 @@ export default function Flujos() {
               <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
                 <GitBranch size={14} style={{ color: selected.color }} />
                 <span style={{
-                  fontFamily: '"Nunito Sans", sans-serif', fontWeight: 700, fontSize: 13,
-                  color: '#2a2a2a',
+                  fontFamily: 'Roboto, sans-serif', fontWeight: 700, fontSize: 13,
+                  color: '#373737',
                 }}>
                   Etapas del flujo
                 </span>

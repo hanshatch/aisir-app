@@ -20,26 +20,26 @@ export function Button({
 
   const variants = {
     primary: {
-      background: disabled ? '#3d5535' : '#7ec832',
-      color: '#060908',
+      background: disabled ? '#373737' : '#86a43b',
+      color: '#373737',
       border: 'none',
       boxShadow: disabled ? 'none' : '0 0 12px rgba(126,200,50,0.25)',
       cursor: disabled ? 'not-allowed' : 'pointer',
     },
     outline: {
       background: 'transparent',
-      color: disabled ? '#3d5535' : '#7ec832',
-      border: `1px solid ${disabled ? '#2a3d24' : '#7ec83260'}`,
+      color: disabled ? '#373737' : '#86a43b',
+      border: `1px solid ${disabled ? '#373737' : '#86a43b60'}`,
       cursor: disabled ? 'not-allowed' : 'pointer',
     },
     ghost: {
       background: 'transparent',
-      color: disabled ? '#3d5535' : '#8aab78',
+      color: disabled ? '#373737' : '#8aab78',
       border: '1px solid transparent',
       cursor: disabled ? 'not-allowed' : 'pointer',
     },
     danger: {
-      background: disabled ? '#2a1515' : '#e04545',
+      background: disabled ? '#2a1515' : '#878787',
       color: '#fff',
       border: 'none',
       cursor: disabled ? 'not-allowed' : 'pointer',

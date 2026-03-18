@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 const VALID_USERS = [
-  { username: 'hans',  password: 'aisir2026' },
-  { username: 'admin', password: 'hatch2026' },
+  { username: 'hanshatch',  password: 'Hx#9mK2$vL8n' },
+  { username: 'aisir_admin', password: 'Nq@7wR4!zT6j' },
 ]
 
 export default function Login() {
@@ -40,10 +40,10 @@ export default function Login() {
     fontFamily: '"Roboto Mono", monospace',
     fontSize: 14,
     padding: '10px 14px',
-    background: '#fafaf9',
-    border: `1.5px solid ${hasError ? '#dc2626' : '#e4e1db'}`,
+    background: '#efeded',
+    border: `1.5px solid ${hasError ? '#878787' : '#ababab'}`,
     borderRadius: 7,
-    color: '#2a2a2a',
+    color: '#373737',
     outline: 'none',
     boxSizing: 'border-box',
     transition: 'border-color 0.15s, box-shadow 0.15s',
@@ -53,7 +53,9 @@ export default function Login() {
     <div style={{
       width: '100vw',
       minHeight: '100vh',
-      background: '#efeded',
+      backgroundImage: 'url(/BG_login.jpg)',
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -63,49 +65,39 @@ export default function Login() {
     }}>
       <div style={{ width: 380, maxWidth: 'calc(100vw - 32px)' }} className="animate-fade-up">
 
-        {/* Logo */}
-        <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <h1 style={{
-            fontFamily: '"Nunito Sans", sans-serif',
-            fontWeight: 800,
-            fontSize: 40,
-            lineHeight: 1,
-            letterSpacing: '-0.02em',
-            marginBottom: 8,
-          }}>
-            <span style={{ color: '#373737' }}>hans</span>
-            <span style={{ color: '#76a72b' }}>hatch</span>
-          </h1>
-          <p style={{
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: 11,
-            color: '#ababab',
-            letterSpacing: '0.05em',
-          }}>
-            AISIR | Intelligence Agents
-          </p>
-        </div>
-
         {/* Card */}
         <div style={{
-          background: '#ffffff',
-          border: '1px solid #e4e1db',
+          background: 'rgba(255,255,255,0.70)',
+          backdropFilter: 'blur(12px)',
+          border: '1px solid rgba(171,171,171,0.4)',
           borderRadius: 12,
           padding: '32px 32px 28px',
-          boxShadow: '0 4px 24px rgba(0,0,0,0.06)',
+          boxShadow: '0 8px 40px rgba(0,0,0,0.18)',
         }}>
-          <p style={{
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: 10,
-            fontWeight: 700,
-            letterSpacing: '0.1em',
-            textTransform: 'uppercase',
-            color: '#ababab',
-            marginBottom: 20,
-          }}>
-            Acceso al sistema
-          </p>
-
+          {/* Logo dentro del card */}
+          <div style={{ textAlign: 'center', marginBottom: 28 }}>
+            <h1 style={{
+              fontFamily: 'Roboto, sans-serif',
+              fontWeight: 800,
+              fontSize: 36,
+              lineHeight: 1,
+              letterSpacing: '-0.02em',
+              marginBottom: 6,
+            }}>
+              <span style={{ color: '#373737' }}>hans</span>
+              <span style={{ color: '#86a43b' }}>hatch</span>
+            </h1>
+            <p style={{
+              fontFamily: 'Roboto, sans-serif',
+              fontSize: 10,
+              fontWeight: 700,
+              color: '#373737',
+              letterSpacing: '0.08em',
+              textTransform: 'uppercase',
+            }}>
+              AISIR | Intelligence Agents
+            </p>
+          </div>
           <form onSubmit={handleSubmit}>
             {/* Usuario */}
             <div style={{ marginBottom: 14 }}>
@@ -113,7 +105,7 @@ export default function Login() {
                 display: 'block',
                 fontFamily: 'Roboto, sans-serif',
                 fontSize: 11, fontWeight: 500,
-                color: '#878787',
+                color: '#373737',
                 marginBottom: 7,
                 letterSpacing: '0.02em',
               }}>
@@ -128,11 +120,11 @@ export default function Login() {
                 placeholder="usuario"
                 style={inputStyle(error)}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#76a72b'
+                  e.currentTarget.style.borderColor = '#86a43b'
                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(118,167,43,0.12)'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = error ? '#dc2626' : '#e4e1db'
+                  e.currentTarget.style.borderColor = error ? '#878787' : '#ababab'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               />
@@ -144,7 +136,7 @@ export default function Login() {
                 display: 'block',
                 fontFamily: 'Roboto, sans-serif',
                 fontSize: 11, fontWeight: 500,
-                color: '#878787',
+                color: '#373737',
                 marginBottom: 7,
                 letterSpacing: '0.02em',
               }}>
@@ -158,11 +150,11 @@ export default function Login() {
                 placeholder="••••••••••"
                 style={inputStyle(error)}
                 onFocus={(e) => {
-                  e.currentTarget.style.borderColor = '#76a72b'
+                  e.currentTarget.style.borderColor = '#86a43b'
                   e.currentTarget.style.boxShadow = '0 0 0 3px rgba(118,167,43,0.12)'
                 }}
                 onBlur={(e) => {
-                  e.currentTarget.style.borderColor = error ? '#dc2626' : '#e4e1db'
+                  e.currentTarget.style.borderColor = error ? '#878787' : '#ababab'
                   e.currentTarget.style.boxShadow = 'none'
                 }}
               />
@@ -172,7 +164,7 @@ export default function Login() {
               <p style={{
                 fontFamily: 'Roboto, sans-serif',
                 fontSize: 12,
-                color: '#dc2626',
+                color: '#878787',
                 marginBottom: 12,
               }}>
                 Usuario o contraseña incorrectos.
@@ -184,13 +176,13 @@ export default function Login() {
               disabled={loading || !username || !pwd}
               style={{
                 width: '100%',
-                fontFamily: '"Nunito Sans", sans-serif',
+                fontFamily: 'Roboto, sans-serif',
                 fontWeight: 800,
                 fontSize: 13,
                 letterSpacing: '0.05em',
                 textTransform: 'uppercase',
                 padding: '11px 0',
-                background: loading || !username || !pwd ? '#d4dfc7' : '#76a72b',
+                background: loading || !username || !pwd ? 'rgba(134,164,59,0.4)' : '#86a43b',
                 color: '#ffffff',
                 border: 'none',
                 borderRadius: 7,
@@ -199,10 +191,10 @@ export default function Login() {
                 marginTop: 4,
               }}
               onMouseEnter={(e) => {
-                if (!loading && username && pwd) e.currentTarget.style.background = '#5c8420'
+                if (!loading && username && pwd) e.currentTarget.style.background = '#86a43b'
               }}
               onMouseLeave={(e) => {
-                if (!loading && username && pwd) e.currentTarget.style.background = '#76a72b'
+                if (!loading && username && pwd) e.currentTarget.style.background = '#86a43b'
               }}
             >
               {loading ? 'Autenticando…' : 'Ingresar'}
@@ -215,7 +207,7 @@ export default function Login() {
           textAlign: 'center',
           fontFamily: 'Roboto, sans-serif',
           fontSize: 10,
-          color: '#c5c2bc',
+          color: '#ababab',
           marginTop: 24,
         }}>
           hatch co. · {new Date().getFullYear()}

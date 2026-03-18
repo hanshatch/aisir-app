@@ -15,26 +15,26 @@ export function ago(dt) {
 }
 
 export const AGENT_COLORS = {
-  aisir:     '#4f9eff',
-  huginn:    '#a78bfa',
-  bragi:     '#34d399',
-  loki:      '#f59e0b',
-  ratatoskr: '#10b981',
-  kvasir:    '#e879f9',
-  idunn:     '#fb923c',
-  odin:      '#f43f5e',
-  frigg:     '#06b6d4',
-  mimir:     '#8b5cf6',
+  aisir:     '#86a43b',
+  huginn:    '#86a43b',
+  bragi:     '#86a43b',
+  loki:      '#86a43b',
+  floki: '#86a43b',
+  kvasir:    '#86a43b',
+  idunn:     '#86a43b',
+  odin:      '#878787',
+  frigg:     '#86a43b',
+  mimir:     '#86a43b',
 }
 
 export const RED_COLORS = {
   linkedin:  '#4d9eff',
-  instagram: '#e879f9',
+  instagram: '#86a43b',
   x:         '#a1a1aa',
-  tiktok:    '#06b6d4',
+  tiktok:    '#86a43b',
   facebook:  '#60a5fa',
-  newsletter:'#f59e0b',
-  articulo:  '#7ec832',
+  newsletter:'#86a43b',
+  articulo:  '#86a43b',
   whatsapp:  '#4ade80',
-  carousel:  '#fb923c',
+  carousel:  '#86a43b',
 }

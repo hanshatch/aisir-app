@@ -3,19 +3,19 @@ import { api } from '@/api/client'
 
 /* ─── Category metadata ─────────────────────────────────── */
 const CAT_META = {
-  voz:         { label: 'Voz',         color: '#76a72b', bg: '#f0f7e6', text: '#4a7018' },
-  tono:        { label: 'Tono',        color: '#0a66c2', bg: '#eff6ff', text: '#1d4ed8' },
-  estructura:  { label: 'Estructura',  color: '#7c3aed', bg: '#f5f3ff', text: '#6d28d9' },
-  vocabulario: { label: 'Vocabulario', color: '#d97706', bg: '#fffbeb', text: '#b45309' },
-  postura:     { label: 'Postura',     color: '#e1306c', bg: '#fdf2f8', text: '#be185d' },
-  formato:     { label: 'Formato',     color: '#059669', bg: '#ecfdf5', text: '#047857' },
-  pilar:       { label: 'Pilar',       color: '#0891b2', bg: '#ecfeff', text: '#0e7490' },
-  brand_voice: { label: 'Brand Voice', color: '#76a72b', bg: '#f0f7e6', text: '#4a7018' },
+  voz:         { label: 'Voz',         color: '#86a43b', bg: '#efeded', text: '#86a43b' },
+  tono:        { label: 'Tono',        color: '#86a43b', bg: '#efeded', text: '#1d4ed8' },
+  estructura:  { label: 'Estructura',  color: '#86a43b', bg: '#efeded', text: '#6d28d9' },
+  vocabulario: { label: 'Vocabulario', color: '#86a43b', bg: '#efeded', text: '#b45309' },
+  postura:     { label: 'Postura',     color: '#878787', bg: '#efeded', text: '#be185d' },
+  formato:     { label: 'Formato',     color: '#86a43b', bg: '#ecfdf5', text: '#047857' },
+  pilar:       { label: 'Pilar',       color: '#86a43b', bg: '#ecfeff', text: '#0e7490' },
+  brand_voice: { label: 'Brand Voice', color: '#86a43b', bg: '#efeded', text: '#86a43b' },
 }
 
 function getCat(cat) {
   const key = (cat ?? '').toLowerCase().replace(/\s+/g, '_')
-  return CAT_META[key] ?? { label: cat ?? '—', color: '#878787', bg: '#f7f6f3', text: '#555' }
+  return CAT_META[key] ?? { label: cat ?? '—', color: '#878787', bg: '#efeded', text: '#555' }
 }
 
 /* ─── Stat card ─────────────────────────────────────────── */
@@ -111,7 +111,7 @@ function ReglaRow({ regla, isLast }) {
         alignItems: 'flex-start',
         gap: 12,
         padding: '13px 20px',
-        borderBottom: isLast ? 'none' : '1px solid #f0eeea',
+        borderBottom: isLast ? 'none' : '1px solid #efeded',
         transition: 'background 0.15s',
       }}
       onMouseEnter={(e) => { e.currentTarget.style.background = '#faf9f7' }}
@@ -158,9 +158,9 @@ function VocabPill({ palabra, tipo }) {
         fontSize: 12,
         padding: '4px 10px',
         borderRadius: 20,
-        background: isProhibida ? '#fef2f2' : '#f0f7e6',
-        color: isProhibida ? '#dc2626' : '#4a7018',
-        border: `1px solid ${isProhibida ? '#fecaca' : '#c6e8a0'}`,
+        background: isProhibida ? '#efeded' : '#efeded',
+        color: isProhibida ? '#878787' : '#86a43b',
+        border: `1px solid ${isProhibida ? '#ababab' : '#c6e8a0'}`,
         lineHeight: 1.3,
       }}
     >
@@ -170,7 +170,7 @@ function VocabPill({ palabra, tipo }) {
 }
 
 /* ─── Progress bar ──────────────────────────────────────── */
-function ProgressBar({ value, max, color = '#76a72b', label }) {
+function ProgressBar({ value, max, color = '#86a43b', label }) {
   const pct = max > 0 ? Math.min(100, Math.round((value / max) * 100)) : 0
   return (
     <div style={{ marginTop: 20 }}>
@@ -206,7 +206,7 @@ function ProgressBar({ value, max, color = '#76a72b', label }) {
         style={{
           height: 5,
           borderRadius: 3,
-          background: '#f0eeea',
+          background: '#efeded',
           overflow: 'hidden',
         }}
       >
@@ -252,10 +252,10 @@ export default function Cerebro() {
         <p className="label-caps" style={{ marginBottom: 6 }}>Memoria adaptativa</p>
         <h1
           style={{
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontWeight: 900,
             fontSize: 34,
-            color: '#2a2a2a',
+            color: '#373737',
             letterSpacing: '-0.02em',
             lineHeight: 1,
           }}
@@ -281,9 +281,9 @@ export default function Cerebro() {
             margin: '0 32px 20px',
             padding: '12px 16px',
             borderRadius: 8,
-            background: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#dc2626',
+            background: '#efeded',
+            border: '1px solid #ababab',
+            color: '#878787',
             fontFamily: 'Roboto, sans-serif',
             fontSize: 13,
           }}
@@ -315,25 +315,25 @@ export default function Cerebro() {
             <StatCard
               label="Total reglas"
               value={totalReglas}
-              accentColor="#76a72b"
+              accentColor="#86a43b"
               subtitle="en el sistema"
             />
             <StatCard
               label="Aprendidas"
               value={aprendidas}
-              accentColor="#0a66c2"
+              accentColor="#86a43b"
               subtitle="por interacción"
             />
             <StatCard
               label="Eventos semana"
               value={eventosSemana}
-              accentColor="#d97706"
+              accentColor="#86a43b"
               subtitle="aprobaciones y rechazos"
             />
             <StatCard
               label="Consolidaciones"
               value={consolidaciones}
-              accentColor="#7c3aed"
+              accentColor="#86a43b"
               subtitle="ciclos dominicales"
             />
           </>
@@ -358,7 +358,7 @@ export default function Cerebro() {
               alignItems: 'center',
               justifyContent: 'space-between',
               padding: '16px 20px',
-              borderBottom: '1px solid #f0eeea',
+              borderBottom: '1px solid #efeded',
             }}
           >
             <p className="label-caps" style={{ margin: 0 }}>Reglas activas</p>
@@ -370,8 +370,8 @@ export default function Cerebro() {
                   fontWeight: 500,
                   padding: '3px 9px',
                   borderRadius: 20,
-                  background: '#f0f7e6',
-                  color: '#4a7018',
+                  background: '#efeded',
+                  color: '#86a43b',
                   border: '1px solid #c6e8a0',
                 }}
               >
@@ -386,7 +386,7 @@ export default function Cerebro() {
               <ProgressBar
                 value={aprendidas}
                 max={totalReglas}
-                color="#76a72b"
+                color="#86a43b"
                 label="Reglas aprendidas por interacción"
               />
             </div>
@@ -429,7 +429,7 @@ export default function Cerebro() {
           <div
             style={{
               padding: '16px 20px',
-              borderBottom: '1px solid #f0eeea',
+              borderBottom: '1px solid #efeded',
             }}
           >
             <p className="label-caps" style={{ margin: 0 }}>Vocabulario controlado</p>
@@ -452,7 +452,7 @@ export default function Cerebro() {
                     width: 6,
                     height: 6,
                     borderRadius: '50%',
-                    background: '#dc2626',
+                    background: '#878787',
                     flexShrink: 0,
                   }}
                 />
@@ -463,7 +463,7 @@ export default function Cerebro() {
                     fontSize: 11,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
-                    color: '#dc2626',
+                    color: '#878787',
                   }}
                 >
                   Prohibidas
@@ -502,7 +502,7 @@ export default function Cerebro() {
             </div>
 
             {/* Divider */}
-            <div style={{ height: 1, background: '#f0eeea', margin: '0 0 20px' }} />
+            <div style={{ height: 1, background: '#efeded', margin: '0 0 20px' }} />
 
             {/* Preferidas */}
             <div>
@@ -519,7 +519,7 @@ export default function Cerebro() {
                     width: 6,
                     height: 6,
                     borderRadius: '50%',
-                    background: '#76a72b',
+                    background: '#86a43b',
                     flexShrink: 0,
                   }}
                 />
@@ -530,7 +530,7 @@ export default function Cerebro() {
                     fontSize: 11,
                     letterSpacing: '0.06em',
                     textTransform: 'uppercase',
-                    color: '#4a7018',
+                    color: '#86a43b',
                   }}
                 >
                   Preferidas
@@ -577,7 +577,7 @@ export default function Cerebro() {
                   color: '#ababab',
                   marginTop: 20,
                   paddingTop: 16,
-                  borderTop: '1px solid #f0eeea',
+                  borderTop: '1px solid #efeded',
                   lineHeight: 1.5,
                 }}
               >

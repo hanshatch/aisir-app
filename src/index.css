@@ -1,5 +1,5 @@
-/* Fonts: Nunito Sans ≈ Avenir Next · Roboto = secundaria oficial */
-@import url('https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,opsz,wght@0,6..12,300;0,6..12,400;0,6..12,600;0,6..12,700;0,6..12,800;0,6..12,900;1,6..12,400&family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap');
+/* Fonts: Roboto family (Regular, Bold, Black) + Roboto Mono para datos */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&family=Roboto+Mono:wght@400;500;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -13,9 +13,9 @@
 
   body {
     /* Hans Hatch brand: warm off-white, no negro */
-    background: #f0eeea;
-    color: #2a2a2a;
-    font-family: 'Nunito Sans', 'Avenir Next', 'Helvetica Neue', sans-serif;
+    background: #efeded;
+    color: #373737;
+    font-family: 'Roboto', sans-serif;
     height: 100%;
     overflow: hidden;
   }
@@ -31,14 +31,14 @@
   ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: #d0ccc6; border-radius: 4px; }
-  ::-webkit-scrollbar-thumb:hover { background: #76a72b; }
+  ::-webkit-scrollbar-thumb:hover { background: #86a43b; }
 }
 
 /* ─── Design tokens ────────────────────────────────────── */
 :root {
   /* Hans Hatch brand palette */
-  --hh-green:       #76a72b;   /* Pantone 376C  */
-  --hh-green-dark:  #5c8420;
+  --hh-green:       #86a43b;   /* Pantone 376C  */
+  --hh-green-dark:  #86a43b;
   --hh-green-light: #9dc454;
   --hh-dark:        #373737;   /* Pantone Neutral Black C */
   --hh-gray-mid:    #878787;   /* Cool Gray 8C  */
@@ -46,14 +46,14 @@
   --hh-off-white:   #efeded;   /* Pantone 663C  */
 
   /* Surface system */
-  --bg:             #f0eeea;
+  --bg:             #efeded;
   --surface:        #ffffff;
-  --surface-2:      #f7f6f3;
-  --border:         #e4e1db;
-  --border-strong:  #ccc9c2;
+  --surface-2:      #efeded;
+  --border:         #ababab;
+  --border-strong:  #ababab;
 
   /* Text */
-  --text:           #2a2a2a;
+  --text:           #373737;
   --text-muted:     #878787;
   --text-faint:     #ababab;
 
@@ -94,7 +94,7 @@
 
   /* Metric numbers */
   .metric-num {
-    font-family: 'Nunito Sans', sans-serif;
+    font-family: Roboto, sans-serif;
     font-weight: 800;
     font-size: 2.2rem;
     line-height: 1;

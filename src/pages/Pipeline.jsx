@@ -6,49 +6,49 @@ import { ago } from '@/lib/utils'
 // ─── Brand constants ────────────────────────────────────────────────────────
 
 const NET_COLORS = {
-  linkedin:   { color: '#0a66c2', bg: '#eff6ff' },
-  instagram:  { color: '#e1306c', bg: '#fff1f5' },
-  x:          { color: '#374151', bg: '#f9fafb' },
-  tiktok:     { color: '#ee1d52', bg: '#fff1f2' },
-  facebook:   { color: '#1877f2', bg: '#eff6ff' },
-  newsletter: { color: '#d97706', bg: '#fffbeb' },
-  articulo:   { color: '#76a72b', bg: '#f0f7e6' },
-  carousel:   { color: '#ea580c', bg: '#fff7ed' },
-  whatsapp:   { color: '#16a34a', bg: '#f0fdf4' },
+  linkedin:   { color: '#86a43b', bg: '#efeded' },
+  instagram:  { color: '#878787', bg: '#efeded' },
+  x:          { color: '#373737', bg: '#efeded' },
+  tiktok:     { color: '#878787', bg: '#efeded' },
+  facebook:   { color: '#86a43b', bg: '#efeded' },
+  newsletter: { color: '#86a43b', bg: '#efeded' },
+  articulo:   { color: '#86a43b', bg: '#efeded' },
+  carousel:   { color: '#86a43b', bg: '#fff7ed' },
+  whatsapp:   { color: '#86a43b', bg: '#efeded' },
 }
 
 const STATUS_STYLES = {
-  pendiente_aprobacion: { label: 'Pendiente',  color: '#d97706', bg: '#fffbeb', border: '#fde68a' },
-  aprobado:             { label: 'Aprobado',   color: '#16a34a', bg: '#f0fdf4', border: '#bbf7d0' },
-  rechazado:            { label: 'Rechazado',  color: '#dc2626', bg: '#fef2f2', border: '#fecaca' },
-  borrador:             { label: 'Borrador',   color: '#878787', bg: '#f5f4f0', border: '#e4e1db' },
-  publicado:            { label: 'Publicado',  color: '#0a66c2', bg: '#eff6ff', border: '#bfdbfe' },
+  pendiente_aprobacion: { label: 'Pendiente',  color: '#86a43b', bg: '#efeded', border: '#efeded' },
+  aprobado:             { label: 'Aprobado',   color: '#86a43b', bg: '#efeded', border: '#bbf7d0' },
+  rechazado:            { label: 'Rechazado',  color: '#878787', bg: '#efeded', border: '#ababab' },
+  borrador:             { label: 'Borrador',   color: '#878787', bg: '#efeded', border: '#ababab' },
+  publicado:            { label: 'Publicado',  color: '#86a43b', bg: '#efeded', border: '#efeded' },
 }
 
 const PILAR_COLORS = {
-  ia:              { color: '#7c3aed', bg: '#f5f3ff' },
-  posicionamiento: { color: '#0a66c2', bg: '#eff6ff' },
-  data:            { color: '#0891b2', bg: '#ecfeff' },
-  agencia:         { color: '#d97706', bg: '#fffbeb' },
-  academia:        { color: '#db2777', bg: '#fdf2f8' },
+  ia:              { color: '#86a43b', bg: '#efeded' },
+  posicionamiento: { color: '#86a43b', bg: '#efeded' },
+  data:            { color: '#86a43b', bg: '#ecfeff' },
+  agencia:         { color: '#86a43b', bg: '#efeded' },
+  academia:        { color: '#86a43b', bg: '#efeded' },
 }
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function netStyle(tipo) {
-  return NET_COLORS[tipo] ?? { color: '#878787', bg: '#f5f4f0' }
+  return NET_COLORS[tipo] ?? { color: '#878787', bg: '#efeded' }
 }
 
 function scoreColor(score) {
-  if (score >= 80) return '#16a34a'
-  if (score >= 60) return '#d97706'
-  return '#dc2626'
+  if (score >= 80) return '#86a43b'
+  if (score >= 60) return '#86a43b'
+  return '#878787'
 }
 
 function scoreBg(score) {
-  if (score >= 80) return '#f0fdf4'
-  if (score >= 60) return '#fffbeb'
-  return '#fef2f2'
+  if (score >= 80) return '#efeded'
+  if (score >= 60) return '#efeded'
+  return '#efeded'
 }
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -99,14 +99,14 @@ function NetworkBadge({ tipo }) {
   )
 }
 
-function StatCard({ label, value, color = '#76a72b', loading }) {
+function StatCard({ label, value, color = '#86a43b', loading }) {
   if (loading) {
     return (
       <div
         className="animate-pulse"
         style={{
           background: '#ffffff',
-          border: '1px solid #e4e1db',
+          border: '1px solid #ababab',
           borderRadius: 10,
           boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
           height: 88,
@@ -118,7 +118,7 @@ function StatCard({ label, value, color = '#76a72b', loading }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 10,
         boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
         padding: '16px 20px',
@@ -142,7 +142,7 @@ function CustomTooltip({ active, payload, label }) {
     <div
       style={{
         background: '#ffffff',
-        border: '1px solid #e4e1db',
+        border: '1px solid #ababab',
         borderRadius: 6,
         padding: '8px 12px',
         fontFamily: 'Roboto, sans-serif',
@@ -168,14 +168,14 @@ function SkeletonRow() {
         alignItems: 'center',
         gap: 12,
         padding: '14px 20px',
-        borderBottom: '1px solid #f0eeea',
+        borderBottom: '1px solid #efeded',
       }}
     >
-      <div style={{ width: 3, height: 40, borderRadius: 2, background: '#e4e1db', flexShrink: 0 }} />
+      <div style={{ width: 3, height: 40, borderRadius: 2, background: '#ababab', flexShrink: 0 }} />
       <div style={{ flex: 1 }}>
-        <div style={{ width: '40%', height: 10, background: '#f0eeea', borderRadius: 4, marginBottom: 8 }} />
-        <div style={{ width: '70%', height: 13, background: '#f0eeea', borderRadius: 4, marginBottom: 6 }} />
-        <div style={{ width: '25%', height: 9, background: '#f0eeea', borderRadius: 4 }} />
+        <div style={{ width: '40%', height: 10, background: '#efeded', borderRadius: 4, marginBottom: 8 }} />
+        <div style={{ width: '70%', height: 13, background: '#efeded', borderRadius: 4, marginBottom: 6 }} />
+        <div style={{ width: '25%', height: 9, background: '#efeded', borderRadius: 4 }} />
       </div>
     </div>
   )
@@ -218,10 +218,10 @@ export default function Pipeline() {
         <p className="label-caps" style={{ marginBottom: 6 }}>Sistema · Pipeline</p>
         <h1
           style={{
-            fontFamily: '"Nunito Sans", sans-serif',
+            fontFamily: 'Roboto, sans-serif',
             fontWeight: 900,
             fontSize: 34,
-            color: '#2a2a2a',
+            color: '#373737',
             letterSpacing: '-0.02em',
             lineHeight: 1.1,
           }}
@@ -243,10 +243,10 @@ export default function Pipeline() {
           marginBottom: 24,
         }}
       >
-        <StatCard label="Total en pipeline" value={isLoading ? null : total}      color="#76a72b" loading={isLoading} />
-        <StatCard label="Pendientes"         value={isLoading ? null : pendientes} color="#d97706" loading={isLoading} />
-        <StatCard label="Aprobados"          value={isLoading ? null : aprobados}  color="#16a34a" loading={isLoading} />
-        <StatCard label="Publicados"         value={isLoading ? null : publicados} color="#0a66c2" loading={isLoading} />
+        <StatCard label="Total en pipeline" value={isLoading ? null : total}      color="#86a43b" loading={isLoading} />
+        <StatCard label="Pendientes"         value={isLoading ? null : pendientes} color="#86a43b" loading={isLoading} />
+        <StatCard label="Aprobados"          value={isLoading ? null : aprobados}  color="#86a43b" loading={isLoading} />
+        <StatCard label="Publicados"         value={isLoading ? null : publicados} color="#86a43b" loading={isLoading} />
       </div>
 
       {/* Main layout */}
@@ -256,7 +256,7 @@ export default function Pipeline() {
         <div
           style={{
             background: '#ffffff',
-            border: '1px solid #e4e1db',
+            border: '1px solid #ababab',
             borderRadius: 10,
             boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
             overflow: 'hidden',
@@ -266,7 +266,7 @@ export default function Pipeline() {
           <div
             style={{
               padding: '14px 20px',
-              borderBottom: '1px solid #f0eeea',
+              borderBottom: '1px solid #efeded',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'space-between',
@@ -280,8 +280,8 @@ export default function Pipeline() {
                 fontWeight: 500,
                 padding: '2px 10px',
                 borderRadius: 20,
-                background: '#f0f7e6',
-                color: '#76a72b',
+                background: '#efeded',
+                color: '#86a43b',
                 border: '1px solid #c7dfa0',
               }}
             >
@@ -312,10 +312,10 @@ export default function Pipeline() {
                       display: 'flex',
                       alignItems: 'stretch',
                       gap: 0,
-                      borderBottom: idx < items.length - 1 ? '1px solid #f7f6f3' : 'none',
+                      borderBottom: idx < items.length - 1 ? '1px solid #efeded' : 'none',
                       transition: 'background 0.15s',
                     }}
-                    onMouseEnter={(e) => { e.currentTarget.style.background = '#f7f6f3' }}
+                    onMouseEnter={(e) => { e.currentTarget.style.background = '#efeded' }}
                     onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
                   >
                     {/* Left network accent border */}
@@ -338,7 +338,7 @@ export default function Pipeline() {
                           fontFamily: 'Roboto, sans-serif',
                           fontSize: 13.5,
                           fontWeight: 500,
-                          color: '#2a2a2a',
+                          color: '#373737',
                           lineHeight: 1.35,
                           marginBottom: 4,
                           overflow: 'hidden',
@@ -372,7 +372,7 @@ export default function Pipeline() {
           <div
             style={{
               background: '#ffffff',
-              border: '1px solid #e4e1db',
+              border: '1px solid #ababab',
               borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
               overflow: 'hidden',
@@ -381,7 +381,7 @@ export default function Pipeline() {
             <div
               style={{
                 padding: '14px 20px',
-                borderBottom: '1px solid #f0eeea',
+                borderBottom: '1px solid #efeded',
               }}
             >
               <p className="label-caps" style={{ margin: 0 }}>Distribución por red · 7 días</p>
@@ -390,7 +390,7 @@ export default function Pipeline() {
               {isLoading ? (
                 <div
                   className="animate-pulse"
-                  style={{ height: 160, background: '#f7f6f3', borderRadius: 6 }}
+                  style={{ height: 160, background: '#efeded', borderRadius: 6 }}
                 />
               ) : barData.length === 0 ? (
                 <p
@@ -423,12 +423,12 @@ export default function Pipeline() {
                       tickLine={false}
                       allowDecimals={false}
                     />
-                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f7f6f3' }} />
+                    <Tooltip content={<CustomTooltip />} cursor={{ fill: '#efeded' }} />
                     <Bar dataKey="value" radius={[3, 3, 0, 0]}>
                       {barData.map((entry) => (
                         <Cell
                           key={entry.name}
-                          fill={NET_COLORS[entry.name]?.color ?? '#ccc9c2'}
+                          fill={NET_COLORS[entry.name]?.color ?? '#ababab'}
                         />
                       ))}
                     </Bar>
@@ -442,7 +442,7 @@ export default function Pipeline() {
           <div
             style={{
               background: '#ffffff',
-              border: '1px solid #e4e1db',
+              border: '1px solid #ababab',
               borderRadius: 10,
               boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
               overflow: 'hidden',
@@ -451,7 +451,7 @@ export default function Pipeline() {
             <div
               style={{
                 padding: '14px 20px',
-                borderBottom: '1px solid #f0eeea',
+                borderBottom: '1px solid #efeded',
               }}
             >
               <p className="label-caps" style={{ margin: 0 }}>Temas pendientes</p>
@@ -465,7 +465,7 @@ export default function Pipeline() {
                     className="animate-pulse"
                     style={{
                       height: 44,
-                      background: '#f7f6f3',
+                      background: '#efeded',
                       borderRadius: 6,
                       marginBottom: 8,
                     }}
@@ -481,14 +481,14 @@ export default function Pipeline() {
             ) : (
               <div>
                 {temas.slice(0, 8).map((t, i) => {
-                  const pilarStyle = PILAR_COLORS[t.pilar] ?? { color: '#878787', bg: '#f5f4f0' }
+                  const pilarStyle = PILAR_COLORS[t.pilar] ?? { color: '#878787', bg: '#efeded' }
                   const sc = t.score
                   return (
                     <div
                       key={t.id ?? i}
                       style={{
                         padding: '10px 20px',
-                        borderBottom: i < Math.min(temas.length, 8) - 1 ? '1px solid #f7f6f3' : 'none',
+                        borderBottom: i < Math.min(temas.length, 8) - 1 ? '1px solid #efeded' : 'none',
                         display: 'flex',
                         alignItems: 'center',
                         gap: 12,
@@ -528,7 +528,7 @@ export default function Pipeline() {
                             fontFamily: 'Roboto, sans-serif',
                             fontSize: 12.5,
                             fontWeight: 500,
-                            color: '#2a2a2a',
+                            color: '#373737',
                             lineHeight: 1.3,
                             overflow: 'hidden',
                             textOverflow: 'ellipsis',

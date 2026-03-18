@@ -5,9 +5,9 @@ import { Copy, Check } from 'lucide-react'
 const COMANDOS = [
   {
     categoria: 'Generación de contenido',
-    color: '#76a72b',
-    colorBg: '#f0f7e6',
-    colorText: '#4a7018',
+    color: '#86a43b',
+    colorBg: '#efeded',
+    colorText: '#86a43b',
     items: [
       {
         cmd: '/generar',
@@ -18,7 +18,7 @@ const COMANDOS = [
       {
         cmd: '/articulo',
         args: '[tema]',
-        desc: 'Genera artículo SEO de 2000+ palabras con brief de Ratatoskr y redacción de Bragi. Entrega el .docx con 8 piezas derivadas: carousel, reel, newsletter, posts por red.',
+        desc: 'Genera artículo SEO de 2000+ palabras con brief de Floki y redacción de Bragi. Entrega el .docx con 8 piezas derivadas: carousel, reel, newsletter, posts por red.',
         ejemplo: '/articulo estrategia de contenidos B2B 2025',
       },
       {
@@ -43,8 +43,8 @@ const COMANDOS = [
   },
   {
     categoria: 'Aprobación y calendario',
-    color: '#0a66c2',
-    colorBg: '#eff6ff',
+    color: '#86a43b',
+    colorBg: '#efeded',
     colorText: '#1d4ed8',
     items: [
       {
@@ -75,8 +75,8 @@ const COMANDOS = [
   },
   {
     categoria: 'Temas y curación',
-    color: '#7c3aed',
-    colorBg: '#f5f3ff',
+    color: '#86a43b',
+    colorBg: '#efeded',
     colorText: '#6d28d9',
     items: [
       {
@@ -101,8 +101,8 @@ const COMANDOS = [
   },
   {
     categoria: 'Comentarista Odin',
-    color: '#e1306c',
-    colorBg: '#fdf2f8',
+    color: '#878787',
+    colorBg: '#efeded',
     colorText: '#be185d',
     items: [
       {
@@ -127,8 +127,8 @@ const COMANDOS = [
   },
   {
     categoria: 'Cerebro Hans (Mimir)',
-    color: '#7c3aed',
-    colorBg: '#f5f3ff',
+    color: '#86a43b',
+    colorBg: '#efeded',
     colorText: '#6d28d9',
     items: [
       {
@@ -159,8 +159,8 @@ const COMANDOS = [
   },
   {
     categoria: 'Sistema',
-    color: '#d97706',
-    colorBg: '#fffbeb',
+    color: '#86a43b',
+    colorBg: '#efeded',
     colorText: '#b45309',
     items: [
       {
@@ -215,9 +215,9 @@ function CopyButton({ text }) {
         gap: 4,
         padding: '4px 8px',
         borderRadius: 5,
-        border: `1px solid ${copied ? '#c6e8a0' : '#e4e1db'}`,
-        background: copied ? '#f0f7e6' : '#f7f6f3',
-        color: copied ? '#4a7018' : '#878787',
+        border: `1px solid ${copied ? '#c6e8a0' : '#ababab'}`,
+        background: copied ? '#efeded' : '#efeded',
+        color: copied ? '#86a43b' : '#878787',
         cursor: 'pointer',
         fontSize: 11,
         fontFamily: 'Roboto, sans-serif',
@@ -228,15 +228,15 @@ function CopyButton({ text }) {
       }}
       onMouseEnter={(e) => {
         if (!copied) {
-          e.currentTarget.style.borderColor = '#ccc9c2'
+          e.currentTarget.style.borderColor = '#ababab'
           e.currentTarget.style.background = '#ede9e3'
           e.currentTarget.style.color = '#373737'
         }
       }}
       onMouseLeave={(e) => {
         if (!copied) {
-          e.currentTarget.style.borderColor = '#e4e1db'
-          e.currentTarget.style.background = '#f7f6f3'
+          e.currentTarget.style.borderColor = '#ababab'
+          e.currentTarget.style.background = '#efeded'
           e.currentTarget.style.color = '#878787'
         }
       }}
@@ -259,11 +259,11 @@ function CmdCard({ item, accentColor, accentText }) {
       }}
       onMouseEnter={(e) => {
         e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,0,0,0.09), 0 1px 4px rgba(0,0,0,0.05)'
-        e.currentTarget.style.borderColor = '#ccc9c2'
+        e.currentTarget.style.borderColor = '#ababab'
       }}
       onMouseLeave={(e) => {
         e.currentTarget.style.boxShadow = '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)'
-        e.currentTarget.style.borderColor = '#e4e1db'
+        e.currentTarget.style.borderColor = '#ababab'
       }}
     >
       {/* Top accent line */}
@@ -305,8 +305,8 @@ function CmdCard({ item, accentColor, accentText }) {
                 color: '#ababab',
                 padding: '2px 7px',
                 borderRadius: 4,
-                background: '#f7f6f3',
-                border: '1px solid #e4e1db',
+                background: '#efeded',
+                border: '1px solid #ababab',
               }}
             >
               {item.args}
@@ -330,8 +330,8 @@ function CmdCard({ item, accentColor, accentText }) {
         {/* Example block */}
         <div
           style={{
-            background: '#f7f6f3',
-            border: '1px solid #e4e1db',
+            background: '#efeded',
+            border: '1px solid #ababab',
             borderRadius: 7,
             padding: '10px 12px',
             display: 'flex',
@@ -425,17 +425,17 @@ function SearchInput({ value, onChange }) {
           fontSize: 13,
           color: '#373737',
           background: '#ffffff',
-          border: '1px solid #e4e1db',
+          border: '1px solid #ababab',
           borderRadius: 8,
           outline: 'none',
           transition: 'border-color 0.15s, box-shadow 0.15s',
         }}
         onFocus={(e) => {
-          e.target.style.borderColor = '#76a72b'
+          e.target.style.borderColor = '#86a43b'
           e.target.style.boxShadow = '0 0 0 3px rgba(118,167,43,0.1)'
         }}
         onBlur={(e) => {
-          e.target.style.borderColor = '#e4e1db'
+          e.target.style.borderColor = '#ababab'
           e.target.style.boxShadow = 'none'
         }}
       />
@@ -503,10 +503,10 @@ export default function Comandos() {
             <p className="label-caps" style={{ marginBottom: 6 }}>Bot de Telegram</p>
             <h1
               style={{
-                fontFamily: '"Nunito Sans", sans-serif',
+                fontFamily: 'Roboto, sans-serif',
                 fontWeight: 900,
                 fontSize: 34,
-                color: '#2a2a2a',
+                color: '#373737',
                 letterSpacing: '-0.02em',
                 lineHeight: 1,
               }}
@@ -523,12 +523,12 @@ export default function Comandos() {
               gap: 8,
               padding: '8px 14px',
               borderRadius: 8,
-              background: '#eff6ff',
-              border: '1px solid #bfdbfe',
+              background: '#efeded',
+              border: '1px solid #efeded',
               marginTop: 8,
             }}
           >
-            <span style={{ color: '#0a66c2' }}>
+            <span style={{ color: '#86a43b' }}>
               <TelegramIcon size={15} />
             </span>
             <span
@@ -549,7 +549,7 @@ export default function Comandos() {
                 textTransform: 'uppercase',
                 color: '#93c5fd',
                 paddingLeft: 6,
-                borderLeft: '1px solid #bfdbfe',
+                borderLeft: '1px solid #efeded',
               }}
             >
               {TOTAL_COMANDOS} comandos
@@ -578,7 +578,7 @@ export default function Comandos() {
             style={{
               width: 236,
               flexShrink: 0,
-              borderRight: '1px solid #e4e1db',
+              borderRight: '1px solid #ababab',
               overflowY: 'auto',
               padding: '4px 16px 24px',
             }}
@@ -609,7 +609,7 @@ export default function Comandos() {
                       }}
                       onMouseEnter={(e) => {
                         if (!isActive) {
-                          e.currentTarget.style.background = '#f7f6f3'
+                          e.currentTarget.style.background = '#efeded'
                         }
                       }}
                       onMouseLeave={(e) => {
@@ -624,7 +624,7 @@ export default function Comandos() {
                           width: 7,
                           height: 7,
                           borderRadius: '50%',
-                          background: isActive ? cat.color : '#e4e1db',
+                          background: isActive ? cat.color : '#ababab',
                           flexShrink: 0,
                           transition: 'background 0.15s',
                         }}
@@ -649,9 +649,9 @@ export default function Comandos() {
                           fontWeight: 500,
                           padding: '1px 6px',
                           borderRadius: 10,
-                          background: isActive ? cat.color + '20' : '#f7f6f3',
+                          background: isActive ? cat.color + '20' : '#efeded',
                           color: isActive ? cat.colorText : '#ababab',
-                          border: `1px solid ${isActive ? cat.color + '40' : '#e4e1db'}`,
+                          border: `1px solid ${isActive ? cat.color + '40' : '#ababab'}`,
                           flexShrink: 0,
                         }}
                       >
@@ -722,7 +722,7 @@ export default function Comandos() {
                     />
                     <span
                       style={{
-                        fontFamily: '"Nunito Sans", sans-serif',
+                        fontFamily: 'Roboto, sans-serif',
                         fontWeight: 800,
                         fontSize: 14,
                         color: '#373737',
@@ -779,12 +779,12 @@ export default function Comandos() {
                       width: 48,
                       height: 48,
                       borderRadius: '50%',
-                      background: '#f7f6f3',
+                      background: '#efeded',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center',
                       margin: '0 auto 16px',
-                      border: '1px solid #e4e1db',
+                      border: '1px solid #ababab',
                     }}
                   >
                     <svg width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="#ababab" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
@@ -826,10 +826,10 @@ export default function Comandos() {
                 />
                 <h2
                   style={{
-                    fontFamily: '"Nunito Sans", sans-serif',
+                    fontFamily: 'Roboto, sans-serif',
                     fontWeight: 900,
                     fontSize: 22,
-                    color: '#2a2a2a',
+                    color: '#373737',
                     letterSpacing: '-0.02em',
                   }}
                 >
@@ -862,7 +862,7 @@ export default function Comandos() {
                   gap: 5,
                 }}
               >
-                <span style={{ color: '#0a66c2' }}>
+                <span style={{ color: '#86a43b' }}>
                   <TelegramIcon size={12} />
                 </span>
                 Enviar via Telegram · @AiS1rBot
