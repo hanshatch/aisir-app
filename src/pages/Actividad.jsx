@@ -3,72 +3,71 @@ import { useQuery } from '@tanstack/react-query'
 import { api } from '@/api/client'
 import { ago } from '@/lib/utils'
 
-const LEVEL_STYLES = {
-  INFO:    { color: '#7ec832', bg: '#0d1f08', border: '#7ec83240', label: 'INFO' },
-  ERROR:   { color: '#e04545', bg: '#1a0808', border: '#e0454540', label: 'ERR!' },
-  WARNING: { color: '#e09820', bg: '#2a1f00', border: '#e0982040', label: 'WARN' },
-  WARN:    { color: '#e09820', bg: '#2a1f00', border: '#e0982040', label: 'WARN' },
-  DEBUG:   { color: '#5c7a50', bg: '#111611', border: '#2a3d24',   label: 'DBG ' },
+const LEVEL = {
+  INFO:    { color: '#2563eb', bg: '#eff6ff', border: '#bfdbfe', label: 'INFO' },
+  ERROR:   { color: '#dc2626', bg: '#fef2f2', border: '#fecaca', label: 'ERR'  },
+  WARNING: { color: '#d97706', bg: '#fffbeb', border: '#fde68a', label: 'WARN' },
+  WARN:    { color: '#d97706', bg: '#fffbeb', border: '#fde68a', label: 'WARN' },
+  DEBUG:   { color: '#9ca3af', bg: '#f9fafb', border: '#e5e7eb', label: 'DBG'  },
 }
 
 const AGENT_COLORS = {
-  aisir:     '#4f9eff',
-  huginn:    '#a78bfa',
-  bragi:     '#34d399',
-  loki:      '#f59e0b',
-  ratatoskr: '#10b981',
-  kvasir:    '#e879f9',
-  idunn:     '#fb923c',
-  odin:      '#f43f5e',
-  frigg:     '#06b6d4',
-  mimir:     '#8b5cf6',
+  aisir: '#2563eb', huginn: '#7c3aed', bragi: '#059669', loki: '#d97706',
+  ratatoskr: '#0891b2', kvasir: '#db2777', idunn: '#ea580c', odin: '#dc2626',
+  frigg: '#0284c7', mimir: '#76a72b',
 }
 
 function LogLine({ log }) {
-  const level = (log.level ?? log.nivel ?? 'INFO').toUpperCase()
-  const s = LEVEL_STYLES[level] ?? LEVEL_STYLES.INFO
+  const lvl    = (log.level ?? log.nivel ?? 'INFO').toUpperCase()
+  const s      = LEVEL[lvl] ?? LEVEL.INFO
   const agente = log.agente ?? log.agent ?? 'sistema'
-  const agentColor = AGENT_COLORS[agente.toLowerCase()] ?? '#5c7a50'
-  const msg = log.mensaje ?? log.message ?? log.msg ?? ''
+  const ac     = AGENT_COLORS[agente.toLowerCase()] ?? '#878787'
+  const msg    = log.mensaje ?? log.message ?? log.msg ?? ''
 
   return (
     <div
-      className="flex items-start gap-3 px-4 py-2 font-mono text-xs group hover:bg-surface2 transition-colors"
-      style={{ borderBottom: '1px solid #0f160f' }}
+      style={{
+        display: 'flex', alignItems: 'flex-start', gap: 10,
+        padding: '10px 16px',
+        borderBottom: '1px solid #f0eeea',
+        transition: 'background 0.1s',
+      }}
+      onMouseEnter={(e) => { e.currentTarget.style.background = '#f7f6f3' }}
+      onMouseLeave={(e) => { e.currentTarget.style.background = 'transparent' }}
     >
-      {/* Level badge */}
-      <span
-        className="flex-shrink-0 text-[9px] px-1.5 py-0.5 mt-0.5"
-        style={{
-          background: s.bg,
-          color: s.color,
-          border: `1px solid ${s.border}`,
-          borderRadius: 2,
-          minWidth: 36,
-          textAlign: 'center',
-        }}
-      >
+      <span style={{
+        flexShrink: 0,
+        fontFamily: '"Roboto Mono", monospace', fontSize: 9, fontWeight: 600,
+        padding: '3px 7px',
+        background: s.bg, color: s.color,
+        border: `1px solid ${s.border}`,
+        borderRadius: 4,
+        minWidth: 38, textAlign: 'center',
+        marginTop: 1,
+      }}>
         {s.label}
       </span>
 
-      {/* Agent */}
-      <span
-        className="flex-shrink-0 text-[10px] mt-0.5"
-        style={{ color: agentColor, minWidth: 72 }}
-      >
-        [{agente}]
+      <span style={{
+        flexShrink: 0,
+        fontFamily: 'Roboto, sans-serif', fontSize: 11, fontWeight: 700,
+        color: ac, minWidth: 82, marginTop: 1,
+      }}>
+        {agente}
       </span>
 
-      {/* Message */}
-      <span className="flex-1 text-[11px] leading-relaxed break-all" style={{ color: '#8aab78' }}>
+      <span style={{
+        flex: 1, fontSize: 13, lineHeight: 1.5,
+        color: '#2a2a2a', fontFamily: 'Roboto, sans-serif',
+      }}>
         {msg}
       </span>
 
-      {/* Time */}
-      <span
-        className="flex-shrink-0 text-[9px] mt-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-        style={{ color: '#3d5535' }}
-      >
+      <span style={{
+        flexShrink: 0,
+        fontFamily: '"Roboto Mono"', fontSize: 10,
+        color: '#ababab', marginTop: 2, whiteSpace: 'nowrap',
+      }}>
         {ago(log.created_at ?? log.timestamp ?? log.fecha)}
       </span>
     </div>
@@ -77,9 +76,9 @@ function LogLine({ log }) {
 
 export default function Actividad() {
   const bottomRef = useRef(null)
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['actividad'],
-    queryFn: () => api.actividad(200),
+    queryFn:  () => api.actividad(200),
     refetchInterval: 30_000,
   })
 
@@ -90,80 +89,90 @@ export default function Actividad() {
   }, [logs.length])
 
   return (
-    <div className="p-6 animate-fade-in h-full flex flex-col">
+    <div style={{ padding: '32px 32px 0', height: '100%', display: 'flex', flexDirection: 'column' }}>
+
       {/* Header */}
-      <div className="flex items-center justify-between mb-4 flex-shrink-0">
+      <div style={{ marginBottom: 24, display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexShrink: 0 }}>
         <div>
-          <h1 className="font-display font-black text-2xl text-ink">Actividad</h1>
-          <p className="font-mono text-xs mt-1 text-muted">
-            Log del sistema · auto-refresh 30s
-          </p>
+          <p className="label-caps" style={{ marginBottom: 6 }}>Sistema · Log</p>
+          <h1 style={{
+            fontFamily: '"Nunito Sans", sans-serif', fontWeight: 900,
+            fontSize: 34, color: '#2a2a2a', letterSpacing: '-0.02em',
+          }}>
+            Actividad
+          </h1>
         </div>
-        <div className="flex items-center gap-2">
-          <span
-            className="inline-block w-2 h-2 rounded-full animate-pulse-dot"
-            style={{ background: '#7ec832', color: '#7ec832' }}
-          />
-          <span className="font-mono text-[10px] text-muted">Live</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
+          <span className="status-dot animate-pulse-dot" style={{ background: '#76a72b' }} />
+          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#878787' }}>
+            Live · refresh 30s
+          </span>
         </div>
       </div>
 
-      {isError && (
-        <div
-          className="mb-4 px-4 py-3 font-mono text-xs flex-shrink-0"
-          style={{ background: '#1a0808', border: '1px solid #e04545', borderRadius: 3, color: '#e04545' }}
-        >
-          Error cargando actividad
-        </div>
-      )}
-
-      {/* Terminal */}
+      {/* Log panel */}
       <div
-        className="flex-1 overflow-y-auto"
+        className="card shadow-card"
         style={{
-          background: '#060908',
-          border: '1px solid #1e2d1a',
-          borderRadius: 4,
-          fontFamily: '"Share Tech Mono", monospace',
+          flex: 1, display: 'flex', flexDirection: 'column',
+          overflow: 'hidden', marginBottom: 32,
         }}
       >
-        {/* Terminal title bar */}
-        <div
-          className="flex items-center gap-2 px-4 py-2 flex-shrink-0"
-          style={{ background: '#0d110d', borderBottom: '1px solid #1e2d1a' }}
-        >
-          <div className="flex gap-1.5">
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#e04545' }} />
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#e09820' }} />
-            <span className="w-2.5 h-2.5 rounded-full" style={{ background: '#7ec832' }} />
+        {/* Title bar */}
+        <div style={{
+          display: 'flex', alignItems: 'center', gap: 10,
+          padding: '11px 16px',
+          background: '#f7f6f3',
+          borderBottom: '1px solid #e4e1db',
+          flexShrink: 0,
+        }}>
+          <div style={{ display: 'flex', gap: 5 }}>
+            {['#f43f5e', '#f59e0b', '#76a72b'].map((c) => (
+              <span key={c} style={{ width: 10, height: 10, borderRadius: '50%', background: c, opacity: 0.7, display: 'block' }} />
+            ))}
           </div>
-          <span className="font-mono text-[10px] ml-2" style={{ color: '#3d5535' }}>
-            hatch-agents · system.log · {logs.length} entradas
+          <span style={{ fontFamily: '"Roboto Mono"', fontSize: 10, color: '#ababab', marginLeft: 4 }}>
+            hatch-agents · system.log
+          </span>
+          <span style={{
+            marginLeft: 'auto',
+            fontFamily: '"Roboto Mono"', fontSize: 10,
+            padding: '2px 8px',
+            background: '#f0f7e6',
+            border: '1px solid #76a72b30',
+            borderRadius: 4,
+            color: '#5c8420', fontWeight: 600,
+          }}>
+            {logs.length} entradas
           </span>
         </div>
 
-        {isLoading ? (
-          <div className="p-6 space-y-2">
-            {[...Array(12)].map((_, i) => (
-              <div
-                key={i}
-                className="h-6 animate-pulse"
-                style={{ background: '#0d110d', borderRadius: 2, width: `${60 + Math.random() * 35}%` }}
-              />
-            ))}
-          </div>
-        ) : logs.length === 0 ? (
-          <div className="px-4 py-10 text-center">
-            <p className="font-mono text-xs text-muted">Sin actividad registrada</p>
-          </div>
-        ) : (
-          <div>
-            {logs.map((log, i) => (
-              <LogLine key={log.id ?? i} log={log} />
-            ))}
-            <div ref={bottomRef} />
-          </div>
-        )}
+        {/* Content */}
+        <div style={{ flex: 1, overflowY: 'auto', background: '#ffffff' }}>
+          {isLoading ? (
+            <div style={{ padding: 20, display: 'flex', flexDirection: 'column', gap: 10 }}>
+              {[...Array(10)].map((_, i) => (
+                <div key={i} style={{
+                  height: 24, background: '#f7f6f3', borderRadius: 4,
+                  width: `${50 + (i * 7) % 45}%`,
+                }} />
+              ))}
+            </div>
+          ) : logs.length === 0 ? (
+            <div style={{ padding: 48, textAlign: 'center' }}>
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 13, color: '#ababab' }}>
+                Sin actividad registrada
+              </p>
+            </div>
+          ) : (
+            <div>
+              {[...logs].reverse().map((log, i) => (
+                <LogLine key={log.id ?? i} log={log} />
+              ))}
+              <div ref={bottomRef} />
+            </div>
+          )}
+        </div>
       </div>
     </div>
   )

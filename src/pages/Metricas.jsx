@@ -1,68 +1,106 @@
 import { useQuery } from '@tanstack/react-query'
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
-  LineChart, Line, CartesianGrid,
+  BarChart, Bar, LineChart, Line, CartesianGrid,
+  XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts'
 import { api } from '@/api/client'
-import { RED_COLORS } from '@/lib/utils'
 
-function StatCard({ label, value, delta, color = '#7ec832', loading }) {
+// ─── Brand constants ────────────────────────────────────────────────────────
+
+const NET_COLORS = {
+  linkedin:   '#0a66c2',
+  instagram:  '#e1306c',
+  x:          '#374151',
+  tiktok:     '#ee1d52',
+  facebook:   '#1877f2',
+  newsletter: '#d97706',
+  articulo:   '#76a72b',
+  carousel:   '#ea580c',
+  whatsapp:   '#16a34a',
+}
+
+// ─── Stat card ───────────────────────────────────────────────────────────────
+
+function StatCard({ label, value, color = '#76a72b', sublabel, loading }) {
   if (loading) {
     return (
       <div
-        className="h-24 animate-pulse"
-        style={{ background: '#0d110d', border: '1px solid #1e2d1a', borderRadius: 4 }}
+        className="animate-pulse"
+        style={{
+          background: '#ffffff',
+          border: '1px solid #e4e1db',
+          borderRadius: 10,
+          boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
+          height: 96,
+        }}
       />
     )
   }
   return (
     <div
       style={{
-        background: '#0d110d',
-        border: '1px solid #1e2d1a',
-        borderRadius: 4,
-        padding: '16px 20px',
-        borderTop: `2px solid ${color}`,
+        background: '#ffffff',
+        border: '1px solid #e4e1db',
+        borderRadius: 10,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
+        padding: '18px 22px 16px',
+        borderTop: `3px solid ${color}`,
       }}
     >
-      <p className="font-mono text-[10px] uppercase tracking-widest mb-2" style={{ color: '#3d5535' }}>
-        {label}
-      </p>
+      <p className="label-caps" style={{ marginBottom: 10 }}>{label}</p>
       <p
-        className="font-display font-black text-3xl"
-        style={{ color, textShadow: `0 0 16px ${color}35` }}
+        className="metric-num"
+        style={{ color: '#373737' }}
       >
         {value ?? '—'}
       </p>
-      {delta != null && (
+      {sublabel && (
         <p
-          className="font-mono text-[10px] mt-1"
-          style={{ color: delta >= 0 ? '#7ec832' : '#e04545' }}
+          style={{
+            fontFamily: 'Roboto, sans-serif',
+            fontSize: 11.5,
+            color: '#ababab',
+            marginTop: 5,
+          }}
         >
-          {delta >= 0 ? '+' : ''}{delta}% vs semana anterior
+          {sublabel}
         </p>
       )}
     </div>
   )
 }
 
+// ─── Tooltip ─────────────────────────────────────────────────────────────────
+
 function CustomTooltip({ active, payload, label }) {
   if (!active || !payload?.length) return null
   return (
     <div
       style={{
-        background: '#0d110d',
-        border: '1px solid #1e2d1a',
-        borderRadius: 3,
-        padding: '8px 12px',
-        fontFamily: '"Share Tech Mono", monospace',
-        fontSize: 11,
-        color: '#d4e6c8',
+        background: '#ffffff',
+        border: '1px solid #e4e1db',
+        borderRadius: 6,
+        padding: '10px 14px',
+        fontFamily: 'Roboto, sans-serif',
+        fontSize: 12,
+        color: '#373737',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
       }}
     >
-      <p style={{ color: '#5c7a50', marginBottom: 4 }}>{label}</p>
+      <p
+        style={{
+          fontFamily: 'Roboto Mono, monospace',
+          fontSize: 10,
+          color: '#878787',
+          marginBottom: 6,
+          textTransform: 'uppercase',
+          letterSpacing: '0.06em',
+        }}
+      >
+        {label}
+      </p>
       {payload.map((p, i) => (
-        <p key={i} style={{ color: p.color ?? '#7ec832' }}>
+        <p key={i} style={{ color: p.color ?? '#373737', fontWeight: 600, marginBottom: i < payload.length - 1 ? 3 : 0 }}>
           {p.name}: {p.value}
         </p>
       ))}
@@ -70,14 +108,95 @@ function CustomTooltip({ active, payload, label }) {
   )
 }
 
+// ─── Chart card wrapper ───────────────────────────────────────────────────────
+
+function ChartCard({ title, loading, skeletonHeight = 200, children }) {
+  return (
+    <div
+      style={{
+        background: '#ffffff',
+        border: '1px solid #e4e1db',
+        borderRadius: 10,
+        boxShadow: '0 1px 3px rgba(0,0,0,0.06), 0 4px 16px rgba(0,0,0,0.05)',
+        overflow: 'hidden',
+      }}
+    >
+      <div
+        style={{
+          padding: '14px 22px',
+          borderBottom: '1px solid #f0eeea',
+        }}
+      >
+        <p className="label-caps" style={{ margin: 0 }}>{title}</p>
+      </div>
+      <div style={{ padding: '20px 16px 16px' }}>
+        {loading ? (
+          <div
+            className="animate-pulse"
+            style={{ height: skeletonHeight, background: '#f7f6f3', borderRadius: 6 }}
+          />
+        ) : children}
+      </div>
+    </div>
+  )
+}
+
+// ─── Empty state ─────────────────────────────────────────────────────────────
+
+function EmptyChart({ height = 200 }) {
+  return (
+    <div
+      style={{
+        height,
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}
+    >
+      <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 13, color: '#ababab' }}>
+        Sin datos disponibles
+      </p>
+    </div>
+  )
+}
+
+// ─── Legend dot ──────────────────────────────────────────────────────────────
+
+function LegendItem({ color, label }) {
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
+      <div
+        style={{
+          width: 8,
+          height: 8,
+          borderRadius: '50%',
+          background: color,
+          flexShrink: 0,
+        }}
+      />
+      <span
+        style={{
+          fontFamily: 'Roboto, sans-serif',
+          fontSize: 12,
+          color: '#878787',
+        }}
+      >
+        {label}
+      </span>
+    </div>
+  )
+}
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 export default function Metricas() {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['metricas'],
     queryFn: api.metricas,
     refetchInterval: 120_000,
   })
 
-  const stats = data?.stats ?? {}
+  const stats   = data?.stats ?? {}
   const porTipo = data?.por_tipo ?? data?.por_red ?? []
   const semanal = data?.semanal ?? data?.actividad_semanal ?? []
 
@@ -92,118 +211,149 @@ export default function Metricas() {
       ? `${Math.round((stats.aprobado / stats.generado) * 100)}%`
       : '—'
 
+  const generado  = stats.generado ?? stats.total
+  const aprobado  = stats.aprobado
+  const rechazado = stats.rechazado
+
   return (
-    <div className="p-6 animate-fade-in">
+    <div style={{ padding: '32px 32px 48px' }} className="animate-fade-in">
       {/* Header */}
-      <div className="mb-6">
-        <h1 className="font-display font-black text-2xl text-ink">Métricas</h1>
-        <p className="font-mono text-xs mt-1 text-muted">
+      <div style={{ marginBottom: 28 }}>
+        <p className="label-caps" style={{ marginBottom: 6 }}>Sistema · Métricas</p>
+        <h1
+          style={{
+            fontFamily: '"Nunito Sans", sans-serif',
+            fontWeight: 900,
+            fontSize: 34,
+            color: '#2a2a2a',
+            letterSpacing: '-0.02em',
+            lineHeight: 1.1,
+          }}
+        >
+          Métricas
+        </h1>
+        <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 14, color: '#878787', marginTop: 4 }}>
           Rendimiento del sistema · últimos 30 días
         </p>
       </div>
 
-      {isError && (
-        <div
-          className="mb-4 px-4 py-3 font-mono text-xs"
-          style={{ background: '#1a0808', border: '1px solid #e04545', borderRadius: 3, color: '#e04545' }}
-        >
-          Error cargando métricas
-        </div>
-      )}
-
       {/* Stat cards */}
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 mb-6">
-        <StatCard label="Contenido generado" value={stats.generado ?? stats.total} color="#7ec832" loading={isLoading} />
-        <StatCard label="Aprobado" value={stats.aprobado} color="#4f9eff" loading={isLoading} />
-        <StatCard label="Rechazado" value={stats.rechazado} color="#e04545" loading={isLoading} />
-        <StatCard label="Tasa de aprobación" value={tasaAprobacion} color="#e879f9" loading={isLoading} />
+      <div
+        className="stagger"
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 1fr)',
+          gap: 14,
+          marginBottom: 24,
+        }}
+      >
+        <StatCard
+          label="Contenido generado"
+          value={isLoading ? null : generado}
+          color="#76a72b"
+          sublabel="piezas totales"
+          loading={isLoading}
+        />
+        <StatCard
+          label="Aprobado"
+          value={isLoading ? null : aprobado}
+          color="#16a34a"
+          sublabel="piezas aprobadas"
+          loading={isLoading}
+        />
+        <StatCard
+          label="Rechazado"
+          value={isLoading ? null : rechazado}
+          color="#dc2626"
+          sublabel="piezas rechazadas"
+          loading={isLoading}
+        />
+        <StatCard
+          label="Tasa de aprobación"
+          value={isLoading ? null : tasaAprobacion}
+          color="#0a66c2"
+          sublabel="del contenido generado"
+          loading={isLoading}
+        />
       </div>
 
-      <div className="grid grid-cols-1 xl:grid-cols-2 gap-5">
-        {/* Bar chart — contenido por tipo */}
-        <div
-          style={{
-            background: '#0d110d',
-            border: '1px solid #1e2d1a',
-            borderRadius: 4,
-          }}
-        >
-          <div
-            className="px-4 py-3"
-            style={{ borderBottom: '1px solid #1e2d1a' }}
-          >
-            <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              Contenido por tipo / red
-            </p>
-          </div>
-          <div className="p-4">
-            {isLoading ? (
-              <div className="h-44 animate-pulse" style={{ background: '#111611', borderRadius: 3 }} />
-            ) : barData.length === 0 ? (
-              <p className="font-mono text-xs text-muted text-center py-10">Sin datos</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={180}>
-                <BarChart data={barData} barSize={18} margin={{ top: 4, right: 4, left: -20, bottom: 4 }}>
-                  <XAxis
-                    dataKey="name"
-                    tick={{ fontFamily: '"Share Tech Mono"', fontSize: 9, fill: '#5c7a50' }}
-                    axisLine={false}
-                    tickLine={false}
-                  />
-                  <YAxis
-                    tick={{ fontFamily: '"Share Tech Mono"', fontSize: 9, fill: '#5c7a50' }}
-                    axisLine={false}
-                    tickLine={false}
-                    allowDecimals={false}
-                  />
-                  <Tooltip content={<CustomTooltip />} />
-                  <Bar dataKey="value" radius={[2, 2, 0, 0]}>
-                    {barData.map((entry) => (
-                      <Cell
-                        key={entry.name}
-                        fill={RED_COLORS[entry.name] ?? '#2a3d24'}
-                      />
-                    ))}
-                  </Bar>
-                </BarChart>
-              </ResponsiveContainer>
-            )}
-          </div>
-        </div>
+      {/* Chart row */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: 20,
+        }}
+      >
+        {/* Bar chart — Contenido por tipo / red */}
+        <ChartCard title="Contenido por tipo / red" loading={isLoading} skeletonHeight={210}>
+          {barData.length === 0 ? (
+            <EmptyChart height={210} />
+          ) : (
+            <ResponsiveContainer width="100%" height={210}>
+              <BarChart
+                data={barData}
+                barSize={18}
+                margin={{ top: 4, right: 8, left: -24, bottom: 4 }}
+              >
+                <XAxis
+                  dataKey="name"
+                  tick={{ fontFamily: 'Roboto Mono, monospace', fontSize: 9, fill: '#ababab' }}
+                  axisLine={false}
+                  tickLine={false}
+                />
+                <YAxis
+                  tick={{ fontFamily: 'Roboto Mono, monospace', fontSize: 9, fill: '#ababab' }}
+                  axisLine={false}
+                  tickLine={false}
+                  allowDecimals={false}
+                />
+                <Tooltip content={<CustomTooltip />} cursor={{ fill: '#f7f6f3' }} />
+                <Bar dataKey="value" radius={[3, 3, 0, 0]} name="Piezas">
+                  {barData.map((entry) => (
+                    <Cell
+                      key={entry.name}
+                      fill={NET_COLORS[entry.name] ?? '#ccc9c2'}
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          )}
+        </ChartCard>
 
-        {/* Line chart — actividad semanal */}
-        <div
-          style={{
-            background: '#0d110d',
-            border: '1px solid #1e2d1a',
-            borderRadius: 4,
-          }}
-        >
-          <div
-            className="px-4 py-3"
-            style={{ borderBottom: '1px solid #1e2d1a' }}
-          >
-            <p className="font-mono text-xs uppercase tracking-widest text-muted">
-              Actividad semanal
-            </p>
-          </div>
-          <div className="p-4">
-            {isLoading ? (
-              <div className="h-44 animate-pulse" style={{ background: '#111611', borderRadius: 3 }} />
-            ) : semanal.length === 0 ? (
-              <p className="font-mono text-xs text-muted text-center py-10">Sin datos</p>
-            ) : (
-              <ResponsiveContainer width="100%" height={180}>
-                <LineChart data={semanal} margin={{ top: 4, right: 4, left: -20, bottom: 4 }}>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#1e2d1a" />
+        {/* Line chart — Actividad semanal */}
+        <ChartCard title="Actividad semanal" loading={isLoading} skeletonHeight={210}>
+          {semanal.length === 0 ? (
+            <EmptyChart height={210} />
+          ) : (
+            <>
+              {/* Legend */}
+              <div
+                style={{
+                  display: 'flex',
+                  gap: 20,
+                  marginBottom: 12,
+                  paddingLeft: 8,
+                }}
+              >
+                <LegendItem color="#76a72b" label="Generado" />
+                <LegendItem color="#0a66c2" label="Aprobado" />
+              </div>
+              <ResponsiveContainer width="100%" height={185}>
+                <LineChart
+                  data={semanal}
+                  margin={{ top: 4, right: 8, left: -24, bottom: 4 }}
+                >
+                  <CartesianGrid strokeDasharray="3 3" stroke="#f0eeea" vertical={false} />
                   <XAxis
                     dataKey="semana"
-                    tick={{ fontFamily: '"Share Tech Mono"', fontSize: 9, fill: '#5c7a50' }}
+                    tick={{ fontFamily: 'Roboto Mono, monospace', fontSize: 9, fill: '#ababab' }}
                     axisLine={false}
                     tickLine={false}
                   />
                   <YAxis
-                    tick={{ fontFamily: '"Share Tech Mono"', fontSize: 9, fill: '#5c7a50' }}
+                    tick={{ fontFamily: 'Roboto Mono, monospace', fontSize: 9, fill: '#ababab' }}
                     axisLine={false}
                     tickLine={false}
                     allowDecimals={false}
@@ -212,26 +362,26 @@ export default function Metricas() {
                   <Line
                     type="monotone"
                     dataKey="generado"
-                    stroke="#7ec832"
+                    stroke="#76a72b"
                     strokeWidth={2}
-                    dot={{ fill: '#7ec832', r: 3 }}
-                    activeDot={{ r: 5, fill: '#7ec832', stroke: '#060908', strokeWidth: 2 }}
+                    dot={{ fill: '#76a72b', r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: '#76a72b', stroke: '#ffffff', strokeWidth: 2 }}
                     name="Generado"
                   />
                   <Line
                     type="monotone"
                     dataKey="aprobado"
-                    stroke="#4f9eff"
+                    stroke="#0a66c2"
                     strokeWidth={2}
-                    dot={{ fill: '#4f9eff', r: 3 }}
-                    activeDot={{ r: 5 }}
+                    dot={{ fill: '#0a66c2', r: 3, strokeWidth: 0 }}
+                    activeDot={{ r: 5, fill: '#0a66c2', stroke: '#ffffff', strokeWidth: 2 }}
                     name="Aprobado"
                   />
                 </LineChart>
               </ResponsiveContainer>
-            )}
-          </div>
-        </div>
+            </>
+          )}
+        </ChartCard>
       </div>
     </div>
   )
