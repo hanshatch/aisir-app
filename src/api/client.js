@@ -55,10 +55,10 @@ export const api = {
   // Métricas
   metricas: () => req('/metricas'),
 
-  // Inspiración
-  inspiracionCuentas: ()      => req('/inspiracion/cuentas'),
-  addCuenta:    (data)        => req('/inspiracion/cuentas',            { method: 'POST',   body: JSON.stringify(data) }),
-  toggleCuenta: (id)          => req(`/inspiracion/cuentas/${id}/toggle`, { method: 'POST' }),
-  delCuenta:    (id)          => req(`/inspiracion/cuentas/${id}`,      { method: 'DELETE' }),
+  // Inspiración — PHP API
+  inspiracionCuentas: ()      => req('/api/inspiracion.php'),
+  addCuenta:    (data)        => req('/api/inspiracion.php',                        { method: 'POST',   body: JSON.stringify(data) }),
+  toggleCuenta: (id)          => req(`/api/inspiracion.php?action=toggle&id=${id}`, { method: 'POST' }),
+  delCuenta:    (id)          => req(`/api/inspiracion.php?id=${id}`,               { method: 'DELETE' }),
   inspiracionBrief: ()        => req('/inspiracion/brief'),
 }
