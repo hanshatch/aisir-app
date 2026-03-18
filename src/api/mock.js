@@ -162,13 +162,21 @@ export function mockFor(path, opts = {}) {
   if (base === '/inspiracion/brief')      return { brief: 'Brief de inspiración no disponible.' }
   if (base === '/contenido')              return MOCK.contenido
 
-  // Inspiración — GET
-  if (base === '/inspiracion/cuentas' && method === 'GET') {
+  // Inspiración PHP — GET
+  if (base === '/api/inspiracion.php' && method === 'GET') {
     return { cuentas: [..._cuentas] }
   }
 
-  // Inspiración — POST (agregar cuenta)
-  if (base === '/inspiracion/cuentas' && method === 'POST') {
+  // Inspiración PHP — POST (agregar cuenta)
+  if (base === '/api/inspiracion.php' && method === 'POST') {
+    const params = new URLSearchParams(path.split('?')[1] ?? '')
+    if (params.get('action') === 'toggle') {
+      const id = parseInt(params.get('id'))
+      const cuenta = _cuentas.find((c) => c.id === id)
+      if (cuenta) cuenta.activa = !cuenta.activa
+      saveCuentas(_cuentas)
+      return { ok: true }
+    }
     const body = opts.body ? JSON.parse(opts.body) : {}
     const nueva = { id: _nextId++, activa: true, ...body }
     _cuentas.push(nueva)
@@ -176,18 +184,10 @@ export function mockFor(path, opts = {}) {
     return nueva
   }
 
-  // Inspiración — toggle
-  if (base.match(/^\/inspiracion\/cuentas\/\d+\/toggle/)) {
-    const id = parseInt(base.split('/')[3])
-    const cuenta = _cuentas.find((c) => c.id === id)
-    if (cuenta) cuenta.activa = !cuenta.activa
-    saveCuentas(_cuentas)
-    return { ok: true }
-  }
-
-  // Inspiración — DELETE
-  if (base.match(/^\/inspiracion\/cuentas\/\d+$/) && method === 'DELETE') {
-    const id = parseInt(base.split('/')[3])
+  // Inspiración PHP — DELETE
+  if (base === '/api/inspiracion.php' && method === 'DELETE') {
+    const params = new URLSearchParams(path.split('?')[1] ?? '')
+    const id = parseInt(params.get('id'))
     _cuentas = _cuentas.filter((c) => c.id !== id)
     saveCuentas(_cuentas)
     return { ok: true }
