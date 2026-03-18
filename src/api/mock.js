@@ -1,6 +1,16 @@
 const now = Date.now()
 const t = (min) => new Date(now - min * 60 * 1000).toISOString()
 
+// Array mutable — las mutaciones (add/toggle/delete) se reflejan en memoria
+let _cuentas = [
+  { id: 1, red: 'instagram', username: '@garyvee',         url: 'https://instagram.com/garyvee',        activa: true  },
+  { id: 2, red: 'instagram', username: '@neilpatel',        url: 'https://instagram.com/neilpatel',      activa: true  },
+  { id: 3, red: 'youtube',   username: 'Marketing con Roi', url: 'https://youtube.com/@marketingconroi', activa: true  },
+  { id: 4, red: 'tiktok',    username: '@marketingtok',     url: 'https://tiktok.com/@marketingtok',     activa: false },
+  { id: 5, red: 'x',         username: '@MarketingMX',      url: 'https://x.com/MarketingMX',            activa: true  },
+]
+let _nextId = 6
+
 export const MOCK = {
   agentes: [
     { key: 'aisir',     agente: 'aisir',     ops: 1_247, last_at: t(5)         },
@@ -38,24 +48,17 @@ export const MOCK = {
 
   calendario: {
     events: [
-      // Lunes (hoy)
       { id: 1,  titulo: 'IA y marketing: post LinkedIn',              red: 'linkedin',   estado: 'aprobado',             fecha_programada: new Date(now).toISOString(),                hora: '09:00' },
       { id: 2,  titulo: 'Story: pregunta abierta a la comunidad',     red: 'instagram',  estado: 'aprobado',             fecha_programada: new Date(now).toISOString(),                hora: '12:00' },
-      // Martes (+1)
       { id: 3,  titulo: 'Reel: historia de Bimbo en 80 años',         red: 'instagram',  estado: 'pendiente_aprobacion', fecha_programada: new Date(now + 86400000).toISOString(),     hora: '18:00' },
       { id: 4,  titulo: 'Thread: datos vs opiniones en marketing',    red: 'x',          estado: 'pendiente_aprobacion', fecha_programada: new Date(now + 86400000).toISOString(),     hora: '11:00' },
-      // Miércoles (+2)
       { id: 5,  titulo: 'Post: posicionamiento de marca largo plazo', red: 'linkedin',   estado: 'aprobado',             fecha_programada: new Date(now + 86400000 * 2).toISOString(), hora: '09:00' },
       { id: 6,  titulo: 'TikTok: errores que destruyen agencias',     red: 'tiktok',     estado: 'borrador',             fecha_programada: new Date(now + 86400000 * 2).toISOString(), hora: '20:00' },
-      // Jueves (+3)
       { id: 7,  titulo: 'Carousel: 5 métricas que sí importan',      red: 'instagram',  estado: 'aprobado',             fecha_programada: new Date(now + 86400000 * 3).toISOString(), hora: '13:00' },
       { id: 8,  titulo: 'Tweet: academia vs mercado real',            red: 'x',          estado: 'aprobado',             fecha_programada: new Date(now + 86400000 * 3).toISOString(), hora: '17:00' },
-      // Viernes (+4)
       { id: 9,  titulo: 'Post: liderazgo en agencias',                red: 'linkedin',   estado: 'pendiente_aprobacion', fecha_programada: new Date(now + 86400000 * 4).toISOString(), hora: '09:00' },
       { id: 10, titulo: 'TikTok: ¿Qué hace la IA mejor que tú?',     red: 'tiktok',     estado: 'aprobado',             fecha_programada: new Date(now + 86400000 * 4).toISOString(), hora: '19:00' },
-      // Sábado (+5)
       { id: 11, titulo: 'Newsletter Q1 2026 — Tendencias',            red: 'newsletter', estado: 'aprobado',             fecha_programada: new Date(now + 86400000 * 5).toISOString(), hora: '07:00' },
-      // Domingo (+6)
       { id: 12, titulo: 'Artículo SEO: IA en marketing MX',          red: 'articulo',   estado: 'borrador',             fecha_programada: new Date(now + 86400000 * 6).toISOString(), hora: '08:00' },
     ],
   },
@@ -121,16 +124,6 @@ export const MOCK = {
     ],
   },
 
-  inspiracionCuentas: {
-    cuentas: [
-      { id: 1, red: 'instagram', username: '@garyvee',        url: 'https://instagram.com/garyvee',        activa: true  },
-      { id: 2, red: 'instagram', username: '@neilpatel',       url: 'https://instagram.com/neilpatel',      activa: true  },
-      { id: 3, red: 'youtube',   username: 'Marketing con Roi', url: 'https://youtube.com/@marketingconroi', activa: true  },
-      { id: 4, red: 'tiktok',    username: '@marketingtok',    url: 'https://tiktok.com/@marketingtok',    activa: false },
-      { id: 5, red: 'x',         username: '@MarketingMX',     url: 'https://x.com/MarketingMX',           activa: true  },
-    ],
-  },
-
   contenido: {
     items: [
       { id: 1, titulo: 'IA y el futuro del marketing en México',        tipo: 'linkedin',  estado: 'aprobado',             created_at: t(120), contenido_preview: 'En 20 años de agencia, nunca había visto una tecnología moverse tan rápido con tan poco criterio aplicado...' },
@@ -143,18 +136,48 @@ export const MOCK = {
   },
 }
 
-export function mockFor(path) {
+export function mockFor(path, opts = {}) {
   const base = path.split('?')[0]
-  if (base === '/agentes')               return MOCK.agentes
+  const method = opts.method ?? 'GET'
+
+  if (base === '/agentes')                return MOCK.agentes
   if (base.match(/^\/agentes\/.+\/logs/)) return MOCK.actividad
-  if (base === '/pipeline')              return MOCK.pipeline
-  if (base === '/temas')                 return MOCK.temas
-  if (base === '/calendario')            return MOCK.calendario
-  if (base === '/actividad')             return MOCK.actividad
-  if (base === '/cerebro')               return MOCK.cerebro
-  if (base === '/metricas')              return MOCK.metricas
-  if (base === '/inspiracion/cuentas')   return MOCK.inspiracionCuentas
-  if (base === '/inspiracion/brief')     return { brief: 'Brief de inspiración no disponible.' }
-  if (base === '/contenido')             return MOCK.contenido
+  if (base === '/pipeline')               return MOCK.pipeline
+  if (base === '/temas')                  return MOCK.temas
+  if (base === '/calendario')             return MOCK.calendario
+  if (base === '/actividad')              return MOCK.actividad
+  if (base === '/cerebro')                return MOCK.cerebro
+  if (base === '/metricas')               return MOCK.metricas
+  if (base === '/inspiracion/brief')      return { brief: 'Brief de inspiración no disponible.' }
+  if (base === '/contenido')              return MOCK.contenido
+
+  // Inspiración — GET
+  if (base === '/inspiracion/cuentas' && method === 'GET') {
+    return { cuentas: [..._cuentas] }
+  }
+
+  // Inspiración — POST (agregar cuenta)
+  if (base === '/inspiracion/cuentas' && method === 'POST') {
+    const body = opts.body ? JSON.parse(opts.body) : {}
+    const nueva = { id: _nextId++, activa: true, ...body }
+    _cuentas.push(nueva)
+    return nueva
+  }
+
+  // Inspiración — toggle
+  if (base.match(/^\/inspiracion\/cuentas\/\d+\/toggle/)) {
+    const id = parseInt(base.split('/')[3])
+    const cuenta = _cuentas.find((c) => c.id === id)
+    if (cuenta) cuenta.activa = !cuenta.activa
+    return { ok: true }
+  }
+
+  // Inspiración — DELETE
+  if (base.match(/^\/inspiracion\/cuentas\/\d+$/) && method === 'DELETE') {
+    const id = parseInt(base.split('/')[3])
+    _cuentas = _cuentas.filter((c) => c.id !== id)
+    return { ok: true }
+  }
+
   return null
 }

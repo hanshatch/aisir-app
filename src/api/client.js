@@ -12,12 +12,9 @@ async function req(path, opts = {}) {
     if (!res.ok) throw new Error(`API ${res.status}: ${path}`)
     return res.json()
   } catch {
-    // GET requests: fallback a datos mock
-    if (!opts.method || opts.method === 'GET') {
-      const mock = mockFor(path)
-      if (mock !== null) return mock
-    }
-    // POST/PUT/DELETE sin backend: simular éxito silencioso
+    // Fallback a mock para cualquier método
+    const mock = mockFor(path, opts)
+    if (mock !== null) return mock
     return { ok: true, mock: true }
   }
 }
