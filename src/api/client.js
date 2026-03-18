@@ -10,7 +10,7 @@ async function req(path, opts = {}) {
       ...opts,
     })
     if (!res.ok) throw new Error(`API ${res.status}: ${path}`)
-    return res.json()
+    return await res.json()
   } catch {
     // Fallback a mock para cualquier método
     const mock = mockFor(path, opts)
