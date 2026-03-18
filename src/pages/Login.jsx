@@ -65,16 +65,6 @@ export default function Login() {
 
         {/* Logo */}
         <div style={{ textAlign: 'center', marginBottom: 36 }}>
-          <p style={{
-            fontFamily: 'Roboto, sans-serif',
-            fontSize: 9, fontWeight: 500,
-            letterSpacing: '0.18em',
-            textTransform: 'uppercase',
-            color: '#ababab',
-            marginBottom: 12,
-          }}>
-            AiSir · Ecosistema
-          </p>
           <h1 style={{
             fontFamily: '"Nunito Sans", sans-serif',
             fontWeight: 800,
@@ -92,7 +82,7 @@ export default function Login() {
             color: '#ababab',
             letterSpacing: '0.05em',
           }}>
-            Norse Intelligence Agents
+            AISIR | Intelligence Agents
           </p>
         </div>
 
