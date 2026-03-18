@@ -18,65 +18,6 @@ const RED_META = {
   x:         { color: '#373737', bg: '#efeded', label: 'X / Twitter', Icon: null },
 }
 
-// Mock extracted content — replace with API when Kvasir scraping is ready
-const MOCK_CONTENIDO = [
-  {
-    id: 1, red: 'instagram', username: '@garyvee',
-    texto: 'Stop making excuses. The market doesn\'t care about your feelings — it cares about your execution. Document everything, judge nothing.',
-    likes: 48_200, comentarios: 1_340, guardados: 5_890, vistas: null,
-    fecha: '2026-03-15', tipo: 'carrusel', tags: ['mindset', 'marketing', 'ejecución'],
-    color_tema: '#86a43b',
-  },
-  {
-    id: 2, red: 'instagram', username: '@neilpatel',
-    texto: 'SEO in 2026 is not about keywords anymore. It\'s about topical authority. Here\'s how to build it in 90 days without spending a dollar on ads.',
-    likes: 12_400, comentarios: 892, guardados: 7_100, vistas: null,
-    fecha: '2026-03-14', tipo: 'carrusel', tags: ['SEO', 'contenido', 'autoridad'],
-    color_tema: '#86a43b',
-  },
-  {
-    id: 3, red: 'youtube', username: 'Marketing con Roi',
-    texto: 'Cómo medimos el ROI real de Instagram Stories (con datos de 40 marcas mexicanas)',
-    likes: 3_210, comentarios: 287, guardados: null, vistas: 89_400,
-    fecha: '2026-03-13', tipo: 'video', tags: ['ROI', 'Instagram', 'métricas'],
-    color_tema: '#878787',
-  },
-  {
-    id: 4, red: 'x', username: '@MarketingMX',
-    texto: 'Thread: Las 5 campañas de marketing más efectivas en México Q1 2026. Spoiler: ninguna fue viral, todas fueron consistentes. 🧵',
-    likes: 2_840, comentarios: 319, guardados: null, vistas: 124_000,
-    fecha: '2026-03-12', tipo: 'thread', tags: ['México', 'campañas', 'consistencia'],
-    color_tema: '#373737',
-  },
-  {
-    id: 5, red: 'instagram', username: '@garyvee',
-    texto: 'Every single piece of content you put out is a lottery ticket. You don\'t know which one wins. So the answer is: more tickets.',
-    likes: 61_800, comentarios: 2_100, guardados: 9_200, vistas: null,
-    fecha: '2026-03-11', tipo: 'reel', tags: ['volumen', 'contenido', 'consistencia'],
-    color_tema: '#86a43b',
-  },
-  {
-    id: 6, red: 'tiktok', username: '@marketingtok',
-    texto: '¿Por qué el 80% de las marcas falla en TikTok? No es el algoritmo. Es que siguen haciendo publicidad en lugar de entretenimiento.',
-    likes: 18_500, comentarios: 1_450, guardados: null, vistas: 340_000,
-    fecha: '2026-03-10', tipo: 'video', tags: ['TikTok', 'entretenimiento', 'error'],
-    color_tema: '#373737',
-  },
-  {
-    id: 7, red: 'youtube', username: 'Marketing con Roi',
-    texto: 'El embudo de conversión está muerto — y qué usar en su lugar (modelo de loops de retención)',
-    likes: 1_890, comentarios: 156, guardados: null, vistas: 52_100,
-    fecha: '2026-03-09', tipo: 'video', tags: ['embudo', 'retención', 'loops'],
-    color_tema: '#878787',
-  },
-  {
-    id: 8, red: 'x', username: '@MarketingMX',
-    texto: 'El error que cometen las agencias al presentar resultados: confunden actividad con impacto. Impresiones no son negocio. Engagement no es venta.',
-    likes: 1_640, comentarios: 204, guardados: null, vistas: 78_900,
-    fecha: '2026-03-08', tipo: 'post', tags: ['agencias', 'resultados', 'métricas'],
-    color_tema: '#373737',
-  },
-]
 
 const BRIEF_DATA = {
   generado: '2026-03-16',
@@ -252,19 +193,16 @@ function CuentaCard({ cuenta, onToggle, onDelete }) {
 }
 
 function PostCard({ post }) {
-  const red = post.red ?? 'x'
+  const red  = post.red ?? 'instagram'
   const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
+  const isVideo = post.thumbnail_url && (post.thumbnail_url.includes('.mp4') || post.analisis_formato === 'video' || post.analisis_formato === 'reel')
+  const fecha = post.fecha_post ? post.fecha_post.slice(0, 10) : ''
 
   return (
     <div style={{
-      background: '#ffffff',
-      border: '1px solid #e4e1db',
-      borderRadius: 12,
+      background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 12,
       boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04)',
-      padding: '16px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: 12,
+      overflow: 'hidden', display: 'flex', flexDirection: 'column',
       transition: 'box-shadow 0.15s, transform 0.15s',
     }}
       onMouseEnter={(e) => {
@@ -276,74 +214,107 @@ function PostCard({ post }) {
         e.currentTarget.style.transform = 'translateY(0)'
       }}
     >
-      {/* Header: red + username + tipo + fecha */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="flex items-center justify-center" style={{
-            width: 28, height: 28, borderRadius: 7, background: meta.bg,
-          }}>
-            <RedPlatformIcon red={red} size={13} color={meta.color} />
-          </div>
-          <span className="font-bold" style={{
-            color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 13,
-          }}>
-            {post.username}
-          </span>
-          <span style={{
-            background: '#F0EEEA', color: '#878787', border: '1px solid #e4e1db',
-            borderRadius: 5, padding: '2px 7px', fontFamily: 'Roboto, sans-serif', fontSize: 10,
-            fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
-          }}>
-            {post.tipo}
-          </span>
+      {/* Thumbnail */}
+      {post.thumbnail_url && !isVideo && (
+        <div style={{ width: '100%', height: 180, overflow: 'hidden', background: '#F0EEEA', flexShrink: 0 }}>
+          <img
+            src={post.thumbnail_url}
+            alt=""
+            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={(e) => { e.currentTarget.parentElement.style.display = 'none' }}
+          />
         </div>
-        <span style={{
-          color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10,
+      )}
+      {post.thumbnail_url && isVideo && (
+        <div style={{
+          width: '100%', height: 180, background: '#F0EEEA', flexShrink: 0,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
         }}>
-          {post.fecha}
-        </span>
-      </div>
-
-      {/* Texto */}
-      <p style={{
-        color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 13,
-        lineHeight: 1.55, flex: 1,
-        display: '-webkit-box', WebkitLineClamp: 4, WebkitBoxOrient: 'vertical', overflow: 'hidden',
-      }}>
-        {post.texto}
-      </p>
-
-      {/* Tags */}
-      {post.tags?.length > 0 && (
-        <div className="flex flex-wrap gap-1.5">
-          {post.tags.map((tag) => (
-            <span key={tag} style={{
-              background: '#F0EEEA', color: '#878787',
-              borderRadius: 4, padding: '2px 7px',
-              fontFamily: 'Roboto, sans-serif', fontSize: 10,
-            }}>
-              #{tag}
-            </span>
-          ))}
+          <div style={{
+            width: 48, height: 48, borderRadius: '50%', background: 'rgba(55,55,55,0.12)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#878787">
+              <path d="M8 5v14l11-7z"/>
+            </svg>
+          </div>
         </div>
       )}
 
-      {/* Métricas */}
-      <div className="flex items-center gap-4 pt-2" style={{
-        borderTop: '1px solid #F0EEEA',
-      }}>
-        {post.likes !== null && (
-          <MetricaItem icon={<Heart size={12} />} value={fmt(post.likes)} />
+      <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <div className="flex items-center justify-center" style={{
+              width: 26, height: 26, borderRadius: 6, background: meta.bg,
+            }}>
+              <RedPlatformIcon red={red} size={13} color={meta.color} />
+            </div>
+            <span className="font-bold" style={{ color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 13 }}>
+              {post.username}
+            </span>
+            {post.analisis_formato && (
+              <span style={{
+                background: '#F0EEEA', color: '#878787', border: '1px solid #e4e1db',
+                borderRadius: 5, padding: '2px 7px', fontFamily: 'Roboto, sans-serif', fontSize: 10,
+                fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.05em',
+              }}>
+                {post.analisis_formato}
+              </span>
+            )}
+          </div>
+          <span style={{ color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10 }}>
+            {fecha}
+          </span>
+        </div>
+
+        {/* Hook / caption */}
+        {post.analisis_hook && (
+          <p className="font-bold" style={{ color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 13, lineHeight: 1.4 }}>
+            {post.analisis_hook}
+          </p>
         )}
-        {post.comentarios !== null && (
-          <MetricaItem icon={<MessageSquare size={12} />} value={fmt(post.comentarios)} />
+        <p style={{
+          color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5, flex: 1,
+          display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+        }}>
+          {post.caption}
+        </p>
+
+        {/* Tema Kvasir */}
+        {post.analisis_tema && (
+          <div className="flex items-center gap-1.5">
+            <span style={{
+              background: '#86a43b10', color: '#86a43b', border: '1px solid #86a43b30',
+              borderRadius: 4, padding: '2px 8px', fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 600,
+            }}>
+              {post.analisis_tema}
+            </span>
+          </div>
         )}
-        {post.guardados !== null && (
-          <MetricaItem icon={<Bookmark size={12} />} value={fmt(post.guardados)} />
-        )}
-        {post.vistas !== null && (
-          <MetricaItem icon={<Eye size={12} />} value={fmt(post.vistas)} />
-        )}
+
+        {/* Métricas + link */}
+        <div className="flex items-center justify-between pt-2" style={{ borderTop: '1px solid #F0EEEA' }}>
+          <div className="flex items-center gap-4">
+            {post.likes > 0 && <MetricaItem icon={<Heart size={12} />} value={fmt(post.likes)} />}
+            {post.comentarios > 0 && <MetricaItem icon={<MessageSquare size={12} />} value={fmt(post.comentarios)} />}
+            {post.compartidos > 0 && <MetricaItem icon={<Repeat2 size={12} />} value={fmt(post.compartidos)} />}
+            {post.engagement_rate > 0 && (
+              <MetricaItem icon={<TrendingUp size={12} />} value={`${parseFloat(post.engagement_rate).toFixed(1)}%`} />
+            )}
+          </div>
+          {post.url_post && (
+            <a href={post.url_post} target="_blank" rel="noopener noreferrer" style={{
+              color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 11,
+              textDecoration: 'none', display: 'flex', alignItems: 'center', gap: 4,
+            }}
+              onMouseEnter={(e) => { e.currentTarget.style.color = '#86a43b' }}
+              onMouseLeave={(e) => { e.currentTarget.style.color = '#ababab' }}
+            >
+              Ver post →
+            </a>
+          )}
+        </div>
       </div>
     </div>
   )
@@ -547,6 +518,13 @@ export default function Inspiracion() {
   const [focusedField, setFocusedField] = useState(null)
   const [filtroRed, setFiltroRed] = useState('todas')
 
+  const postsQuery = useQuery({
+    queryKey: ['inspiracionPosts'],
+    queryFn: () => api.inspiracionPosts({ limit: 100 }),
+    enabled: tab === 'contenido',
+    staleTime: 60_000,
+  })
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['inspiracionCuentas'],
     queryFn: api.inspiracionCuentas,
@@ -598,13 +576,10 @@ export default function Inspiracion() {
     transition: 'border-color 0.15s',
   })
 
-  const contenidoFiltrado = filtroRed === 'todas'
-    ? MOCK_CONTENIDO
-    : MOCK_CONTENIDO.filter((p) => p.red === filtroRed)
 
   const TABS = [
     { key: 'cuentas',  label: 'Cuentas',        count: cuentas.length },
-    { key: 'contenido', label: 'Contenido',      count: MOCK_CONTENIDO.length },
+    { key: 'contenido', label: 'Contenido',      count: postsQuery.data?.total ?? null },
     { key: 'brief',    label: 'Brief Kvasir',    count: null },
   ]
 
@@ -827,83 +802,96 @@ export default function Inspiracion() {
       )}
 
       {/* ── Tab: Contenido ───────────────────────────────────────────────── */}
-      {tab === 'contenido' && (
-        <div>
-          {/* Filtros de red */}
-          <div className="flex items-center gap-2 mb-5" style={{ flexWrap: 'wrap' }}>
-            {['todas', ...REDES].map((r) => {
-              const meta = r === 'todas' ? null : RED_META[r]
-              const isActive = filtroRed === r
-              return (
-                <button
-                  key={r}
-                  onClick={() => setFiltroRed(r)}
-                  className="flex items-center gap-1.5 font-bold transition-all"
-                  style={{
-                    background: isActive ? '#86a43b' : '#ffffff',
-                    color: isActive ? '#ffffff' : '#878787',
-                    border: `1px solid ${isActive ? '#86a43b' : '#e4e1db'}`,
-                    borderRadius: 7, padding: '6px 12px',
-                    fontFamily: 'Roboto, sans-serif', fontSize: 12, cursor: 'pointer',
-                  }}
-                >
-                  {r !== 'todas' && (
-                    <RedPlatformIcon red={r} size={12} color={isActive ? '#ffffff' : meta?.color} />
-                  )}
-                  {r === 'todas' ? 'Todas las redes' : meta?.label ?? r}
-                  <span style={{
-                    background: isActive ? 'rgba(255,255,255,0.25)' : '#F0EEEA',
-                    color: isActive ? '#ffffff' : '#ababab',
-                    borderRadius: 4, padding: '1px 6px',
-                    fontFamily: '"Roboto Mono", monospace', fontSize: 10, fontWeight: 700,
-                  }}>
-                    {r === 'todas'
-                      ? MOCK_CONTENIDO.length
-                      : MOCK_CONTENIDO.filter((p) => p.red === r).length}
-                  </span>
-                </button>
-              )
-            })}
+      {tab === 'contenido' && (() => {
+        const allPosts  = postsQuery.data?.posts ?? []
+        const redesDisp = [...new Set(allPosts.map((p) => p.red))].filter(Boolean)
+        const filtrados = filtroRed === 'todas' ? allPosts : allPosts.filter((p) => p.red === filtroRed)
 
-            <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
-              <Clock size={12} color="#ababab" />
-              <span style={{ color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 11 }}>
-                Última extracción: 2026-03-16 · 08:00
-              </span>
+        return (
+          <div>
+            {/* Filtros de red */}
+            <div className="flex items-center gap-2 mb-5" style={{ flexWrap: 'wrap' }}>
+              {['todas', ...redesDisp].map((r) => {
+                const meta = r === 'todas' ? null : RED_META[r]
+                const isActive = filtroRed === r
+                return (
+                  <button
+                    key={r}
+                    onClick={() => setFiltroRed(r)}
+                    className="flex items-center gap-1.5 font-bold transition-all"
+                    style={{
+                      background: isActive ? '#86a43b' : '#ffffff',
+                      color: isActive ? '#ffffff' : '#878787',
+                      border: `1px solid ${isActive ? '#86a43b' : '#e4e1db'}`,
+                      borderRadius: 7, padding: '6px 12px',
+                      fontFamily: 'Roboto, sans-serif', fontSize: 12, cursor: 'pointer',
+                    }}
+                  >
+                    {r !== 'todas' && (
+                      <RedPlatformIcon red={r} size={12} color={isActive ? '#ffffff' : meta?.color} />
+                    )}
+                    {r === 'todas' ? 'Todas las redes' : meta?.label ?? r}
+                    <span style={{
+                      background: isActive ? 'rgba(255,255,255,0.25)' : '#F0EEEA',
+                      color: isActive ? '#ffffff' : '#ababab',
+                      borderRadius: 4, padding: '1px 6px',
+                      fontFamily: '"Roboto Mono", monospace', fontSize: 10, fontWeight: 700,
+                    }}>
+                      {r === 'todas' ? allPosts.length : allPosts.filter((p) => p.red === r).length}
+                    </span>
+                  </button>
+                )
+              })}
+
+              <div style={{ marginLeft: 'auto', display: 'flex', alignItems: 'center', gap: 6 }}>
+                <Clock size={12} color="#ababab" />
+                <span style={{ color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 11 }}>
+                  {postsQuery.isFetching ? 'Actualizando…' : `${allPosts.length} posts · Kvasir`}
+                </span>
+              </div>
             </div>
+
+            {postsQuery.isLoading ? (
+              <div style={{
+                display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16,
+              }}>
+                {[...Array(6)].map((_, i) => (
+                  <div key={i} className="animate-pulse" style={{
+                    height: 280, background: '#ffffff', borderRadius: 12, border: '1px solid #e4e1db',
+                  }} />
+                ))}
+              </div>
+            ) : postsQuery.isError ? (
+              <div className="text-center py-16" style={{
+                background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 10,
+              }}>
+                <p style={{ color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 13 }}>
+                  Error cargando posts
+                </p>
+              </div>
+            ) : filtrados.length === 0 ? (
+              <div className="text-center py-16" style={{
+                background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 10,
+              }}>
+                <p className="font-bold mb-1" style={{ color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 15 }}>
+                  Sin contenido extraído aún
+                </p>
+                <p style={{ color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 13 }}>
+                  Kvasir extraerá posts de las cuentas activas automáticamente
+                </p>
+              </div>
+            ) : (
+              <div style={{
+                display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: 16,
+              }}>
+                {filtrados.map((post) => (
+                  <PostCard key={post.id} post={post} />
+                ))}
+              </div>
+            )}
           </div>
-
-          {contenidoFiltrado.length === 0 ? (
-            <div className="text-center py-16" style={{
-              background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 10,
-            }}>
-              <p className="font-bold" style={{ color: '#373737', fontFamily: 'Roboto, sans-serif', fontSize: 15 }}>
-                Sin contenido para esta red
-              </p>
-            </div>
-          ) : (
-            <div style={{
-              display: 'grid',
-              gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))',
-              gap: 16,
-            }}>
-              {contenidoFiltrado.map((post) => (
-                <PostCard key={post.id} post={post} />
-              ))}
-            </div>
-          )}
-
-          {/* Notice — mock */}
-          <div className="mt-6 flex items-center gap-2 px-4 py-3" style={{
-            background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 8,
-          }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ababab', flexShrink: 0 }} />
-            <p style={{ color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 12 }}>
-              Datos de demostración. El scraping automático de Kvasir se activará cuando el backend esté listo.
-            </p>
-          </div>
-        </div>
-      )}
+        )
+      })()}
 
       {/* ── Tab: Brief Kvasir ────────────────────────────────────────────── */}
       {tab === 'brief' && <BriefKvasir />}

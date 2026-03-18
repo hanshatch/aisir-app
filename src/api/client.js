@@ -61,4 +61,11 @@ export const api = {
   toggleCuenta: (id)          => req(`/api/inspiracion.php?action=toggle&id=${id}`, { method: 'POST' }),
   delCuenta:    (id)          => req(`/api/inspiracion.php?id=${id}`,               { method: 'DELETE' }),
   inspiracionBrief: ()        => req('/inspiracion/brief'),
+
+  // Inspiración — Posts extraídos
+  inspiracionPosts: (params = {}) => {
+    const qs = new URLSearchParams(params).toString()
+    return req(`/api/inspiracion_posts.php${qs ? '?' + qs : ''}`)
+  },
+  feedbackPost: (id, body) => req(`/api/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
 }
