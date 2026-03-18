@@ -67,7 +67,7 @@ export default function Login() {
 
         {/* Card */}
         <div style={{
-          background: 'rgba(255,255,255,0.70)',
+          background: 'rgba(255,255,255,0.80)',
           backdropFilter: 'blur(12px)',
           border: '1px solid rgba(171,171,171,0.4)',
           borderRadius: 12,
@@ -77,7 +77,7 @@ export default function Login() {
           {/* Logo dentro del card */}
           <div style={{ textAlign: 'center', marginBottom: 28 }}>
             <h1 style={{
-              fontFamily: 'Roboto, sans-serif',
+              fontFamily: '"Nunito Sans", sans-serif',
               fontWeight: 800,
               fontSize: 36,
               lineHeight: 1,
@@ -176,7 +176,7 @@ export default function Login() {
               disabled={loading || !username || !pwd}
               style={{
                 width: '100%',
-                fontFamily: 'Roboto, sans-serif',
+                fontFamily: '"Nunito Sans", sans-serif',
                 fontWeight: 800,
                 fontSize: 13,
                 letterSpacing: '0.05em',
