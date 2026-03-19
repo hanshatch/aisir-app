@@ -37,6 +37,9 @@ try {
                 p.analisis_formato,
                 p.analisis_tema,
                 p.analisis_por_que,
+                p.score,
+                p.score_razon,
+                p.texto_visual,
                 p.estado,
                 p.feedback_hans,
                 p.vision_procesado,
@@ -67,6 +70,7 @@ try {
             $p['compartidos']   = $p['compartidos']   !== null ? (int)$p['compartidos']   : null;
             $p['engagement_rate'] = $p['engagement_rate'] !== null ? (float)$p['engagement_rate'] : null;
             $p['vision_procesado'] = (bool)$p['vision_procesado'];
+            $p['score'] = $p['score'] !== null ? (int)$p['score'] : null;
         }
 
         json_response(['posts' => $posts, 'total' => $total, 'limit' => $limit, 'offset' => $offset]);
