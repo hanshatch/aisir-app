@@ -3,7 +3,7 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import {
   Plus, Trash2, Power, Youtube, Instagram,
   TrendingUp, MessageSquare, Repeat2, Eye,
-  Heart, Bookmark, BarChart2, Lightbulb, Clock, Hash,
+  Heart, Bookmark, BarChart2, Lightbulb, Clock, Hash, RefreshCw,
 } from 'lucide-react'
 import { api } from '@/api/client'
 
@@ -553,6 +553,14 @@ export default function Inspiracion() {
     staleTime: 60_000,
   })
 
+  const scrapeMut = useMutation({
+    mutationFn: api.scrapeInspiracion,
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ['inspiracionPosts'] })
+      qc.invalidateQueries({ queryKey: ['inspiracionCuentas'] })
+    },
+  })
+
   const { data, isLoading, isError } = useQuery({
     queryKey: ['inspiracionCuentas'],
     queryFn: api.inspiracionCuentas,
@@ -627,7 +635,23 @@ export default function Inspiracion() {
             Kvasir · Monitor de cuentas referentes y extracción de contenido
           </p>
         </div>
-        {tab === 'cuentas' && (
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => scrapeMut.mutate()}
+            disabled={scrapeMut.isPending}
+            className="flex items-center gap-2 font-bold transition-all"
+            style={{
+              background: '#ffffff',
+              color: scrapeMut.isPending ? '#ababab' : '#878787',
+              border: '1px solid #e4e1db',
+              borderRadius: 9, padding: '10px 16px',
+              fontFamily: 'Roboto, sans-serif', fontSize: 13, cursor: scrapeMut.isPending ? 'wait' : 'pointer',
+            }}
+          >
+            <RefreshCw size={14} style={{ animation: scrapeMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
+            {scrapeMut.isPending ? 'Actualizando…' : 'Actualizar ahora'}
+          </button>
+          {tab === 'cuentas' && (
           <button
             onClick={() => setShowForm((p) => !p)}
             className="flex items-center gap-2 font-bold transition-all"
@@ -643,7 +667,8 @@ export default function Inspiracion() {
             <Plus size={15} />
             {showForm ? 'Cancelar' : 'Agregar cuenta'}
           </button>
-        )}
+          )}
+        </div>
       </div>
 
       {/* Stats */}

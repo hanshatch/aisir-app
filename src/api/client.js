@@ -68,4 +68,5 @@ export const api = {
     return req(`/inspiracion_posts.php${qs ? '?' + qs : ''}`)
   },
   feedbackPost: (id, body) => req(`/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
+  scrapeInspiracion: () => req('/inspiracion/scrape', { method: 'POST' }),
 }

@@ -141,6 +141,9 @@
   .animate-slide-in   { animation: slideIn   0.3s cubic-bezier(0.4,0,0.2,1) both; }
 }
 
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
 @keyframes pulseDot {
   0%, 100% { opacity: 1; }
   50%       { opacity: 0.35; }
