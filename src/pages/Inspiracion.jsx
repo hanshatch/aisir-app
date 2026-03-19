@@ -192,6 +192,24 @@ function CuentaCard({ cuenta, onToggle, onDelete }) {
   )
 }
 
+function ScoreBadge({ score }) {
+  if (score === null || score === undefined) return null
+  const color  = score >= 70 ? '#86a43b' : score >= 50 ? '#878787' : '#ababab'
+  const bg     = score >= 70 ? '#86a43b15' : '#F0EEEA'
+  const border = score >= 70 ? '#86a43b40' : '#e4e1db'
+  return (
+    <div className="flex items-center gap-1.5" style={{
+      background: bg, border: `1px solid ${border}`, borderRadius: 6,
+      padding: '3px 8px', flexShrink: 0,
+    }}>
+      <div style={{ width: 6, height: 6, borderRadius: '50%', background: color, flexShrink: 0 }} />
+      <span style={{ color, fontFamily: '"Roboto Mono", monospace', fontSize: 11, fontWeight: 700 }}>
+        {score}
+      </span>
+    </div>
+  )
+}
+
 function PostCard({ post }) {
   const red  = post.red ?? 'instagram'
   const meta = RED_META[red] ?? { color: '#878787', bg: '#efeded', label: red }
@@ -225,21 +243,6 @@ function PostCard({ post }) {
           />
         </div>
       )}
-      {post.thumbnail_url && isVideo && (
-        <div style={{
-          width: '100%', height: 180, background: '#F0EEEA', flexShrink: 0,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-        }}>
-          <div style={{
-            width: 48, height: 48, borderRadius: '50%', background: 'rgba(55,55,55,0.12)',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-          }}>
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="#878787">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
-          </div>
-        </div>
-      )}
 
       <div style={{ padding: '14px 16px', display: 'flex', flexDirection: 'column', gap: 10, flex: 1 }}>
         {/* Header */}
@@ -263,9 +266,12 @@ function PostCard({ post }) {
               </span>
             )}
           </div>
-          <span style={{ color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10 }}>
-            {fecha}
-          </span>
+          <div className="flex items-center gap-2">
+            <span style={{ color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10 }}>
+              {fecha}
+            </span>
+            <ScoreBadge score={post.score} />
+          </div>
         </div>
 
         {/* Hook / caption */}
@@ -275,11 +281,33 @@ function PostCard({ post }) {
           </p>
         )}
         <p style={{
-          color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5, flex: 1,
+          color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5,
           display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
         }}>
           {post.caption}
         </p>
+
+        {/* Texto visual (OCR) */}
+        {post.texto_visual && (
+          <p style={{
+            color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10, lineHeight: 1.5,
+            background: '#F0EEEA', borderRadius: 5, padding: '6px 8px',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+          }}>
+            {post.texto_visual}
+          </p>
+        )}
+
+        {/* Score razón */}
+        {post.score_razon && (
+          <p style={{
+            color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 11, lineHeight: 1.4,
+            fontStyle: 'italic',
+            display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden',
+          }}>
+            {post.score_razon}
+          </p>
+        )}
 
         {/* Tema Kvasir */}
         {post.analisis_tema && (

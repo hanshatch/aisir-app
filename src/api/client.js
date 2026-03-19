@@ -56,16 +56,16 @@ export const api = {
   metricas: () => req('/metricas'),
 
   // Inspiración — PHP API
-  inspiracionCuentas: ()      => req('/api/inspiracion.php'),
-  addCuenta:    (data)        => req('/api/inspiracion.php',                        { method: 'POST',   body: JSON.stringify(data) }),
-  toggleCuenta: (id)          => req(`/api/inspiracion.php?action=toggle&id=${id}`, { method: 'POST' }),
-  delCuenta:    (id)          => req(`/api/inspiracion.php?id=${id}`,               { method: 'DELETE' }),
+  inspiracionCuentas: ()      => req('/inspiracion.php'),
+  addCuenta:    (data)        => req('/inspiracion.php',                        { method: 'POST',   body: JSON.stringify(data) }),
+  toggleCuenta: (id)          => req(`/inspiracion.php?action=toggle&id=${id}`, { method: 'POST' }),
+  delCuenta:    (id)          => req(`/inspiracion.php?id=${id}`,               { method: 'DELETE' }),
   inspiracionBrief: ()        => req('/inspiracion/brief'),
 
   // Inspiración — Posts extraídos
   inspiracionPosts: (params = {}) => {
     const qs = new URLSearchParams(params).toString()
-    return req(`/api/inspiracion_posts.php${qs ? '?' + qs : ''}`)
+    return req(`/inspiracion_posts.php${qs ? '?' + qs : ''}`)
   },
-  feedbackPost: (id, body) => req(`/api/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
+  feedbackPost: (id, body) => req(`/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
 }

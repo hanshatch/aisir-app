@@ -162,21 +162,21 @@ export function mockFor(path, opts = {}) {
   if (base === '/inspiracion/brief')      return { brief: 'Brief de inspiración no disponible.' }
 
   // Posts extraídos — mock vacío en dev (la BD real está en producción)
-  if (base === '/api/inspiracion_posts.php' && method === 'GET') {
+  if (base === '/inspiracion_posts.php' && method === 'GET') {
     return { posts: [], total: 0, limit: 50, offset: 0 }
   }
-  if (base === '/api/inspiracion_posts.php' && method === 'POST') {
+  if (base === '/inspiracion_posts.php' && method === 'POST') {
     return { ok: true }
   }
   if (base === '/contenido')              return MOCK.contenido
 
   // Inspiración PHP — GET
-  if (base === '/api/inspiracion.php' && method === 'GET') {
+  if (base === '/inspiracion.php' && method === 'GET') {
     return { cuentas: [..._cuentas] }
   }
 
   // Inspiración PHP — POST (agregar cuenta)
-  if (base === '/api/inspiracion.php' && method === 'POST') {
+  if (base === '/inspiracion.php' && method === 'POST') {
     const params = new URLSearchParams(path.split('?')[1] ?? '')
     if (params.get('action') === 'toggle') {
       const id = parseInt(params.get('id'))
@@ -193,7 +193,7 @@ export function mockFor(path, opts = {}) {
   }
 
   // Inspiración PHP — DELETE
-  if (base === '/api/inspiracion.php' && method === 'DELETE') {
+  if (base === '/inspiracion.php' && method === 'DELETE') {
     const params = new URLSearchParams(path.split('?')[1] ?? '')
     const id = parseInt(params.get('id'))
     _cuentas = _cuentas.filter((c) => c.id !== id)
