@@ -13,6 +13,7 @@ import Cerebro from './pages/Cerebro'
 import Actividad from './pages/Actividad'
 import Comandos from './pages/Comandos'
 import Inspiracion from './pages/Inspiracion'
+import Columnas from './pages/Columnas'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,6 +64,7 @@ export default function App() {
             <Route path="/actividad"  element={<Actividad />} />
             <Route path="/comandos"   element={<Comandos />} />
             <Route path="/inspiracion" element={<Inspiracion />} />
+            <Route path="/columnas"    element={<Columnas />} />
           </Route>
           <Route path="*" element={<Navigate to={isAuth() ? '/agentes' : '/'} replace />} />
         </Routes>

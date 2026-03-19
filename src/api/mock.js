@@ -160,6 +160,8 @@ export function mockFor(path, opts = {}) {
   if (base === '/cerebro')                return MOCK.cerebro
   if (base === '/metricas')               return MOCK.metricas
   if (base === '/inspiracion/brief')      return { brief: 'Brief de inspiración no disponible.' }
+  if (base === '/columnas' && method === 'GET')    return { columnas: [] }
+  if (base.match(/^\/columnas\/\d+\/generar/) && method === 'POST') return { ok: true, piezas_generadas: ['linkedin', 'facebook', 'x', 'threads', 'guion_video'] }
 
   // Posts extraídos — mock vacío en dev (la BD real está en producción)
   if (base === '/inspiracion_posts.php' && method === 'GET') {

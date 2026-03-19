@@ -103,6 +103,22 @@ const FLUJOS = [
     ],
   },
   {
+    id: 'K',
+    titulo: 'Flujo K — Columnas SM / HH',
+    descripcion: 'Detección automática de columnas publicadas en Soy.Marketing y hanshatch.com, generación de distribución y re-promoción futura.',
+    color: '#86a43b',
+    pasos: [
+      { agente: 'sistema', accion: 'Cron cada 4 horas — revisa RSS/WordPress de SM y HH',           tiempo: 'Cada 4h'   },
+      { agente: 'floki',   accion: 'Detecta columna nueva de Hans · guarda en blog_articulos',       tiempo: 'Auto'      },
+      { agente: 'hans',    accion: 'Telegram: "Columna publicada: [título]" + botón Generar',         tiempo: 'Notif'     },
+      { agente: 'hans',    accion: 'Hans da clic en Telegram (o desde dashboard)',                   tiempo: 'Manual'    },
+      { agente: 'bragi',   accion: 'Genera 5 piezas: LinkedIn · Facebook · X · Threads · Guión',     tiempo: '~30-60s'   },
+      { agente: 'hans',    accion: 'Cada pieza llega a Telegram con [Aprobar] [Rechazar]',           tiempo: 'Manual'    },
+      { agente: 'frigg',   accion: 'Piezas aprobadas → Publer para programar',                       tiempo: 'Auto'      },
+      { agente: 'sistema', accion: 'Columna queda en historial para re-promoción futura',            tiempo: 'Siempre'   },
+    ],
+  },
+  {
     id: 'I',
     titulo: 'Flujo I — Inspiración Kvasir',
     descripcion: 'Scraping, análisis visual, scoring y brief mensual de cuentas referentes de Instagram.',

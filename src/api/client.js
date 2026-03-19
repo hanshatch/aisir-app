@@ -69,4 +69,8 @@ export const api = {
   },
   feedbackPost: (id, body) => req(`/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
   scrapeInspiracion: () => req('/inspiracion/scrape', { method: 'POST' }),
+
+  // Columnas SM / HH
+  columnas:      (params = {}) => req(`/columnas${new URLSearchParams(params).toString() ? '?' + new URLSearchParams(params).toString() : ''}`),
+  generarColumna: (id)         => req(`/columnas/${id}/generar`, { method: 'POST' }),
 }
