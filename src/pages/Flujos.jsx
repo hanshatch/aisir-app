@@ -1,22 +1,28 @@
-import { useState } from 'react'
-import { GitBranch, Clock } from 'lucide-react'
+import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
+import { useQuery } from '@tanstack/react-query'
+import { api } from '../api/client'
+import {
+  GitBranch, Clock, User, Send, CalendarCheck, Search, FileText,
+  Share2, Palette, CalendarDays, Brain, Bot, Eye, Sparkles,
+  TrendingUp, Zap,
+} from 'lucide-react'
 
 const AGENT_COLORS = {
-  aisir:     { color: '#86a43b', label: 'AiSir' },
-  huginn:    { color: '#86a43b', label: 'Huginn' },
-  bragi:     { color: '#86a43b', label: 'Bragi' },
-  loki:      { color: '#86a43b', label: 'Loki' },
-  floki: { color: '#86a43b', label: 'Floki' },
-  kvasir:    { color: '#86a43b', label: 'Kvasir' },
-  idunn:     { color: '#86a43b', label: 'Idunn' },
-  odin:      { color: '#878787', label: 'Odin' },
-  frigg:     { color: '#86a43b', label: 'Frigg' },
-  mimir:     { color: '#86a43b', label: 'Mimir' },
-  hans:      { color: '#86a43b', label: 'Hans' },
-  telegram:  { color: '#86a43b', label: 'Telegram' },
-  publer:    { color: '#86a43b', label: 'Publer' },
-  serpapi:   { color: '#86a43b', label: 'SerpAPI' },
-  sistema:   { color: '#878787', label: 'Sistema' },
+  aisir:    { color: '#4f9eff', label: 'AiSir',    icon: Bot         },
+  huginn:   { color: '#a78bfa', label: 'Huginn',   icon: Search      },
+  bragi:    { color: '#34d399', label: 'Bragi',    icon: FileText    },
+  loki:     { color: '#f59e0b', label: 'Loki',     icon: Share2      },
+  floki:    { color: '#10b981', label: 'Floki',    icon: TrendingUp  },
+  kvasir:   { color: '#e879f9', label: 'Kvasir',   icon: Sparkles    },
+  idunn:    { color: '#fb923c', label: 'Idunn',    icon: Palette     },
+  odin:     { color: '#f43f5e', label: 'Odin',     icon: Eye         },
+  frigg:    { color: '#06b6d4', label: 'Frigg',    icon: CalendarDays},
+  mimir:    { color: '#8b5cf6', label: 'Mimir',    icon: Brain       },
+  hans:     { color: '#373737', label: 'Hans',     icon: User        },
+  telegram: { color: '#2AABEE', label: 'Telegram', icon: Send        },
+  publer:   { color: '#5ba4cf', label: 'Publer',   icon: CalendarCheck},
+  serpapi:  { color: '#f59e0b', label: 'SerpAPI',  icon: Search      },
+  sistema:  { color: '#878787', label: 'Sistema',  icon: Zap         },
 }
 
 const FLUJOS = [
@@ -26,15 +32,20 @@ const FLUJOS = [
     descripcion: 'Ciclo semanal completo: curaduría, redacción, adaptación y programación.',
     color: '#86a43b',
     pasos: [
-      { agente: 'sistema', accion: 'Lunes 6 AM — Trigger automático semanal',                                   tiempo: 'Lun 6:00'   },
-      { agente: 'huginn',  accion: 'Curador genera brief con temas y scoring',                                  tiempo: '~20min'     },
-      { agente: 'hans',    accion: 'Hans aprueba temas vía Telegram',                                          tiempo: 'Manual'     },
-      { agente: 'bragi',   accion: 'Redactor genera contenido base (artículo/newsletter/script)',               tiempo: '~15min'     },
-      { agente: 'loki',    accion: 'Social Media adapta para cada red',                                        tiempo: '~10min'     },
-      { agente: 'idunn',   accion: 'Creativo genera prompts DALL-E y estructura carousel',                     tiempo: '~5min'      },
-      { agente: 'hans',    accion: 'Hans revisa y aprueba/edita en Telegram',                                  tiempo: 'Manual'     },
-      { agente: 'frigg',   accion: 'Planner programa en Publer con horarios óptimos',                          tiempo: '~5min'      },
-      { agente: 'mimir',   accion: 'Dom 9 PM — Cerebro Hans consolida aprendizajes',                           tiempo: 'Dom 21:00'  },
+      { agente: 'sistema', accion: 'Trigger semanal automático',          tiempo: 'Lun 6:00'  },
+      { agente: 'huginn',  accion: 'Genera brief con temas y scoring',    tiempo: '~20min'    },
+      { agente: 'hans',    accion: 'Aprueba temas vía Telegram',          tiempo: 'Manual'    },
+      { agente: 'bragi',   accion: 'Genera contenido base (artículo / newsletter / script)', tiempo: '~15min' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'loki',  accion: 'Adapta contenido para cada red social', tiempo: '~10min' },
+          { agente: 'idunn', accion: 'Genera prompts DALL-E y carousel',      tiempo: '~5min'  },
+        ],
+      },
+      { agente: 'hans',  accion: 'Revisa y aprueba/edita en Telegram',   tiempo: 'Manual'    },
+      { agente: 'frigg', accion: 'Programa en Publer con horarios óptimos', tiempo: '~5min'  },
+      { agente: 'mimir', accion: 'Consolida aprendizajes de la semana',   tiempo: 'Dom 21:00' },
     ],
   },
   {
@@ -43,12 +54,32 @@ const FLUJOS = [
     descripcion: 'Publicación on-demand desde foto o audio enviado por Telegram.',
     color: '#86a43b',
     pasos: [
-      { agente: 'hans',   accion: 'Hans envía foto o audio a Telegram',                                        tiempo: 'On-demand'  },
-      { agente: 'aisir',  accion: 'Orquestador detecta media y activa Modo Momento',                           tiempo: '<1s'        },
-      { agente: 'bragi',  accion: 'Vision (GPT-4o) analiza la foto O Whisper transcribe audio',                tiempo: '~5s'        },
-      { agente: 'loki',   accion: 'Social Media genera posts para 4 redes simultáneamente',                    tiempo: '~10min'     },
-      { agente: 'hans',   accion: 'Preview en Telegram — Hans aprueba por red',                                tiempo: 'Manual'     },
-      { agente: 'publer', accion: 'LinkedIn/IG/FB → Publer; X → API directa',                                 tiempo: '<30s'       },
+      { agente: 'hans',  accion: 'Envía foto o audio por Telegram',       tiempo: 'On-demand' },
+      { agente: 'aisir', accion: 'Detecta media y activa Modo Momento',   tiempo: '<1s'       },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'bragi', accion: 'GPT-4o Vision analiza la foto',     tiempo: '~5s'  },
+          { agente: 'bragi', accion: 'Whisper transcribe el audio',       tiempo: '~10s' },
+        ],
+      },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'loki', accion: 'Genera post LinkedIn',               tiempo: '~3min' },
+          { agente: 'loki', accion: 'Genera post Instagram',              tiempo: '~3min' },
+          { agente: 'loki', accion: 'Genera post X (Twitter)',            tiempo: '~2min' },
+          { agente: 'loki', accion: 'Genera post Facebook',               tiempo: '~2min' },
+        ],
+      },
+      { agente: 'hans', accion: 'Revisa preview por red y aprueba',       tiempo: 'Manual' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'publer', accion: 'Programa LinkedIn + IG + FB',      tiempo: '<10s' },
+          { agente: 'sistema', accion: 'X → publica vía API directa',     tiempo: '<5s'  },
+        ],
+      },
     ],
   },
   {
@@ -57,11 +88,24 @@ const FLUJOS = [
     descripcion: 'Monitoreo de líderes y generación de comentarios estratégicos.',
     color: '#878787',
     pasos: [
-      { agente: 'sistema', accion: '9 AM y 3 PM — Trigger automático Odin',                                   tiempo: '2x/día'     },
-      { agente: 'odin',    accion: 'Escanea posts recientes de líderes monitoreados',                          tiempo: '~2min'      },
-      { agente: 'odin',    accion: 'Score ≥70 activa generación de 2 versiones',                               tiempo: '~5min'      },
-      { agente: 'hans',    accion: 'Hans elige versión preferida vía Telegram',                                tiempo: 'Manual'     },
-      { agente: 'publer',  accion: 'X → publica automático; LinkedIn → copia + URL',                          tiempo: '<10s'       },
+      { agente: 'sistema', accion: 'Trigger automático 9 AM y 3 PM',     tiempo: '2x/día'  },
+      { agente: 'odin',    accion: 'Escanea posts de líderes monitoreados', tiempo: '~2min' },
+      { agente: 'odin',    accion: 'Score ≥70 → activa generación',       tiempo: '~1min'   },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'odin', accion: 'Genera versión A — directa / confrontacional', tiempo: '~3min' },
+          { agente: 'odin', accion: 'Genera versión B — constructiva / autoridad',  tiempo: '~3min' },
+        ],
+      },
+      { agente: 'hans', accion: 'Elige versión preferida en Telegram',    tiempo: 'Manual' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'sistema', accion: 'X → publica automáticamente',    tiempo: '<5s'   },
+          { agente: 'hans',    accion: 'LinkedIn → copia texto + abre URL', tiempo: 'Manual' },
+        ],
+      },
     ],
   },
   {
@@ -70,18 +114,37 @@ const FLUJOS = [
     descripcion: 'Producción quincenal: artículo SEO para Soy.Marketing + distribución de piezas por red.',
     color: '#86a43b',
     pasos: [
-      { agente: 'sistema',   accion: '/proponer_articulo — Jueves 6 PM auto o Hans lo dispara manualmente',   tiempo: 'Jueves'     },
-      { agente: 'floki', accion: 'Propone 5 temas SEO con keyword, dificultad y justificación (SerpAPI)', tiempo: '~40-60s'    },
-      { agente: 'hans',      accion: 'Hans elige el tema en Telegram (botón de selección)',                   tiempo: 'Manual'     },
-      { agente: 'floki', accion: '/articulo [tema_id] — Investiga top 10 SERP + PAA + brechas de contenido', tiempo: '~15min' },
-      { agente: 'bragi',     accion: 'Redacta artículo 2000+ palabras con voz de Hans y Brand Voice',        tiempo: '~20min'     },
-      { agente: 'floki', accion: 'Audita artículo — score ≥80/100 en 10 criterios (SEO, EEAT, voz…)',    tiempo: '~5min'      },
-      { agente: 'hans',      accion: 'Recibe artículo + score en Telegram — aprueba o rechaza',              tiempo: 'Manual'     },
-      { agente: 'sistema',   accion: 'Artículo aprobado se sube a Google Drive (.docx)',                      tiempo: '<10s'       },
-      { agente: 'hans',      accion: '/articulo [URL] — Hans publica en Soy.Marketing y envía la URL',       tiempo: 'Manual'     },
-      { agente: 'bragi',     accion: 'Genera distribución: post LinkedIn, Facebook, X + guión video + WhatsApp', tiempo: '~10min' },
-      { agente: 'hans',      accion: 'Hans aprueba cada pieza de distribución en Telegram',                  tiempo: 'Manual'     },
-      { agente: 'frigg',     accion: 'Programa piezas aprobadas en Publer con horarios óptimos',             tiempo: '~5min'      },
+      { agente: 'sistema', accion: 'Trigger /proponer_articulo (Jueves 6 PM o manual)', tiempo: 'Jueves' },
+      { agente: 'floki',   accion: 'Propone 5 temas SEO con keyword y scoring',  tiempo: '~40-60s' },
+      { agente: 'hans',    accion: 'Elige tema en Telegram',                      tiempo: 'Manual'  },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'floki', accion: 'Investiga top 10 SERP + PAA',              tiempo: '~10min' },
+          { agente: 'floki', accion: 'Detecta brechas de contenido y keywords',  tiempo: '~5min'  },
+        ],
+      },
+      { agente: 'bragi', accion: 'Redacta artículo 2000+ palabras',              tiempo: '~20min' },
+      { agente: 'floki', accion: 'Audita artículo — score ≥80/100',              tiempo: '~5min'  },
+      { agente: 'hans',  accion: 'Aprueba artículo + score en Telegram',         tiempo: 'Manual' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'sistema', accion: 'Sube .docx a Google Drive',             tiempo: '<10s'  },
+          { agente: 'hans',    accion: 'Publica en Soy.Marketing y envía URL',  tiempo: 'Manual' },
+        ],
+      },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'bragi', accion: 'Post LinkedIn',                            tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post Facebook',                            tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post X',                                   tiempo: '~1min' },
+          { agente: 'bragi', accion: 'Guión video + WhatsApp',                   tiempo: '~3min' },
+        ],
+      },
+      { agente: 'hans',  accion: 'Aprueba cada pieza en Telegram',               tiempo: 'Manual' },
+      { agente: 'frigg', accion: 'Programa piezas aprobadas en Publer',          tiempo: '~5min'  },
     ],
   },
   {
@@ -90,16 +153,29 @@ const FLUJOS = [
     descripcion: 'Publicación mensual en hanshatch.com (WordPress) con guión de video y distribución por redes.',
     color: '#86a43b',
     pasos: [
-      { agente: 'sistema',   accion: '/blog [keyword] — Día 1 del mes auto o Hans lo dispara manualmente',   tiempo: 'Mensual'    },
-      { agente: 'floki', accion: 'Investiga top 10 SERP para la keyword seleccionada',                   tiempo: '~15min'     },
-      { agente: 'bragi',     accion: 'Redacta artículo blog con HTML listo para WordPress + excerpt + SEO',  tiempo: '~20min'     },
-      { agente: 'sistema',   accion: 'Sube borrador a WordPress (draft) — Hans recibe link de edición',      tiempo: '<10s'       },
-      { agente: 'bragi',     accion: 'Genera guión de video basado en el artículo → sube a Google Drive',    tiempo: '~10min'     },
-      { agente: 'hans',      accion: 'Hans revisa borrador en WordPress, edita y publica manualmente',       tiempo: 'Manual'     },
-      { agente: 'sistema',   accion: 'Monitor detecta publicación → dispara generación de posts',            tiempo: 'Auto'       },
-      { agente: 'bragi',     accion: 'Genera posts de distribución por red (LinkedIn, IG, X, WhatsApp)',     tiempo: '~10min'     },
-      { agente: 'hans',      accion: 'Hans aprueba posts de distribución en Telegram',                       tiempo: 'Manual'     },
-      { agente: 'frigg',     accion: 'Programa posts aprobados en Publer',                                   tiempo: '~5min'      },
+      { agente: 'sistema', accion: 'Trigger /blog [keyword] — Día 1 del mes o manual', tiempo: 'Mensual' },
+      { agente: 'floki',   accion: 'Investiga top 10 SERP para la keyword',     tiempo: '~15min'  },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'bragi', accion: 'Redacta artículo HTML para WordPress',     tiempo: '~20min' },
+          { agente: 'bragi', accion: 'Genera guión de video del artículo',       tiempo: '~10min' },
+        ],
+      },
+      { agente: 'sistema', accion: 'Sube borrador a WordPress — Hans recibe link', tiempo: '<10s' },
+      { agente: 'hans',    accion: 'Edita borrador y publica en WordPress',      tiempo: 'Manual'  },
+      { agente: 'sistema', accion: 'Monitor detecta publicación → dispara posts', tiempo: 'Auto'  },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'bragi', accion: 'Post LinkedIn',                             tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post Instagram',                            tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post X',                                    tiempo: '~1min' },
+          { agente: 'bragi', accion: 'Mensaje WhatsApp',                          tiempo: '~1min' },
+        ],
+      },
+      { agente: 'hans',  accion: 'Aprueba posts en Telegram',                    tiempo: 'Manual' },
+      { agente: 'frigg', accion: 'Programa posts aprobados en Publer',           tiempo: '~5min'  },
     ],
   },
   {
@@ -108,14 +184,29 @@ const FLUJOS = [
     descripcion: 'Detección automática de columnas publicadas en Soy.Marketing y hanshatch.com, generación de distribución y re-promoción futura.',
     color: '#86a43b',
     pasos: [
-      { agente: 'sistema', accion: 'Cron cada 4 horas — revisa RSS/WordPress de SM y HH',           tiempo: 'Cada 4h'   },
-      { agente: 'floki',   accion: 'Detecta columna nueva de Hans · guarda en blog_articulos',       tiempo: 'Auto'      },
-      { agente: 'hans',    accion: 'Telegram: "Columna publicada: [título]" + botón Generar',         tiempo: 'Notif'     },
-      { agente: 'hans',    accion: 'Hans da clic en Telegram (o desde dashboard)',                   tiempo: 'Manual'    },
-      { agente: 'bragi',   accion: 'Genera 5 piezas: LinkedIn · Facebook · X · Threads · Guión',     tiempo: '~30-60s'   },
-      { agente: 'hans',    accion: 'Cada pieza llega a Telegram con [Aprobar] [Rechazar]',           tiempo: 'Manual'    },
-      { agente: 'frigg',   accion: 'Piezas aprobadas → Publer para programar',                       tiempo: 'Auto'      },
-      { agente: 'sistema', accion: 'Columna queda en historial para re-promoción futura',            tiempo: 'Siempre'   },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'sistema', accion: 'Cron cada 4h — RSS Soy.Marketing', tiempo: 'Cada 4h' },
+          { agente: 'sistema', accion: 'Cron cada 4h — RSS hanshatch.com', tiempo: 'Cada 4h' },
+        ],
+      },
+      { agente: 'floki', accion: 'Detecta columna nueva y guarda en BD',   tiempo: 'Auto'    },
+      { agente: 'hans',  accion: 'Notificación + botón Generar en Telegram', tiempo: 'Notif' },
+      { agente: 'hans',  accion: 'Confirma generación (Telegram o dashboard)', tiempo: 'Manual' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'bragi', accion: 'Post LinkedIn',                       tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post Facebook',                       tiempo: '~2min' },
+          { agente: 'bragi', accion: 'Post X',                              tiempo: '~1min' },
+          { agente: 'bragi', accion: 'Post Threads',                        tiempo: '~1min' },
+          { agente: 'bragi', accion: 'Guión / script',                      tiempo: '~3min' },
+        ],
+      },
+      { agente: 'hans',   accion: 'Aprueba/rechaza cada pieza en Telegram', tiempo: 'Manual'   },
+      { agente: 'frigg',  accion: 'Piezas aprobadas → Publer',              tiempo: 'Auto'     },
+      { agente: 'sistema', accion: 'Guarda en historial para re-promoción', tiempo: 'Siempre'  },
     ],
   },
   {
@@ -124,25 +215,340 @@ const FLUJOS = [
     descripcion: 'Scraping, análisis visual, scoring y brief mensual de cuentas referentes de Instagram.',
     color: '#86a43b',
     pasos: [
-      { agente: 'sistema', accion: 'Paso 1 — Lunes 6:30 AM (auto) o POST /inspiracion/scrape (manual)',       tiempo: 'Lun 6:30'   },
-      { agente: 'kvasir',  accion: 'Lee inspiracion_cuentas · llama Apify por cada cuenta activa',            tiempo: '~10min'     },
-      { agente: 'kvasir',  accion: 'Guarda posts en inspiracion_posts: caption, likes, media, estado=pendiente', tiempo: '~2min'   },
-      { agente: 'sistema', accion: 'Paso 2 — Lunes 7:30 AM · Extracción visual de posts sin texto_visual',    tiempo: 'Lun 7:30'   },
-      { agente: 'kvasir',  accion: 'Imagen → GPT-4o Vision extrae texto visible del visual',                  tiempo: '~5s/post'   },
-      { agente: 'kvasir',  accion: 'Video → ffmpeg extrae audio → Whisper transcribe',                        tiempo: '~30s/post'  },
-      { agente: 'kvasir',  accion: 'Resultado guardado en texto_visual en BD',                                tiempo: 'Auto'       },
-      { agente: 'sistema', accion: 'Paso 3 — Lunes 8:00 AM · Análisis y scoring con GPT-4o',                  tiempo: 'Lun 8:00'   },
-      { agente: 'kvasir',  accion: 'GPT-4o analiza como Hans: hook, formato, tema, por_qué',                  tiempo: '~5s/post'   },
-      { agente: 'kvasir',  accion: 'Asigna score 0-100 (relevancia pilares + hook + engagement)',              tiempo: 'Auto'       },
-      { agente: 'kvasir',  accion: 'Actualiza estado = analizado en BD',                                      tiempo: 'Auto'       },
-      { agente: 'sistema', accion: 'Paso 4 — Día 1 de cada mes · Brief mensual',                              tiempo: 'Mensual'    },
-      { agente: 'kvasir',  accion: 'Toma posts top-score del mes · GPT-4o genera brief JSON',                 tiempo: '~10min'     },
-      { agente: 'kvasir',  accion: 'Brief: patrones_formato, temas_engagement, recomendaciones, resumen',     tiempo: 'Auto'       },
-      { agente: 'kvasir',  accion: 'Guarda en inspiracion_briefs · envía resumen por Telegram',               tiempo: 'Auto'       },
-      { agente: 'hans',    accion: 'Paso 5 — Frontend consume: posts analizados + brief desde app-aisir',     tiempo: 'On-demand'  },
+      { agente: 'sistema', accion: 'Trigger Lunes 6:30 AM o POST /inspiracion/scrape', tiempo: 'Lun 6:30' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'kvasir', accion: 'Scraping cuenta 1 vía Apify', tiempo: '~10min' },
+          { agente: 'kvasir', accion: 'Scraping cuenta 2 vía Apify', tiempo: '~10min' },
+          { agente: 'kvasir', accion: 'Scraping cuenta N vía Apify', tiempo: '~10min' },
+        ],
+      },
+      { agente: 'kvasir',  accion: 'Guarda posts en BD (estado=pendiente)',  tiempo: '~2min'    },
+      { agente: 'sistema', accion: 'Trigger Lunes 7:30 AM — extracción visual', tiempo: 'Lun 7:30' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'kvasir', accion: 'Imagen → GPT-4o Vision extrae texto visible', tiempo: '~5s/post'  },
+          { agente: 'kvasir', accion: 'Video → ffmpeg + Whisper transcribe audio',   tiempo: '~30s/post' },
+        ],
+      },
+      { agente: 'kvasir',  accion: 'Guarda texto_visual en BD',              tiempo: 'Auto'     },
+      { agente: 'sistema', accion: 'Trigger Lunes 8:00 AM — análisis y scoring', tiempo: 'Lun 8:00' },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'kvasir', accion: 'Analiza hook, formato y tema (GPT-4o)', tiempo: '~5s/post' },
+          { agente: 'kvasir', accion: 'Asigna score 0-100 por relevancia',     tiempo: '~2s/post' },
+        ],
+      },
+      { agente: 'kvasir',  accion: 'Actualiza estado=analizado en BD',       tiempo: 'Auto'     },
+      { agente: 'sistema', accion: 'Trigger Día 1 del mes — brief mensual',  tiempo: 'Mensual'  },
+      {
+        type: 'parallel',
+        branches: [
+          { agente: 'kvasir', accion: 'Genera brief: tendencias y formatos',    tiempo: '~5min' },
+          { agente: 'kvasir', accion: 'Genera recomendaciones para Hans',       tiempo: '~5min' },
+        ],
+      },
+      { agente: 'kvasir', accion: 'Guarda brief en BD · envía resumen por Telegram', tiempo: 'Auto' },
+      { agente: 'hans',   accion: 'Consulta posts + brief desde app-aisir',   tiempo: 'On-demand' },
     ],
   },
 ]
+
+// ─── Diagrama de nodos ────────────────────────────────────────────────────────
+
+const AVATAR_AGENTS = new Set(['aisir', 'huginn', 'bragi', 'loki', 'floki', 'kvasir', 'idunn', 'odin', 'frigg', 'mimir'])
+
+const NODE_W = 110
+const NODE_H = 134
+const GAP_Y  = 10   // gap entre ramas paralelas
+const FW     = 30   // ancho del SVG fork/join
+
+function NodeCard({ paso, stepNum }) {
+  const agent = AGENT_COLORS[paso.agente] ?? { color: '#878787', label: paso.agente, icon: Zap }
+  const Icon  = agent.icon
+  return (
+    <div style={{
+      width: NODE_W, height: NODE_H,
+      background: '#ffffff',
+      border: '1px solid #e4e1db',
+      borderRadius: 10,
+      padding: '12px 10px 10px',
+      display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 7,
+      boxShadow: '0 2px 8px rgba(0,0,0,0.07)',
+      flexShrink: 0, position: 'relative',
+    }}>
+      {/* Número de paso */}
+      {stepNum !== undefined && (
+        <div style={{
+          position: 'absolute', top: -8, right: -8,
+          width: 18, height: 18, borderRadius: '50%',
+          background: agent.color,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: '"Roboto Mono", monospace', fontSize: 9, fontWeight: 700,
+          color: '#ffffff',
+          boxShadow: '0 1px 4px rgba(0,0,0,0.18)',
+          zIndex: 2,
+        }}>
+          {stepNum}
+        </div>
+      )}
+
+      {AVATAR_AGENTS.has(paso.agente) ? (
+        <img
+          src={`/avatars/${paso.agente}.png`}
+          alt={agent.label}
+          style={{ width: 42, height: 42, borderRadius: 9, objectFit: 'cover', flexShrink: 0 }}
+        />
+      ) : (
+        <div style={{
+          width: 42, height: 42, borderRadius: 9,
+          background: agent.color + '18',
+          border: `1.5px solid ${agent.color}40`,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          flexShrink: 0,
+        }}>
+          <Icon size={19} style={{ color: agent.color }} strokeWidth={1.8} />
+        </div>
+      )}
+      <span style={{
+        fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700,
+        color: agent.color, textAlign: 'center',
+      }}>
+        {agent.label}
+      </span>
+      {/* Texto resumido — 1 línea, el detalle está abajo */}
+      <p style={{
+        fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#878787',
+        lineHeight: 1.35, textAlign: 'center', margin: 0, flex: 1,
+        display: '-webkit-box', WebkitLineClamp: 2,
+        WebkitBoxOrient: 'vertical', overflow: 'hidden',
+      }}>
+        {paso.accion}
+      </p>
+      <span style={{
+        fontFamily: '"Roboto Mono", monospace', fontSize: 8,
+        color: '#ababab', background: '#f5f3f0',
+        padding: '2px 6px', borderRadius: 4, whiteSpace: 'nowrap',
+      }}>
+        {paso.tiempo}
+      </span>
+    </div>
+  )
+}
+
+function Connector() {
+  return (
+    <div style={{ width: 36, flexShrink: 0, display: 'flex', alignItems: 'center' }}>
+      <svg width="36" height="16" viewBox="0 0 36 16" fill="none">
+        <line x1="1" y1="8" x2="27" y2="8" stroke="#ccc8c2" strokeWidth="1.5" strokeDasharray="3 2"/>
+        <polyline points="23,4 29,8 23,12" stroke="#ccc8c2" strokeWidth="1.5"
+          strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      </svg>
+    </div>
+  )
+}
+
+function ParallelBlock({ branches, startNum }) {
+  const n      = branches.length
+  const totalH = n * NODE_H + (n - 1) * GAP_Y
+  const midY   = totalH / 2
+  const centers = Array.from({ length: n }, (_, i) => i * (NODE_H + GAP_Y) + NODE_H / 2)
+  const topC   = centers[0]
+  const botC   = centers[n - 1]
+
+  return (
+    <div style={{ display: 'flex', alignItems: 'flex-start' }}>
+      {/* Fork SVG */}
+      <svg width={FW} height={totalH} viewBox={`0 0 ${FW} ${totalH}`} fill="none" style={{ flexShrink: 0, display: 'block' }}>
+        <line x1="0" y1={midY} x2={FW / 2} y2={midY} stroke="#ccc8c2" strokeWidth="1.5"/>
+        <line x1={FW / 2} y1={topC} x2={FW / 2} y2={botC} stroke="#ccc8c2" strokeWidth="1.5"/>
+        {centers.map((cy, i) => (
+          <line key={i} x1={FW / 2} y1={cy} x2={FW} y2={cy} stroke="#ccc8c2" strokeWidth="1.5" strokeDasharray="3 2"/>
+        ))}
+        {centers.map((cy, i) => (
+          <circle key={i} cx={FW / 2} cy={cy} r="2.5" fill="#ccc8c2"/>
+        ))}
+        <circle cx={FW / 2} cy={midY} r="3" fill="white" stroke="#ccc8c2" strokeWidth="1.5"/>
+      </svg>
+
+      {/* Stacked nodes */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: GAP_Y }}>
+        {branches.map((branch, i) => <NodeCard key={i} paso={branch} stepNum={startNum !== undefined ? startNum + i : undefined} />)}
+      </div>
+
+      {/* Join SVG */}
+      <svg width={FW} height={totalH} viewBox={`0 0 ${FW} ${totalH}`} fill="none" style={{ flexShrink: 0, display: 'block' }}>
+        {centers.map((cy, i) => (
+          <line key={i} x1="0" y1={cy} x2={FW / 2} y2={cy} stroke="#ccc8c2" strokeWidth="1.5" strokeDasharray="3 2"/>
+        ))}
+        {centers.map((cy, i) => (
+          <circle key={i} cx={FW / 2} cy={cy} r="2.5" fill="#ccc8c2"/>
+        ))}
+        <line x1={FW / 2} y1={topC} x2={FW / 2} y2={botC} stroke="#ccc8c2" strokeWidth="1.5"/>
+        <line x1={FW / 2} y1={midY} x2={FW} y2={midY} stroke="#ccc8c2" strokeWidth="1.5"/>
+        <circle cx={FW / 2} cy={midY} r="3" fill="white" stroke="#ccc8c2" strokeWidth="1.5"/>
+        <polyline points={`${FW - 8},${midY - 4} ${FW - 2},${midY} ${FW - 8},${midY + 4}`}
+          stroke="#ccc8c2" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" fill="none"/>
+      </svg>
+    </div>
+  )
+}
+
+function FlowCanvas({ children }) {
+  const [zoom, setZoom]       = useState(0.82)
+  const [pan, setPan]         = useState({ x: 28, y: 28 })
+  const [dragging, setDrag]   = useState(false)
+  const dragRef               = useRef(null)
+  const containerRef          = useRef(null)
+
+  const handleWheel = useCallback((e) => {
+    e.preventDefault()
+    const delta = e.deltaY < 0 ? 0.08 : -0.08
+    setZoom(z => Math.min(2.5, Math.max(0.2, z + delta)))
+  }, [])
+
+  useEffect(() => {
+    const el = containerRef.current
+    if (!el) return
+    el.addEventListener('wheel', handleWheel, { passive: false })
+    return () => el.removeEventListener('wheel', handleWheel)
+  }, [handleWheel])
+
+  const onMouseDown = (e) => {
+    if (e.button !== 0) return
+    setDrag(true)
+    dragRef.current = { sx: e.clientX - pan.x, sy: e.clientY - pan.y }
+  }
+  const onMouseMove = (e) => {
+    if (!dragging || !dragRef.current) return
+    setPan({ x: e.clientX - dragRef.current.sx, y: e.clientY - dragRef.current.sy })
+  }
+  const onMouseUp = () => { setDrag(false); dragRef.current = null }
+
+  const fit = () => { setZoom(0.82); setPan({ x: 28, y: 28 }) }
+
+  return (
+    <div
+      ref={containerRef}
+      style={{
+        height: 490, overflow: 'hidden', position: 'relative',
+        background: '#faf9f7',
+        border: '1px solid #e4e1db', borderRadius: 10,
+        cursor: dragging ? 'grabbing' : 'grab',
+        userSelect: 'none',
+      }}
+      onMouseDown={onMouseDown}
+      onMouseMove={onMouseMove}
+      onMouseUp={onMouseUp}
+      onMouseLeave={onMouseUp}
+    >
+      {/* Dot grid (moves with pan) */}
+      <svg style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', pointerEvents: 'none' }}>
+        <defs>
+          <pattern
+            id="dotgrid"
+            x={pan.x % (18 * zoom)}
+            y={pan.y % (18 * zoom)}
+            width={18 * zoom}
+            height={18 * zoom}
+            patternUnits="userSpaceOnUse"
+          >
+            <circle cx="1" cy="1" r="0.9" fill="#d4cfc9" opacity="0.55"/>
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill="url(#dotgrid)"/>
+      </svg>
+
+      {/* Scrollable content */}
+      <div style={{
+        position: 'absolute', top: 0, left: 0,
+        transform: `translate(${pan.x}px, ${pan.y}px) scale(${zoom})`,
+        transformOrigin: '0 0',
+      }}>
+        {children}
+      </div>
+
+      {/* Controls */}
+      <div
+        style={{ position: 'absolute', bottom: 10, right: 10, display: 'flex', gap: 3 }}
+        onMouseDown={e => e.stopPropagation()}
+      >
+        {[
+          { label: '+', fn: () => setZoom(z => Math.min(2.5, z + 0.15)) },
+          { label: '⊡', fn: fit },
+          { label: '−', fn: () => setZoom(z => Math.max(0.2, z - 0.15)) },
+        ].map(({ label, fn }) => (
+          <button key={label} onClick={fn} style={{
+            width: 26, height: 26, borderRadius: 6,
+            background: '#ffffff', border: '1px solid #e4e1db',
+            cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontFamily: '"Roboto Mono", monospace', fontSize: 13, fontWeight: 700,
+            color: '#878787', boxShadow: '0 1px 3px rgba(0,0,0,0.08)',
+          }}>
+            {label}
+          </button>
+        ))}
+      </div>
+
+      {/* Zoom % */}
+      <div style={{ position: 'absolute', bottom: 14, left: 12, pointerEvents: 'none' }}>
+        <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 9, color: '#ababab' }}>
+          {Math.round(zoom * 100)}%
+        </span>
+      </div>
+
+      {/* Hint */}
+      <div style={{ position: 'absolute', top: 10, right: 10, pointerEvents: 'none' }}>
+        <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#ccc8c2' }}>
+          scroll para zoom · arrastrar para mover
+        </span>
+      </div>
+    </div>
+  )
+}
+
+function FlowDiagram({ pasos }) {
+  // Calcular números de paso (paralelas cuentan como n pasos seguidos)
+  let counter = 0
+  const withNums = pasos.map((paso) => {
+    if (paso.type === 'parallel') {
+      const start = counter + 1
+      counter += paso.branches.length
+      return { ...paso, startNum: start }
+    }
+    counter += 1
+    return { ...paso, stepNum: counter }
+  })
+
+  return (
+    <FlowCanvas>
+      <div style={{
+        display: 'inline-flex', alignItems: 'center',
+        padding: '20px 24px',
+      }}>
+        {withNums.map((paso, i) => {
+          const isLast     = i === withNums.length - 1
+          const isParallel = paso.type === 'parallel'
+
+          return (
+            <div key={i} style={{ display: 'flex', alignItems: 'center' }}>
+              {isParallel
+                ? <ParallelBlock branches={paso.branches} startNum={paso.startNum} />
+                : <NodeCard paso={paso} stepNum={paso.stepNum} />
+              }
+              {!isLast && <Connector />}
+            </div>
+          )
+        })}
+      </div>
+    </FlowCanvas>
+  )
+}
+
+// ─── Step list ────────────────────────────────────────────────────────────────
 
 function StepItem({ step, index, isLast, flowColor }) {
   const agent = AGENT_COLORS[step.agente] ?? { color: '#878787', label: step.agente }
@@ -207,73 +613,124 @@ function StepItem({ step, index, isLast, flowColor }) {
 }
 
 export default function Flujos() {
-  const [selected, setSelected] = useState(FLUJOS[0])
+  const { data: remoteFlujos } = useQuery({
+    queryKey: ['flujos'],
+    queryFn: api.flujos,
+    staleTime: 5 * 60 * 1000,      // considera fresco por 5 min
+    refetchOnWindowFocus: true,     // refresca al volver a la pestaña
+  })
+
+  const flujos = useMemo(() => {
+    if (Array.isArray(remoteFlujos) && remoteFlujos.length > 0) return remoteFlujos
+    return FLUJOS  // fallback al hardcoded si falla el API
+  }, [remoteFlujos])
+
+  const [selected,  setSelected]  = useState(null)
+  const [expanded, setExpanded]  = useState(false)
+
+  // Seleccionar el primero cuando carguen los flujos
+  useEffect(() => {
+    if (!selected && flujos.length > 0) setSelected(flujos[0])
+  }, [flujos, selected])
 
   return (
     <div style={{ display: 'flex', height: '100%' }}>
 
-      {/* Sidebar */}
+      {/* ── Sidebar colapsable ── */}
       <div style={{
-        width: 230, flexShrink: 0,
+        width: expanded ? 210 : 52,
+        flexShrink: 0,
         background: '#ffffff',
-        borderRight: '1px solid #ababab',
-        overflowY: 'auto',
+        borderRight: '1px solid #e4e1db',
         display: 'flex', flexDirection: 'column',
+        transition: 'width 0.18s ease',
+        overflow: 'hidden',
       }}>
-        <div style={{ padding: '24px 16px 12px' }}>
-          <p className="label-caps" style={{ marginBottom: 14 }}>Flujos del sistema</p>
-          <ul style={{ listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {FLUJOS.map((f) => {
-              const isActive = selected?.id === f.id
-              return (
-                <li key={f.id}>
-                  <button
-                    onClick={() => setSelected(f)}
-                    style={{
-                      width: '100%', textAlign: 'left',
-                      display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '9px 12px',
-                      borderRadius: 7,
-                      background: isActive ? f.color + '10' : 'transparent',
-                      boxShadow: isActive ? `inset 3px 0 0 ${f.color}` : 'none',
-                      border: 'none', cursor: 'pointer',
-                      transition: 'all 0.12s',
-                    }}
-                    onMouseEnter={(e) => {
-                      if (!isActive) e.currentTarget.style.background = '#efeded'
-                    }}
-                    onMouseLeave={(e) => {
-                      if (!isActive) e.currentTarget.style.background = 'transparent'
-                    }}
-                  >
+        {/* Toggle */}
+        <button
+          onClick={() => setExpanded(e => !e)}
+          title={expanded ? 'Colapsar' : 'Expandir'}
+          style={{
+            width: '100%', height: 44, flexShrink: 0,
+            background: 'transparent',
+            border: 'none', borderBottom: '1px solid #e4e1db',
+            cursor: 'pointer',
+            display: 'flex', alignItems: 'center',
+            justifyContent: expanded ? 'flex-end' : 'center',
+            padding: expanded ? '0 14px' : '0',
+            color: '#ababab',
+            transition: 'color 0.12s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = '#373737'; e.currentTarget.style.background = '#f5f3f0' }}
+          onMouseLeave={e => { e.currentTarget.style.color = '#ababab'; e.currentTarget.style.background = 'transparent' }}
+        >
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+            {expanded
+              ? <polyline points="9,2 4,7 9,12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+              : <polyline points="5,2 10,7 5,12" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"/>
+            }
+          </svg>
+        </button>
+
+        {/* Lista de flujos */}
+        <ul style={{
+          listStyle: 'none', flex: 1, overflowY: 'auto', overflowX: 'hidden',
+          padding: '8px 6px',
+          display: 'flex', flexDirection: 'column', gap: 2,
+          scrollbarWidth: 'thin', scrollbarColor: '#e4e1db transparent',
+        }}>
+          {flujos.map((f) => {
+            const isActive = selected?.id === f.id
+            return (
+              <li key={f.id}>
+                <button
+                  onClick={() => setSelected(f)}
+                  title={f.titulo}
+                  style={{
+                    width: '100%', textAlign: 'left',
+                    display: 'flex', alignItems: 'center', gap: 10,
+                    padding: expanded ? '8px 10px' : '8px 0',
+                    justifyContent: expanded ? 'flex-start' : 'center',
+                    borderRadius: 7,
+                    background: isActive ? f.color + '12' : 'transparent',
+                    boxShadow: isActive && expanded ? `inset 3px 0 0 ${f.color}` : 'none',
+                    border: 'none', cursor: 'pointer',
+                    transition: 'background 0.1s',
+                  }}
+                  onMouseEnter={e => { if (!isActive) e.currentTarget.style.background = '#f5f3f0' }}
+                  onMouseLeave={e => { if (!isActive) e.currentTarget.style.background = 'transparent' }}
+                >
+                  <span style={{
+                    fontFamily: '"Roboto Mono", monospace', fontSize: 10, fontWeight: 700,
+                    width: 24, height: 24, borderRadius: 6, flexShrink: 0,
+                    display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    background: isActive ? f.color : '#f0eeea',
+                    color: isActive ? '#ffffff' : '#878787',
+                    transition: 'all 0.12s',
+                  }}>
+                    {f.id}
+                  </span>
+                  {expanded && (
                     <span style={{
-                      fontFamily: '"Roboto Mono", monospace', fontSize: 10, fontWeight: 700,
-                      padding: '2px 6px',
-                      background: isActive ? f.color + '18' : '#efeded',
-                      color: isActive ? f.color : '#878787',
-                      border: `1px solid ${isActive ? f.color + '40' : '#ababab'}`,
-                      borderRadius: 4,
-                    }}>
-                      {f.id}
-                    </span>
-                    <span style={{
-                      fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: isActive ? 600 : 400,
+                      fontFamily: 'Roboto, sans-serif', fontSize: 12,
+                      fontWeight: isActive ? 600 : 400,
                       color: isActive ? '#373737' : '#878787',
-                      lineHeight: 1.3,
+                      whiteSpace: 'nowrap', overflow: 'hidden',
+                      textOverflow: 'ellipsis',
                     }}>
                       {f.titulo.split('—')[1]?.trim() ?? f.titulo}
                     </span>
-                  </button>
-                </li>
-              )
-            })}
-          </ul>
-        </div>
+                  )}
+                </button>
+              </li>
+            )
+          })}
+        </ul>
       </div>
 
       {/* Detail */}
       {selected && (
-        <div style={{ flex: 1, overflowY: 'auto', padding: '32px 32px 40px' }}>
+        <div style={{ flex: 1, overflowY: 'auto', padding: '28px 32px 40px' }}>
 
           {/* Header */}
           <div style={{ marginBottom: 28 }}>
@@ -326,6 +783,11 @@ export default function Flujos() {
                 {selected.pasos.length} pasos
               </span>
             </div>
+
+            {/* Diagrama horizontal */}
+            <FlowDiagram pasos={selected.pasos} />
+
+            <div style={{ borderTop: '1px solid #F0EEEA', margin: '20px 0 16px' }} />
 
             <ol style={{ listStyle: 'none' }}>
               {selected.pasos.map((paso, i) => (

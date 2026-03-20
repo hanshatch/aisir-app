@@ -1,0 +1,180 @@
+[
+  {
+    "id": "A",
+    "titulo": "Flujo A — Semana Estándar",
+    "descripcion": "Ciclo semanal completo: curaduría, redacción, adaptación y programación.",
+    "color": "#86a43b",
+    "pasos": [
+      { "agente": "sistema", "accion": "Trigger semanal automático",                         "tiempo": "Lun 6:00"  },
+      { "agente": "huginn",  "accion": "Genera brief con temas y scoring",                   "tiempo": "~20min"    },
+      { "agente": "hans",    "accion": "Aprueba temas vía Telegram",                         "tiempo": "Manual"    },
+      { "agente": "bragi",   "accion": "Genera contenido base (artículo / newsletter / script)", "tiempo": "~15min" },
+      { "type": "parallel", "branches": [
+        { "agente": "loki",  "accion": "Adapta contenido para cada red social",              "tiempo": "~10min" },
+        { "agente": "idunn", "accion": "Genera prompts DALL-E y carousel",                   "tiempo": "~5min"  }
+      ]},
+      { "agente": "hans",  "accion": "Revisa y aprueba/edita en Telegram",                   "tiempo": "Manual"    },
+      { "agente": "frigg", "accion": "Programa en Publer con horarios óptimos",              "tiempo": "~5min"     },
+      { "agente": "mimir", "accion": "Consolida aprendizajes de la semana",                  "tiempo": "Dom 21:00" }
+    ]
+  },
+  {
+    "id": "B",
+    "titulo": "Flujo B — Modo Momento",
+    "descripcion": "Publicación on-demand desde foto o audio enviado por Telegram.",
+    "color": "#86a43b",
+    "pasos": [
+      { "agente": "hans",  "accion": "Envía foto o audio por Telegram",                      "tiempo": "On-demand" },
+      { "agente": "aisir", "accion": "Detecta media y activa Modo Momento",                  "tiempo": "<1s"       },
+      { "type": "parallel", "branches": [
+        { "agente": "bragi", "accion": "GPT-4o Vision analiza la foto",                      "tiempo": "~5s"  },
+        { "agente": "bragi", "accion": "Whisper transcribe el audio",                        "tiempo": "~10s" }
+      ]},
+      { "type": "parallel", "branches": [
+        { "agente": "loki", "accion": "Genera post LinkedIn",                                "tiempo": "~3min" },
+        { "agente": "loki", "accion": "Genera post Instagram",                               "tiempo": "~3min" },
+        { "agente": "loki", "accion": "Genera post X (Twitter)",                             "tiempo": "~2min" },
+        { "agente": "loki", "accion": "Genera post Facebook",                                "tiempo": "~2min" }
+      ]},
+      { "agente": "hans", "accion": "Revisa preview por red y aprueba",                      "tiempo": "Manual" },
+      { "type": "parallel", "branches": [
+        { "agente": "publer",  "accion": "Programa LinkedIn + IG + FB",                      "tiempo": "<10s" },
+        { "agente": "sistema", "accion": "X → publica vía API directa",                      "tiempo": "<5s"  }
+      ]}
+    ]
+  },
+  {
+    "id": "C",
+    "titulo": "Flujo C — Comentario de Autoridad",
+    "descripcion": "Monitoreo de líderes y generación de comentarios estratégicos.",
+    "color": "#878787",
+    "pasos": [
+      { "agente": "sistema", "accion": "Trigger automático 9 AM y 3 PM",                     "tiempo": "2x/día"  },
+      { "agente": "odin",    "accion": "Escanea posts de líderes monitoreados",              "tiempo": "~2min"   },
+      { "agente": "odin",    "accion": "Score ≥70 → activa generación",                      "tiempo": "~1min"   },
+      { "type": "parallel", "branches": [
+        { "agente": "odin", "accion": "Genera versión A — directa / confrontacional",        "tiempo": "~3min" },
+        { "agente": "odin", "accion": "Genera versión B — constructiva / autoridad",         "tiempo": "~3min" }
+      ]},
+      { "agente": "hans", "accion": "Elige versión preferida en Telegram",                   "tiempo": "Manual" },
+      { "type": "parallel", "branches": [
+        { "agente": "sistema", "accion": "X → publica automáticamente",                      "tiempo": "<5s"    },
+        { "agente": "hans",    "accion": "LinkedIn → copia texto + abre URL",                "tiempo": "Manual" }
+      ]}
+    ]
+  },
+  {
+    "id": "E",
+    "titulo": "Flujo E — Artículo SM",
+    "descripcion": "Producción quincenal: artículo SEO para Soy.Marketing + distribución de piezas por red.",
+    "color": "#86a43b",
+    "pasos": [
+      { "agente": "sistema", "accion": "Trigger /proponer_articulo (Jueves 6 PM o manual)",  "tiempo": "Jueves"    },
+      { "agente": "floki",   "accion": "Propone 5 temas SEO con keyword y scoring",         "tiempo": "~40-60s"   },
+      { "agente": "hans",    "accion": "Elige tema en Telegram",                             "tiempo": "Manual"    },
+      { "type": "parallel", "branches": [
+        { "agente": "floki", "accion": "Investiga top 10 SERP + PAA",                       "tiempo": "~10min" },
+        { "agente": "floki", "accion": "Detecta brechas de contenido y keywords",           "tiempo": "~5min"  }
+      ]},
+      { "agente": "bragi", "accion": "Redacta artículo 2000+ palabras",                     "tiempo": "~20min"    },
+      { "agente": "floki", "accion": "Audita artículo — score ≥80/100",                     "tiempo": "~5min"     },
+      { "agente": "hans",  "accion": "Aprueba artículo + score en Telegram",                "tiempo": "Manual"    },
+      { "type": "parallel", "branches": [
+        { "agente": "sistema", "accion": "Sube .docx a Google Drive",                       "tiempo": "<10s"   },
+        { "agente": "hans",    "accion": "Publica en Soy.Marketing y envía URL",            "tiempo": "Manual" }
+      ]},
+      { "type": "parallel", "branches": [
+        { "agente": "bragi", "accion": "Post LinkedIn",                                      "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post Facebook",                                      "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post X",                                             "tiempo": "~1min" },
+        { "agente": "bragi", "accion": "Guión video + WhatsApp",                             "tiempo": "~3min" }
+      ]},
+      { "agente": "hans",  "accion": "Aprueba cada pieza en Telegram",                      "tiempo": "Manual"    },
+      { "agente": "frigg", "accion": "Programa piezas aprobadas en Publer",                 "tiempo": "~5min"     }
+    ]
+  },
+  {
+    "id": "W",
+    "titulo": "Flujo W — Artículo HH",
+    "descripcion": "Publicación mensual en hanshatch.com (WordPress) con guión de video y distribución por redes.",
+    "color": "#86a43b",
+    "pasos": [
+      { "agente": "sistema", "accion": "Trigger /blog [keyword] — Día 1 del mes o manual",  "tiempo": "Mensual"   },
+      { "agente": "floki",   "accion": "Investiga top 10 SERP para la keyword",             "tiempo": "~15min"    },
+      { "type": "parallel", "branches": [
+        { "agente": "bragi", "accion": "Redacta artículo HTML para WordPress",               "tiempo": "~20min" },
+        { "agente": "bragi", "accion": "Genera guión de video del artículo",                 "tiempo": "~10min" }
+      ]},
+      { "agente": "sistema", "accion": "Sube borrador a WordPress — Hans recibe link",      "tiempo": "<10s"      },
+      { "agente": "hans",    "accion": "Edita borrador y publica en WordPress",             "tiempo": "Manual"    },
+      { "agente": "sistema", "accion": "Monitor detecta publicación → dispara posts",       "tiempo": "Auto"      },
+      { "type": "parallel", "branches": [
+        { "agente": "bragi", "accion": "Post LinkedIn",                                      "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post Instagram",                                     "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post X",                                             "tiempo": "~1min" },
+        { "agente": "bragi", "accion": "Mensaje WhatsApp",                                   "tiempo": "~1min" }
+      ]},
+      { "agente": "hans",  "accion": "Aprueba posts en Telegram",                           "tiempo": "Manual"    },
+      { "agente": "frigg", "accion": "Programa posts aprobados en Publer",                  "tiempo": "~5min"     }
+    ]
+  },
+  {
+    "id": "K",
+    "titulo": "Flujo K — Columnas SM / HH",
+    "descripcion": "Detección automática de columnas publicadas en Soy.Marketing y hanshatch.com, generación de distribución y re-promoción futura.",
+    "color": "#86a43b",
+    "pasos": [
+      { "type": "parallel", "branches": [
+        { "agente": "sistema", "accion": "Cron cada 4h — RSS Soy.Marketing",                "tiempo": "Cada 4h" },
+        { "agente": "sistema", "accion": "Cron cada 4h — RSS hanshatch.com",                "tiempo": "Cada 4h" }
+      ]},
+      { "agente": "floki", "accion": "Detecta columna nueva y guarda en BD",                "tiempo": "Auto"      },
+      { "agente": "hans",  "accion": "Notificación + botón Generar en Telegram",            "tiempo": "Notif"     },
+      { "agente": "hans",  "accion": "Confirma generación (Telegram o dashboard)",          "tiempo": "Manual"    },
+      { "type": "parallel", "branches": [
+        { "agente": "bragi", "accion": "Post LinkedIn",                                      "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post Facebook",                                      "tiempo": "~2min" },
+        { "agente": "bragi", "accion": "Post X",                                             "tiempo": "~1min" },
+        { "agente": "bragi", "accion": "Post Threads",                                       "tiempo": "~1min" },
+        { "agente": "bragi", "accion": "Guión / script",                                     "tiempo": "~3min" }
+      ]},
+      { "agente": "hans",    "accion": "Aprueba/rechaza cada pieza en Telegram",            "tiempo": "Manual"    },
+      { "agente": "frigg",   "accion": "Piezas aprobadas → Publer",                         "tiempo": "Auto"      },
+      { "agente": "sistema", "accion": "Guarda en historial para re-promoción",             "tiempo": "Siempre"   }
+    ]
+  },
+  {
+    "id": "I",
+    "titulo": "Flujo I — Inspiración Kvasir",
+    "descripcion": "Scraping, análisis visual, scoring y brief mensual de cuentas referentes de Instagram.",
+    "color": "#86a43b",
+    "pasos": [
+      { "agente": "sistema", "accion": "Trigger Lunes 6:30 AM o POST /inspiracion/scrape",  "tiempo": "Lun 6:30"  },
+      { "type": "parallel", "branches": [
+        { "agente": "kvasir", "accion": "Scraping cuenta 1 vía Apify",                      "tiempo": "~10min" },
+        { "agente": "kvasir", "accion": "Scraping cuenta 2 vía Apify",                      "tiempo": "~10min" },
+        { "agente": "kvasir", "accion": "Scraping cuenta N vía Apify",                      "tiempo": "~10min" }
+      ]},
+      { "agente": "kvasir",  "accion": "Guarda posts en BD (estado=pendiente)",             "tiempo": "~2min"     },
+      { "agente": "sistema", "accion": "Trigger Lunes 7:30 AM — extracción visual",         "tiempo": "Lun 7:30"  },
+      { "type": "parallel", "branches": [
+        { "agente": "kvasir", "accion": "Imagen → GPT-4o Vision extrae texto visible",      "tiempo": "~5s/post"  },
+        { "agente": "kvasir", "accion": "Video → ffmpeg + Whisper transcribe audio",        "tiempo": "~30s/post" }
+      ]},
+      { "agente": "kvasir",  "accion": "Guarda texto_visual en BD",                         "tiempo": "Auto"      },
+      { "agente": "sistema", "accion": "Trigger Lunes 8:00 AM — análisis y scoring",        "tiempo": "Lun 8:00"  },
+      { "type": "parallel", "branches": [
+        { "agente": "kvasir", "accion": "Analiza hook, formato y tema (GPT-4o)",             "tiempo": "~5s/post"  },
+        { "agente": "kvasir", "accion": "Asigna score 0-100 por relevancia",                "tiempo": "~2s/post"  }
+      ]},
+      { "agente": "kvasir",  "accion": "Actualiza estado=analizado en BD",                  "tiempo": "Auto"      },
+      { "agente": "sistema", "accion": "Trigger Día 1 del mes — brief mensual",             "tiempo": "Mensual"   },
+      { "type": "parallel", "branches": [
+        { "agente": "kvasir", "accion": "Genera brief: tendencias y formatos",               "tiempo": "~5min" },
+        { "agente": "kvasir", "accion": "Genera recomendaciones para Hans",                  "tiempo": "~5min" }
+      ]},
+      { "agente": "kvasir", "accion": "Guarda brief en BD · envía resumen por Telegram",   "tiempo": "Auto"      },
+      { "agente": "hans",   "accion": "Consulta posts + brief desde app-aisir",             "tiempo": "On-demand" }
+    ]
+  }
+]
