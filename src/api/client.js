@@ -74,6 +74,9 @@ export const api = {
   flujos: () => req('/flujos'),
   updateFlujo: (id, body) => req(`/flujos/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
 
+  // Costos
+  costos: (dias = 30) => req(`/costos?dias=${dias}`),
+
   // Columnas SM / HH
   columnas:      (params = {}) => req(`/columnas${new URLSearchParams(params).toString() ? '?' + new URLSearchParams(params).toString() : ''}`),
   generarColumna: (id)         => req(`/columnas/${id}/generar`, { method: 'POST' }),

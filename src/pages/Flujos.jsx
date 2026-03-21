@@ -1,6 +1,7 @@
 import { useState, useRef, useCallback, useEffect, useMemo } from 'react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { api } from '../api/client'
+import { useEventos } from '../hooks/useEventos'
 import {
   GitBranch, Clock, User, Send, CalendarCheck, Search, FileText,
   Share2, Palette, CalendarDays, Brain, Bot, Eye, Sparkles,
@@ -25,237 +26,8 @@ const AGENT_COLORS = {
   sistema:  { color: '#878787', label: 'Sistema',  icon: Zap         },
 }
 
-const FLUJOS = [
-  {
-    id: 'A',
-    titulo: 'Flujo A — Semana Estándar',
-    descripcion: 'Ciclo semanal completo: curaduría, redacción, adaptación y programación.',
-    color: '#86a43b',
-    pasos: [
-      { agente: 'sistema', accion: 'Trigger semanal automático',          tiempo: 'Lun 6:00'  },
-      { agente: 'huginn',  accion: 'Genera brief con temas y scoring',    tiempo: '~20min'    },
-      { agente: 'hans',    accion: 'Aprueba temas vía Telegram',          tiempo: 'Manual'    },
-      { agente: 'bragi',   accion: 'Genera contenido base (artículo / newsletter / script)', tiempo: '~15min' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'loki',  accion: 'Adapta contenido para cada red social', tiempo: '~10min' },
-          { agente: 'idunn', accion: 'Genera prompts DALL-E y carousel',      tiempo: '~5min'  },
-        ],
-      },
-      { agente: 'hans',  accion: 'Revisa y aprueba/edita en Telegram',   tiempo: 'Manual'    },
-      { agente: 'frigg', accion: 'Programa en Publer con horarios óptimos', tiempo: '~5min'  },
-      { agente: 'mimir', accion: 'Consolida aprendizajes de la semana',   tiempo: 'Dom 21:00' },
-    ],
-  },
-  {
-    id: 'B',
-    titulo: 'Flujo B — Modo Momento',
-    descripcion: 'Publicación on-demand desde foto o audio enviado por Telegram.',
-    color: '#86a43b',
-    pasos: [
-      { agente: 'hans',  accion: 'Envía foto o audio por Telegram',       tiempo: 'On-demand' },
-      { agente: 'aisir', accion: 'Detecta media y activa Modo Momento',   tiempo: '<1s'       },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'bragi', accion: 'GPT-4o Vision analiza la foto',     tiempo: '~5s'  },
-          { agente: 'bragi', accion: 'Whisper transcribe el audio',       tiempo: '~10s' },
-        ],
-      },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'loki', accion: 'Genera post LinkedIn',               tiempo: '~3min' },
-          { agente: 'loki', accion: 'Genera post Instagram',              tiempo: '~3min' },
-          { agente: 'loki', accion: 'Genera post X (Twitter)',            tiempo: '~2min' },
-          { agente: 'loki', accion: 'Genera post Facebook',               tiempo: '~2min' },
-        ],
-      },
-      { agente: 'hans', accion: 'Revisa preview por red y aprueba',       tiempo: 'Manual' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'publer', accion: 'Programa LinkedIn + IG + FB',      tiempo: '<10s' },
-          { agente: 'sistema', accion: 'X → publica vía API directa',     tiempo: '<5s'  },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'C',
-    titulo: 'Flujo C — Comentario de Autoridad',
-    descripcion: 'Monitoreo de líderes y generación de comentarios estratégicos.',
-    color: '#878787',
-    pasos: [
-      { agente: 'sistema', accion: 'Trigger automático 9 AM y 3 PM',     tiempo: '2x/día'  },
-      { agente: 'odin',    accion: 'Escanea posts de líderes monitoreados', tiempo: '~2min' },
-      { agente: 'odin',    accion: 'Score ≥70 → activa generación',       tiempo: '~1min'   },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'odin', accion: 'Genera versión A — directa / confrontacional', tiempo: '~3min' },
-          { agente: 'odin', accion: 'Genera versión B — constructiva / autoridad',  tiempo: '~3min' },
-        ],
-      },
-      { agente: 'hans', accion: 'Elige versión preferida en Telegram',    tiempo: 'Manual' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'sistema', accion: 'X → publica automáticamente',    tiempo: '<5s'   },
-          { agente: 'hans',    accion: 'LinkedIn → copia texto + abre URL', tiempo: 'Manual' },
-        ],
-      },
-    ],
-  },
-  {
-    id: 'E',
-    titulo: 'Flujo E — Artículo SM',
-    descripcion: 'Producción quincenal: artículo SEO para Soy.Marketing + distribución de piezas por red.',
-    color: '#86a43b',
-    pasos: [
-      { agente: 'sistema', accion: 'Trigger /proponer_articulo (Jueves 6 PM o manual)', tiempo: 'Jueves' },
-      { agente: 'floki',   accion: 'Propone 5 temas SEO con keyword y scoring',  tiempo: '~40-60s' },
-      { agente: 'hans',    accion: 'Elige tema en Telegram',                      tiempo: 'Manual'  },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'floki', accion: 'Investiga top 10 SERP + PAA',              tiempo: '~10min' },
-          { agente: 'floki', accion: 'Detecta brechas de contenido y keywords',  tiempo: '~5min'  },
-        ],
-      },
-      { agente: 'bragi', accion: 'Redacta artículo 2000+ palabras',              tiempo: '~20min' },
-      { agente: 'floki', accion: 'Audita artículo — score ≥80/100',              tiempo: '~5min'  },
-      { agente: 'hans',  accion: 'Aprueba artículo + score en Telegram',         tiempo: 'Manual' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'sistema', accion: 'Sube .docx a Google Drive',             tiempo: '<10s'  },
-          { agente: 'hans',    accion: 'Publica en Soy.Marketing y envía URL',  tiempo: 'Manual' },
-        ],
-      },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'bragi', accion: 'Post LinkedIn',                            tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post Facebook',                            tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post X',                                   tiempo: '~1min' },
-          { agente: 'bragi', accion: 'Guión video + WhatsApp',                   tiempo: '~3min' },
-        ],
-      },
-      { agente: 'hans',  accion: 'Aprueba cada pieza en Telegram',               tiempo: 'Manual' },
-      { agente: 'frigg', accion: 'Programa piezas aprobadas en Publer',          tiempo: '~5min'  },
-    ],
-  },
-  {
-    id: 'W',
-    titulo: 'Flujo W — Artículo HH',
-    descripcion: 'Publicación mensual en hanshatch.com (WordPress) con guión de video y distribución por redes.',
-    color: '#86a43b',
-    pasos: [
-      { agente: 'sistema', accion: 'Trigger /blog [keyword] — Día 1 del mes o manual', tiempo: 'Mensual' },
-      { agente: 'floki',   accion: 'Investiga top 10 SERP para la keyword',     tiempo: '~15min'  },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'bragi', accion: 'Redacta artículo HTML para WordPress',     tiempo: '~20min' },
-          { agente: 'bragi', accion: 'Genera guión de video del artículo',       tiempo: '~10min' },
-        ],
-      },
-      { agente: 'sistema', accion: 'Sube borrador a WordPress — Hans recibe link', tiempo: '<10s' },
-      { agente: 'hans',    accion: 'Edita borrador y publica en WordPress',      tiempo: 'Manual'  },
-      { agente: 'sistema', accion: 'Monitor detecta publicación → dispara posts', tiempo: 'Auto'  },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'bragi', accion: 'Post LinkedIn',                             tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post Instagram',                            tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post X',                                    tiempo: '~1min' },
-          { agente: 'bragi', accion: 'Mensaje WhatsApp',                          tiempo: '~1min' },
-        ],
-      },
-      { agente: 'hans',  accion: 'Aprueba posts en Telegram',                    tiempo: 'Manual' },
-      { agente: 'frigg', accion: 'Programa posts aprobados en Publer',           tiempo: '~5min'  },
-    ],
-  },
-  {
-    id: 'K',
-    titulo: 'Flujo K — Columnas SM / HH',
-    descripcion: 'Detección automática de columnas publicadas en Soy.Marketing y hanshatch.com, generación de distribución y re-promoción futura.',
-    color: '#86a43b',
-    pasos: [
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'sistema', accion: 'Cron cada 4h — RSS Soy.Marketing', tiempo: 'Cada 4h' },
-          { agente: 'sistema', accion: 'Cron cada 4h — RSS hanshatch.com', tiempo: 'Cada 4h' },
-        ],
-      },
-      { agente: 'floki', accion: 'Detecta columna nueva y guarda en BD',   tiempo: 'Auto'    },
-      { agente: 'hans',  accion: 'Notificación + botón Generar en Telegram', tiempo: 'Notif' },
-      { agente: 'hans',  accion: 'Confirma generación (Telegram o dashboard)', tiempo: 'Manual' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'bragi', accion: 'Post LinkedIn',                       tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post Facebook',                       tiempo: '~2min' },
-          { agente: 'bragi', accion: 'Post X',                              tiempo: '~1min' },
-          { agente: 'bragi', accion: 'Post Threads',                        tiempo: '~1min' },
-          { agente: 'bragi', accion: 'Guión / script',                      tiempo: '~3min' },
-        ],
-      },
-      { agente: 'hans',   accion: 'Aprueba/rechaza cada pieza en Telegram', tiempo: 'Manual'   },
-      { agente: 'frigg',  accion: 'Piezas aprobadas → Publer',              tiempo: 'Auto'     },
-      { agente: 'sistema', accion: 'Guarda en historial para re-promoción', tiempo: 'Siempre'  },
-    ],
-  },
-  {
-    id: 'I',
-    titulo: 'Flujo I — Inspiración Kvasir',
-    descripcion: 'Scraping, análisis visual, scoring y brief mensual de cuentas referentes de Instagram.',
-    color: '#86a43b',
-    pasos: [
-      { agente: 'sistema', accion: 'Trigger Lunes 6:30 AM o POST /inspiracion/scrape', tiempo: 'Lun 6:30' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'kvasir', accion: 'Scraping cuenta 1 vía Apify', tiempo: '~10min' },
-          { agente: 'kvasir', accion: 'Scraping cuenta 2 vía Apify', tiempo: '~10min' },
-          { agente: 'kvasir', accion: 'Scraping cuenta N vía Apify', tiempo: '~10min' },
-        ],
-      },
-      { agente: 'kvasir',  accion: 'Guarda posts en BD (estado=pendiente)',  tiempo: '~2min'    },
-      { agente: 'sistema', accion: 'Trigger Lunes 7:30 AM — extracción visual', tiempo: 'Lun 7:30' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'kvasir', accion: 'Imagen → GPT-4o Vision extrae texto visible', tiempo: '~5s/post'  },
-          { agente: 'kvasir', accion: 'Video → ffmpeg + Whisper transcribe audio',   tiempo: '~30s/post' },
-        ],
-      },
-      { agente: 'kvasir',  accion: 'Guarda texto_visual en BD',              tiempo: 'Auto'     },
-      { agente: 'sistema', accion: 'Trigger Lunes 8:00 AM — análisis y scoring', tiempo: 'Lun 8:00' },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'kvasir', accion: 'Analiza hook, formato y tema (GPT-4o)', tiempo: '~5s/post' },
-          { agente: 'kvasir', accion: 'Asigna score 0-100 por relevancia',     tiempo: '~2s/post' },
-        ],
-      },
-      { agente: 'kvasir',  accion: 'Actualiza estado=analizado en BD',       tiempo: 'Auto'     },
-      { agente: 'sistema', accion: 'Trigger Día 1 del mes — brief mensual',  tiempo: 'Mensual'  },
-      {
-        type: 'parallel',
-        branches: [
-          { agente: 'kvasir', accion: 'Genera brief: tendencias y formatos',    tiempo: '~5min' },
-          { agente: 'kvasir', accion: 'Genera recomendaciones para Hans',       tiempo: '~5min' },
-        ],
-      },
-      { agente: 'kvasir', accion: 'Guarda brief en BD · envía resumen por Telegram', tiempo: 'Auto' },
-      { agente: 'hans',   accion: 'Consulta posts + brief desde app-aisir',   tiempo: 'On-demand' },
-    ],
-  },
-]
+// Fallback mínimo si el API no responde
+const FLUJOS_FALLBACK = [{ id: 'A', titulo: 'Cargando...', descripcion: '', color: '#878787', pasos: [] }]
 
 // ─── Diagrama de nodos ────────────────────────────────────────────────────────
 
@@ -607,30 +379,51 @@ function StepItem({ step, index, isLast, flowColor }) {
         }}>
           {step.accion}
         </p>
+        {step.detalle && (
+          <p style={{
+            fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5,
+            color: '#ababab', marginTop: 4,
+          }}>
+            {step.detalle}
+          </p>
+        )}
       </div>
     </li>
   )
 }
 
 export default function Flujos() {
+  const queryClient = useQueryClient()
+
   const { data: remoteFlujos } = useQuery({
     queryKey: ['flujos'],
     queryFn: api.flujos,
-    staleTime: 5 * 60 * 1000,      // considera fresco por 5 min
-    refetchOnWindowFocus: true,     // refresca al volver a la pestaña
+    staleTime: 5 * 60 * 1000,
+    refetchOnWindowFocus: true,
   })
+
+  // Auto-refresh cuando el backend emite cambios en flujos
+  useEventos(useCallback((ev) => {
+    if (ev.tipo === 'flujo_actualizado') {
+      queryClient.invalidateQueries({ queryKey: ['flujos'] })
+    }
+  }, [queryClient]))
 
   const flujos = useMemo(() => {
     if (Array.isArray(remoteFlujos) && remoteFlujos.length > 0) return remoteFlujos
-    return FLUJOS  // fallback al hardcoded si falla el API
+    return FLUJOS_FALLBACK
   }, [remoteFlujos])
 
   const [selected,  setSelected]  = useState(null)
   const [expanded, setExpanded]  = useState(false)
 
-  // Seleccionar el primero cuando carguen los flujos
+  // Seleccionar el primero o actualizar el seleccionado cuando cambian los flujos
   useEffect(() => {
-    if (!selected && flujos.length > 0) setSelected(flujos[0])
+    if (flujos.length === 0) return
+    if (!selected) { setSelected(flujos[0]); return }
+    const updated = flujos.find(f => f.id === selected.id)
+    if (updated && JSON.stringify(updated) !== JSON.stringify(selected)) setSelected(updated)
+    else if (!updated) setSelected(flujos[0])
   }, [flujos, selected])
 
   return (
@@ -790,15 +583,83 @@ export default function Flujos() {
             <div style={{ borderTop: '1px solid #F0EEEA', margin: '20px 0 16px' }} />
 
             <ol style={{ listStyle: 'none' }}>
-              {selected.pasos.map((paso, i) => (
-                <StepItem
-                  key={i}
-                  step={paso}
-                  index={i}
-                  isLast={i === selected.pasos.length - 1}
-                  flowColor={selected.color}
-                />
-              ))}
+              {(() => {
+                let stepNum = 0
+                return selected.pasos.map((paso, i) => {
+                  const isLast = i === selected.pasos.length - 1
+                  if (paso.type === 'parallel') {
+                    return (
+                      <li key={i} style={{ display: 'flex', gap: 14 }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, width: 28 }}>
+                          <div style={{
+                            width: 28, height: 28, borderRadius: '50%',
+                            background: selected.color + '15', border: `2px solid ${selected.color}`,
+                            color: selected.color, fontFamily: '"Roboto Mono", monospace',
+                            fontSize: 8, fontWeight: 700,
+                            display: 'flex', alignItems: 'center', justifyContent: 'center',
+                            flexShrink: 0, zIndex: 1,
+                          }}>
+                            {paso.branches.map((_, bi) => { stepNum++; return stepNum }).join('·')}
+                          </div>
+                          {!isLast && (
+                            <div style={{
+                              width: 2, flex: 1, minHeight: 16,
+                              background: `linear-gradient(to bottom, ${selected.color}35, ${selected.color}08)`,
+                              margin: '3px 0',
+                            }} />
+                          )}
+                        </div>
+                        <div style={{ flex: 1, paddingBottom: 18, paddingTop: 3 }}>
+                          <p style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 10, color: '#ababab', marginBottom: 8 }}>
+                            Pasos en paralelo
+                          </p>
+                          <div style={{ display: 'flex', flexDirection: 'column', gap: 10,
+                            borderLeft: `2px solid ${selected.color}25`, paddingLeft: 12,
+                          }}>
+                            {paso.branches.map((branch, bi) => {
+                              const ag = AGENT_COLORS[branch.agente] ?? { color: '#878787', label: branch.agente }
+                              return (
+                                <div key={bi}>
+                                  <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
+                                    <span style={{
+                                      fontFamily: 'Roboto, sans-serif', fontWeight: 700, fontSize: 11,
+                                      padding: '2px 9px', background: ag.color + '12', color: ag.color,
+                                      border: `1px solid ${ag.color}30`, borderRadius: 5,
+                                    }}>{ag.label}</span>
+                                    <span style={{ display: 'flex', alignItems: 'center', gap: 4,
+                                      fontFamily: '"Roboto Mono", monospace', fontSize: 10, color: '#ababab',
+                                    }}>
+                                      <Clock size={9} />{branch.tiempo}
+                                    </span>
+                                  </div>
+                                  <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 13, lineHeight: 1.5, color: '#373737' }}>
+                                    {branch.accion}
+                                  </p>
+                                  {branch.detalle && (
+                                    <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5, color: '#ababab', marginTop: 4 }}>
+                                      {branch.detalle}
+                                    </p>
+                                  )}
+                                </div>
+                              )
+                            })}
+                          </div>
+                        </div>
+                      </li>
+                    )
+                  }
+                  stepNum++
+                  return (
+                    <StepItem
+                      key={i}
+                      step={paso}
+                      index={stepNum - 1}
+                      isLast={isLast}
+                      flowColor={selected.color}
+                    />
+                  )
+                })
+              })()}
             </ol>
           </div>
         </div>

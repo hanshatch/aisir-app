@@ -14,6 +14,7 @@ import Actividad from './pages/Actividad'
 import Comandos from './pages/Comandos'
 import Inspiracion from './pages/Inspiracion'
 import Columnas from './pages/Columnas'
+import Costos from './pages/Costos'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -65,6 +66,7 @@ export default function App() {
             <Route path="/comandos"   element={<Comandos />} />
             <Route path="/inspiracion" element={<Inspiracion />} />
             <Route path="/columnas"    element={<Columnas />} />
+            <Route path="/costos"     element={<Costos />} />
           </Route>
           <Route path="*" element={<Navigate to={isAuth() ? '/agentes' : '/'} replace />} />
         </Routes>
