@@ -70,8 +70,9 @@ export const api = {
   feedbackPost: (id, body) => req(`/inspiracion_posts.php?id=${id}`, { method: 'POST', body: JSON.stringify(body) }),
   scrapeInspiracion: () => req('/inspiracion/scrape', { method: 'POST' }),
 
-  // Flujos
-  flujos: () => req('/flujos.php'),
+  // Flujos (desde BD vía FastAPI)
+  flujos: () => req('/flujos'),
+  updateFlujo: (id, body) => req(`/flujos/${id}`, { method: 'PUT', body: JSON.stringify(body) }),
 
   // Columnas SM / HH
   columnas:      (params = {}) => req(`/columnas${new URLSearchParams(params).toString() ? '?' + new URLSearchParams(params).toString() : ''}`),
