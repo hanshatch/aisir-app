@@ -91,14 +91,13 @@ function NodeCard({ paso, stepNum }) {
       }}>
         {agent.label}
       </span>
-      {/* Texto resumido — 1 línea, el detalle está abajo */}
       <p style={{
         fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#878787',
         lineHeight: 1.35, textAlign: 'center', margin: 0, flex: 1,
         display: '-webkit-box', WebkitLineClamp: 2,
         WebkitBoxOrient: 'vertical', overflow: 'hidden',
       }}>
-        {paso.accion}
+        {paso.etiqueta || paso.accion}
       </p>
       <span style={{
         fontFamily: '"Roboto Mono", monospace', fontSize: 8,
