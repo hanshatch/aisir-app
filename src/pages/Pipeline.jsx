@@ -194,12 +194,15 @@ export default function Pipeline() {
     queryFn: api.temas,
   })
 
-  const items = data?.items ?? data ?? []
-  const temas = temasData?.items ?? temasData ?? []
+  // API devuelve { pendientes, borradores, stats }
+  const pendientesArr = data?.pendientes ?? []
+  const borradoresArr = data?.borradores ?? []
+  const items = [...pendientesArr, ...borradoresArr]
+  const temas = temasData?.temas ?? []
 
   // Stat counts
   const total      = items.length
-  const pendientes = items.filter((i) => i.estado === 'pendiente_aprobacion').length
+  const pendientes = pendientesArr.length
   const aprobados  = items.filter((i) => i.estado === 'aprobado').length
   const publicados = items.filter((i) => i.estado === 'publicado').length
 
