@@ -519,7 +519,7 @@ export default function Calendario() {
     d.setDate(d.getDate() + i)
     byDay[isoDate(d)] = []
   }
-  const events = data?.events ?? data ?? []
+  const events = data?.entradas ?? data?.events ?? []
   events.forEach((ev) => {
     const day = ev.fecha_programada?.split('T')[0] ?? ev.fecha?.split('T')[0]
     if (day && byDay[day] !== undefined) byDay[day].push(ev)
