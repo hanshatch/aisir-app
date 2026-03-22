@@ -267,9 +267,19 @@ export default function Planeacion() {
     ? planeaciones.find(p => p.mes === selMes)
     : planeaciones[0] ?? null
 
+  const [genError, setGenError] = useState(null)
+
   const genMut = useMutation({
-    mutationFn: () => api.generarPlaneacion(),
-    onSuccess: () => qc.invalidateQueries({ queryKey: ['planeaciones'] }),
+    mutationFn: (mes) => api.generarPlaneacion(mes),
+    onSuccess: (data) => {
+      setGenError(null)
+      if (data?.mock) {
+        setGenError('Sin conexión al servidor')
+        return
+      }
+      qc.invalidateQueries({ queryKey: ['planeaciones'] })
+    },
+    onError: (e) => setGenError(e.message),
   })
 
   const aprobMut = useMutation({
@@ -301,21 +311,28 @@ export default function Planeacion() {
             Flujo M — calendario completo del mes siguiente (~108 piezas)
           </p>
         </div>
-        <button
-          onClick={() => genMut.mutate()}
-          disabled={genMut.isPending}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 6,
-            padding: '8px 14px',
-            background: genMut.isPending ? '#f0eeea' : '#fff',
-            border: '1px solid #e4e1db',
-            borderRadius: 6, cursor: genMut.isPending ? 'not-allowed' : 'pointer',
-            fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 500, color: '#878787',
-          }}
-        >
-          <RefreshCw size={13} style={{ animation: genMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
-          {genMut.isPending ? 'Generando…' : 'Generar nueva'}
-        </button>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 4 }}>
+          <button
+            onClick={() => genMut.mutate('2026-04')}
+            disabled={genMut.isPending}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '8px 14px',
+              background: genMut.isPending ? '#f0eeea' : '#fff',
+              border: '1px solid #e4e1db',
+              borderRadius: 6, cursor: genMut.isPending ? 'not-allowed' : 'pointer',
+              fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 500, color: '#878787',
+            }}
+          >
+            <RefreshCw size={13} style={{ animation: genMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
+            {genMut.isPending ? 'Generando…' : 'Generar abril 2026'}
+          </button>
+          {genError && (
+            <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#ef4444' }}>
+              {genError}
+            </span>
+          )}
+        </div>
       </div>
 
       {/* Sin datos */}

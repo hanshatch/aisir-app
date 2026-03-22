@@ -82,6 +82,6 @@ export const api = {
   // Planeación mensual
   planeaciones:        ()    => req('/planeacion'),
   planeacionVigente:   ()    => req('/planeacion/vigente'),
-  generarPlaneacion:   ()    => req('/planeacion/generar', { method: 'POST' }),
+  generarPlaneacion:   (mes) => req('/planeacion/generar', { method: 'POST', body: JSON.stringify(mes ? { mes } : {}) }),
   aprobarPlaneacion:   (mes) => req(`/planeacion/${mes}/aprobar`, { method: 'POST' }),
 }
