@@ -3,47 +3,6 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { ExternalLink, RefreshCw, Search, Zap, CheckCircle } from 'lucide-react'
 import { api } from '@/api/client'
 
-// ─── Mock data (mientras el endpoint no exista en el backend) ────────────────
-
-const MOCK_COLUMNAS = [
-  {
-    id: 1, fuente: 'sm', titulo: 'Implementar IA en marketing: cómo hacerlo en tu estrategia',
-    keyword_principal: 'implementar ia en marketing',
-    permalink: 'https://soy.marketing/implementar-ia-en-marketing/',
-    social_generado: true, publicado_at: '2026-03-19T10:00:00', categoria: 'columna',
-  },
-  {
-    id: 2, fuente: 'sm', titulo: 'El error más común al medir el ROI de redes sociales',
-    keyword_principal: 'roi redes sociales',
-    permalink: 'https://soy.marketing/error-medir-roi-redes-sociales/',
-    social_generado: false, publicado_at: '2026-03-14T09:00:00', categoria: 'columna',
-  },
-  {
-    id: 3, fuente: 'hh', titulo: 'Cómo construí mi primer equipo de marketing digital',
-    keyword_principal: 'equipo marketing digital',
-    permalink: 'https://hanshatch.com/equipo-marketing-digital/',
-    social_generado: true, publicado_at: '2026-03-10T08:00:00', categoria: 'blog',
-  },
-  {
-    id: 4, fuente: 'sm', titulo: 'Data marketing en México: lo que las agencias no hacen',
-    keyword_principal: 'data marketing mexico',
-    permalink: 'https://soy.marketing/data-marketing-mexico/',
-    social_generado: false, publicado_at: '2026-03-05T09:30:00', categoria: 'columna',
-  },
-  {
-    id: 5, fuente: 'hh', titulo: 'Por qué el 80% de las estrategias de contenido fracasan',
-    keyword_principal: 'estrategia contenido fracasa',
-    permalink: 'https://hanshatch.com/estrategias-contenido-fracasan/',
-    social_generado: true, publicado_at: '2026-02-28T10:00:00', categoria: 'blog',
-  },
-  {
-    id: 6, fuente: 'sm', titulo: 'Liderazgo en agencias: el problema no es el cliente',
-    keyword_principal: 'liderazgo agencias marketing',
-    permalink: 'https://soy.marketing/liderazgo-agencias-marketing/',
-    social_generado: true, publicado_at: '2026-02-20T09:00:00', categoria: 'columna',
-  },
-]
-
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
 function fmtFecha(iso) {
@@ -69,13 +28,47 @@ function FuenteChip({ fuente }) {
 
 // ─── Columna Card ─────────────────────────────────────────────────────────────
 
+const PILAR_LABELS = {
+  ia_tecnologia:    'IA y Tecnología',
+  posicionamiento:  'Posicionamiento',
+  data_marketing:   'Data Marketing',
+  liderazgo_agencia:'Liderazgo Agencia',
+  academia:         'Academia',
+  otro:             'General',
+}
+
+const PILAR_COLORS = {
+  ia_tecnologia:    '#6366f1',
+  posicionamiento:  '#86a43b',
+  data_marketing:   '#f59e0b',
+  liderazgo_agencia:'#ef4444',
+  academia:         '#8b5cf6',
+  otro:             '#ababab',
+}
+
+function PilarChip({ pilar }) {
+  const color = PILAR_COLORS[pilar] || '#ababab'
+  const label = PILAR_LABELS[pilar] || pilar
+  return (
+    <span style={{
+      background: color + '15', color,
+      border: `1px solid ${color}40`,
+      borderRadius: 5, padding: '2px 8px',
+      fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700,
+      textTransform: 'uppercase', letterSpacing: '0.06em', flexShrink: 0,
+    }}>
+      {label}
+    </span>
+  )
+}
+
 function ColumnaCard({ columna, onGenerar, generando }) {
   const generado = columna.social_generado
 
   return (
     <div style={{
       background: '#ffffff', border: '1px solid #e4e1db',
-      borderLeft: `3px solid ${generado ? '#86a43b' : '#ababab'}`,
+      borderLeft: `3px solid ${PILAR_COLORS[columna.pilar] || '#ababab'}`,
       borderRadius: 12,
       boxShadow: '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(0,0,0,0.04)',
       padding: '16px 20px',
@@ -85,10 +78,17 @@ function ColumnaCard({ columna, onGenerar, generando }) {
       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8, flexWrap: 'wrap' }}>
           <FuenteChip fuente={columna.fuente} />
-          <span style={{
-            color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10,
-          }}>
-            {fmtFecha(columna.publicado_at)}
+          <PilarChip pilar={columna.pilar} />
+          {columna.tono && (
+            <span style={{
+              color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10,
+              background: '#F0EEEA', borderRadius: 4, padding: '2px 6px',
+            }}>
+              {columna.tono}
+            </span>
+          )}
+          <span style={{ color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10 }}>
+            {fmtFecha(columna.fecha_pub)}
           </span>
         </div>
         <a
@@ -112,17 +112,44 @@ function ColumnaCard({ columna, onGenerar, generando }) {
         {columna.titulo}
       </p>
 
-      {/* Keyword */}
-      <p style={{ color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 11 }}>
-        {columna.keyword_principal}
-      </p>
+      {/* Tesis */}
+      {columna.tesis && (
+        <p style={{
+          color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 12, lineHeight: 1.5,
+          fontStyle: 'italic',
+        }}>
+          "{columna.tesis}"
+        </p>
+      )}
+
+      {/* Keywords */}
+      {columna.keywords?.length > 0 && (
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 4 }}>
+          {columna.keywords.slice(0, 5).map((kw) => (
+            <span key={kw} style={{
+              background: '#F0EEEA', color: '#ababab',
+              borderRadius: 4, padding: '2px 7px',
+              fontFamily: '"Roboto Mono", monospace', fontSize: 10,
+            }}>
+              {kw}
+            </span>
+          ))}
+          {columna.word_count && (
+            <span style={{
+              color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10,
+              marginLeft: 4, alignSelf: 'center',
+            }}>
+              {columna.word_count} palabras
+            </span>
+          )}
+        </div>
+      )}
 
       {/* Status + acciones */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         paddingTop: 10, borderTop: '1px solid #F0EEEA', flexWrap: 'wrap', gap: 8,
       }}>
-        {/* Chip de estado */}
         <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
           <div style={{
             width: 7, height: 7, borderRadius: '50%',
@@ -136,7 +163,6 @@ function ColumnaCard({ columna, onGenerar, generando }) {
           </span>
         </div>
 
-        {/* Botones */}
         <div style={{ display: 'flex', gap: 6 }}>
           {!generado && (
             <button
@@ -153,7 +179,7 @@ function ColumnaCard({ columna, onGenerar, generando }) {
               }}
             >
               <Zap size={12} style={{ animation: generando ? 'spin 1s linear infinite' : 'none' }} />
-              {generando ? 'Generando…' : 'Generar ahora'}
+              {generando ? 'Generando…' : 'Generar distribución'}
             </button>
           )}
           {generado && (
@@ -175,7 +201,6 @@ function ColumnaCard({ columna, onGenerar, generando }) {
         </div>
       </div>
 
-      {/* Feedback de éxito */}
       {columna._generadoOk && (
         <div style={{
           display: 'flex', alignItems: 'center', gap: 6,
@@ -205,7 +230,7 @@ export default function Columnas() {
 
   const { data, isLoading } = useQuery({
     queryKey: ['columnas'],
-    queryFn: api.columnas,
+    queryFn: () => api.columnas({ limit: 500 }),
     staleTime: 60_000,
   })
 
@@ -220,7 +245,7 @@ export default function Columnas() {
     onError: () => setGenerandoId(null),
   })
 
-  const columnas = data?.columnas ?? MOCK_COLUMNAS
+  const columnas = data?.columnas ?? []
 
   const filtradas = columnas
     .filter((c) => tab === 'todas' || c.fuente === tab)
@@ -232,7 +257,9 @@ export default function Columnas() {
     .filter((c) => {
       if (!busqueda) return true
       const q = busqueda.toLowerCase()
-      return c.titulo.toLowerCase().includes(q) || (c.keyword_principal ?? '').toLowerCase().includes(q)
+      return c.titulo.toLowerCase().includes(q)
+        || (c.tesis ?? '').toLowerCase().includes(q)
+        || (c.keywords ?? []).some((kw) => kw.toLowerCase().includes(q))
     })
 
   const conMarca = filtradas.map((c) => ({ ...c, _generadoOk: okIds.has(c.id) }))
@@ -448,7 +475,7 @@ export default function Columnas() {
 
             {/* Rows */}
             {columnas
-              .filter((c) => !busqueda || c.titulo.toLowerCase().includes(busqueda.toLowerCase()) || (c.keyword_principal ?? '').toLowerCase().includes(busqueda.toLowerCase()))
+              .filter((c) => !busqueda || c.titulo.toLowerCase().includes(busqueda.toLowerCase()) || (c.keywords ?? []).some((kw) => kw.toLowerCase().includes(busqueda.toLowerCase())))
               .map((c, i) => (
               <div
                 key={c.id}
@@ -476,10 +503,10 @@ export default function Columnas() {
                   color: '#ababab', fontFamily: '"Roboto Mono", monospace', fontSize: 10,
                   whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
                 }}>
-                  {c.keyword_principal}
+                  {(c.keywords ?? [])[0]}
                 </p>
                 <p style={{ color: '#878787', fontFamily: 'Roboto, sans-serif', fontSize: 11 }}>
-                  {fmtFecha(c.publicado_at)}
+                  {fmtFecha(c.fecha_pub)}
                 </p>
                 <div>
                   <span style={{
