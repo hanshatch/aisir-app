@@ -7,7 +7,6 @@ import Agentes from './pages/Agentes'
 import Pipeline from './pages/Pipeline'
 import Calendario from './pages/Calendario'
 import Flujos from './pages/Flujos'
-import RedSocial from './pages/RedSocial'
 import Metricas from './pages/Metricas'
 import Cerebro from './pages/Cerebro'
 import Actividad from './pages/Actividad'
@@ -59,7 +58,6 @@ export default function App() {
             <Route path="/pipeline"   element={<Pipeline />} />
             <Route path="/calendario" element={<Calendario />} />
             <Route path="/flujos"     element={<Flujos />} />
-            <Route path="/red"        element={<RedSocial />} />
             <Route path="/metricas"   element={<Metricas />} />
             <Route path="/cerebro"    element={<Cerebro />} />
             <Route path="/actividad"  element={<Actividad />} />

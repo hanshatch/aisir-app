@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { NavLink, Outlet, useNavigate } from 'react-router-dom'
 import {
   Bot, Layers, Calendar, GitBranch, Sparkles, DollarSign,
-  Share2, BarChart3, Brain, Activity, Terminal, LogOut, Newspaper,
+  BarChart3, Brain, Activity, Terminal, LogOut, Newspaper,
 } from 'lucide-react'
 
 const NAV = [
@@ -14,7 +14,6 @@ const NAV = [
       { to: '/pipeline',   label: 'Pipeline',    icon: Layers },
       { to: '/calendario', label: 'Calendario',  icon: Calendar },
       { to: '/metricas',   label: 'Métricas',    icon: BarChart3 },
-      { to: '/red',        label: 'Red Social',  icon: Share2 },
       { to: '/costos',     label: 'Costos',      icon: DollarSign },
     ],
   },
