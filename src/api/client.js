@@ -78,4 +78,10 @@ export const api = {
   // Columnas SM / HH
   columnas:      (params = {}) => req(`/columnas${new URLSearchParams(params).toString() ? '?' + new URLSearchParams(params).toString() : ''}`),
   generarColumna: (id)         => req(`/columnas/${id}/generar`, { method: 'POST' }),
+
+  // Planeación mensual
+  planeaciones:        ()    => req('/planeacion'),
+  planeacionVigente:   ()    => req('/planeacion/vigente'),
+  generarPlaneacion:   ()    => req('/planeacion/generar', { method: 'POST' }),
+  aprobarPlaneacion:   (mes) => req(`/planeacion/${mes}/aprobar`, { method: 'POST' }),
 }
