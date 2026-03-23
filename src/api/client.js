@@ -80,8 +80,13 @@ export const api = {
   generarColumna: (id)         => req(`/columnas/${id}/generar`, { method: 'POST' }),
 
   // Planeación mensual
-  planeaciones:        ()    => req('/planeacion'),
-  planeacionVigente:   ()    => req('/planeacion/vigente'),
-  generarPlaneacion:   (mes) => req('/planeacion/generar', { method: 'POST', body: JSON.stringify(mes ? { mes } : {}) }),
-  aprobarPlaneacion:   (mes) => req(`/planeacion/${mes}/aprobar`, { method: 'POST' }),
+  planeaciones:        ()           => req('/planeacion'),
+  planeacionVigente:   ()           => req('/planeacion/vigente'),
+  generarPlaneacion:   (mes)        => req('/planeacion/generar', { method: 'POST', body: JSON.stringify(mes ? { mes } : {}) }),
+  aprobarPlaneacion:   (mes)        => req(`/planeacion/${mes}/aprobar`, { method: 'POST' }),
+  generarContenidoPlan:(mes)        => req(`/planeacion/${mes}/generar-contenido`, { method: 'POST' }),
+  actualizarPieza:     (mes, id, body) => req(`/planeacion/${mes}/pieza/${id}`, { method: 'PATCH', body: JSON.stringify(body) }),
+  regenerarPieza:      (mes, id)    => req(`/planeacion/${mes}/pieza/${id}/regenerar`, { method: 'POST' }),
+  aprobarSemana:       (mes, num)   => req(`/planeacion/${mes}/semana/${num}/aprobar`, { method: 'POST' }),
+  materializarPlan:    (mes)        => req(`/planeacion/${mes}/materializar`, { method: 'POST' }),
 }
