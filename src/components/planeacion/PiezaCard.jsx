@@ -5,8 +5,8 @@ import { api } from '@/api/client'
 
 // ─── Constants ────────────────────────────────────────────────────────────────
 
-const RED_ICONS = { linkedin:'💼', instagram:'📸', x:'🐦', tiktok:'🎵', youtube:'▶️', whatsapp:'💬' }
-const RED_COLORS = { linkedin:'#0077b5', instagram:'#e1306c', x:'#14171a', tiktok:'#ff0050', youtube:'#ff0000', whatsapp:'#25d366' }
+const RED_ICONS = { linkedin:'💼', instagram:'📸', x:'🐦', tiktok:'🎵', youtube:'▶️', whatsapp:'💬', facebook:'📘', threads:'🧵' }
+const RED_COLORS = { linkedin:'#0077b5', instagram:'#e1306c', x:'#14171a', tiktok:'#ff0050', youtube:'#ff0000', whatsapp:'#25d366', facebook:'#1877f2', threads:'#101010' }
 
 const ESTADO_PIEZA = {
   planificado: { label:'Sin contenido', color:'#ababab', bg:'#f5f5f5', border:'#e4e1db' },
