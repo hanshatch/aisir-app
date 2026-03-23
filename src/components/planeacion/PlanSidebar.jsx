@@ -2,8 +2,8 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { CheckCircle, Zap, Package } from 'lucide-react'
 import { api } from '@/api/client'
 
-const RED_ICONS  = { linkedin:'💼', instagram:'📸', x:'🐦', tiktok:'🎵', youtube:'▶️', whatsapp:'💬', facebook:'📘', threads:'🧵' }
-const RED_COLORS = { linkedin:'#0077b5', instagram:'#e1306c', x:'#14171a', tiktok:'#ff0050', youtube:'#ff0000', whatsapp:'#25d366', facebook:'#1877f2', threads:'#101010' }
+const RED_ICONS  = { linkedin:'💼', instagram:'📸', x:'🐦', tiktok:'🎵', whatsapp:'💬', facebook:'📘', threads:'🧵' }
+const RED_COLORS = { linkedin:'#0077b5', instagram:'#e1306c', x:'#14171a', tiktok:'#ff0050', whatsapp:'#25d366', facebook:'#1877f2', threads:'#101010' }
 
 const ESTADO_STYLES = {
   borrador:     { label:'Borrador',     color:'#878787', bg:'#f5f5f5',  border:'#e4e1db' },
@@ -220,12 +220,19 @@ export default function PlanSidebar({ plan, tieneContenido, aprobMut }) {
         <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#ababab', marginBottom: 10 }}>
           Estructura
         </p>
-        {[
-          { label: 'Semanas',             value: `${plan.plan_json?.semanas?.length ?? 0}` },
-          { label: 'Episodios podcast',   value: 'Semanas 1 y 3' },
-          { label: 'Artículos HH',        value: '2 premium (sem 2 y 4)' },
-          { label: 'Comentarios auth.',   value: '~20 automáticos' },
-        ].map(({ label, value }) => (
+        {(() => {
+          const semanas = plan.plan_json?.semanas || []
+          const todasPiezas = semanas.flatMap(s => s.piezas)
+          const artSM = todasPiezas.filter(p => p.tipo?.startsWith('articulo_sm')).length
+          const artHH = (plan.plan_json?.articulos_hanshatch_premium || []).length
+          return [
+            { label: 'Semanas',             value: `${semanas.length}` },
+            { label: 'Artículos SM',        value: `${artSM} (lun y jue)` },
+            { label: 'Podcast (Spotify/YT)', value: 'Semanas 1 y 3' },
+            { label: 'Artículos HH',        value: `${artHH} premium (sem 2 y 4)` },
+            { label: 'Comentarios auth.',   value: '~20 automáticos' },
+          ]
+        })().map(({ label, value }) => (
           <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
             <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#878787' }}>{label}</span>
             <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 10, color: '#373737', fontWeight: 500 }}>{value}</span>
