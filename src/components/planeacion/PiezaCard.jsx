@@ -22,6 +22,8 @@ const HOOK_TIPO_EMOJI = { dato:'📊', pregunta:'❓', contrarian:'⚡', histori
 
 // ─── Content Renderer ─────────────────────────────────────────────────────────
 
+const VIDEO_FORMATOS = new Set(['reel', 'video_nativo', 'video_corto', 'video_largo', 'short', 'video'])
+
 function ContenidoRenderer({ formato, texto }) {
   if (!texto) return null
 
@@ -30,8 +32,8 @@ function ContenidoRenderer({ formato, texto }) {
     lineHeight: 1.6, margin: 0, whiteSpace: 'pre-wrap',
   }
 
-  if (formato === 'video') {
-    // Highlight [MARKERS] in video scripts
+  if (VIDEO_FORMATOS.has(formato)) {
+    // Highlight [MARKERS] in video/reel scripts
     const parts = texto.split(/(\[[^\]]+\])/g)
     return (
       <p style={baseStyle}>
@@ -50,6 +52,18 @@ function ContenidoRenderer({ formato, texto }) {
         borderLeft: '3px solid #86a43b', paddingLeft: 12,
         fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#525252',
         fontStyle: 'italic', lineHeight: 1.6,
+      }}>
+        {texto}
+      </div>
+    )
+  }
+
+  if (formato === 'story') {
+    return (
+      <div style={{
+        borderLeft: '3px solid #e1306c', paddingLeft: 12,
+        fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#525252',
+        lineHeight: 1.6,
       }}>
         {texto}
       </div>
@@ -223,6 +237,19 @@ export default function PiezaCard({ pieza, mes }) {
             </div>
           )}
         </>
+      )}
+
+      {/* ── Indicación visual ── */}
+      {pieza.indicacion_visual && (
+        <div style={{
+          padding: '7px 14px', borderTop: '1px solid #f0eeea',
+          background: '#fafafa', display: 'flex', alignItems: 'flex-start', gap: 6,
+        }}>
+          <span style={{ fontSize: 10, flexShrink: 0, marginTop: 1 }}>📎</span>
+          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, color: '#878787', lineHeight: 1.5 }}>
+            {pieza.indicacion_visual}
+          </span>
+        </div>
       )}
 
       {/* ── Tags footer ── */}
