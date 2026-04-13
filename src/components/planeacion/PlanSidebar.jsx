@@ -207,6 +207,43 @@ export default function PlanSidebar({ plan, tieneContenido, aprobMut }) {
         </div>
       )}
 
+      {/* ── Desglose 50/20/30 ── */}
+      <div style={{ background: '#fff', border: '1px solid #e8e5e0', borderRadius: 8, padding: '14px 16px' }}>
+        <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#ababab', marginBottom: 10 }}>
+          Estrategia 50/20/30
+        </p>
+        {(() => {
+          const piezas = (plan.plan_json?.semanas || []).flatMap(s =>
+            s.piezas.filter(p => p.red !== 'sistema')
+          )
+          const total = piezas.length || 1
+          const original = piezas.filter(p => p.categoria === 'original').length
+          const momento  = piezas.filter(p => p.categoria === 'momento').length
+          const archivo  = piezas.filter(p => p.categoria === 'archivo' || p.categoria === 'repost').length
+          const items = [
+            { label: 'Original',  n: original, pct: Math.round(original/total*100), color: '#6366f1', bg: '#eef2ff', meta: 50 },
+            { label: 'Momentos',  n: momento,  pct: Math.round(momento/total*100),  color: '#f59e0b', bg: '#fffbeb', meta: 20 },
+            { label: 'Archivo',   n: archivo,  pct: Math.round(archivo/total*100),  color: '#86a43b', bg: '#f0f6e8', meta: 30 },
+          ]
+          return items.map(({ label, n, pct, color, bg, meta }) => (
+            <div key={label} style={{ marginBottom: 8 }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+                <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, color: '#878787' }}>{label}</span>
+                <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 10, color, fontWeight: 700 }}>
+                  {pct}% <span style={{ color: '#c8c4be', fontWeight: 400 }}>/ meta {meta}%</span>
+                </span>
+              </div>
+              <div style={{ background: '#f0eeea', borderRadius: 3, height: 5, overflow: 'hidden' }}>
+                <div style={{ width: `${pct}%`, height: '100%', background: color, borderRadius: 3 }} />
+              </div>
+              <p style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 9, color: '#ababab', marginTop: 2 }}>
+                {n} piezas
+              </p>
+            </div>
+          ))
+        })()}
+      </div>
+
       {/* ── Distribución por plataforma ── */}
       <div style={{ background: '#fff', border: '1px solid #e8e5e0', borderRadius: 8, padding: '14px 16px' }}>
         <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#ababab', marginBottom: 12 }}>
@@ -223,14 +260,14 @@ export default function PlanSidebar({ plan, tieneContenido, aprobMut }) {
         {(() => {
           const semanas = plan.plan_json?.semanas || []
           const todasPiezas = semanas.flatMap(s => s.piezas)
-          const artSM = todasPiezas.filter(p => p.tipo?.startsWith('articulo_sm')).length
+          const anclas = todasPiezas.filter(p => p.es_ancla).length
           const artHH = (plan.plan_json?.articulos_hanshatch_premium || []).length
           return [
-            { label: 'Semanas',             value: `${semanas.length}` },
-            { label: 'Artículos SM',        value: `${artSM} (lun y jue)` },
-            { label: 'Podcast (Spotify/YT)', value: 'Semanas 1 y 3' },
-            { label: 'Artículos HH',        value: `${artHH} premium (sem 2 y 4)` },
-            { label: 'Comentarios auth.',   value: '~20 automáticos' },
+            { label: 'Semanas',            value: `${semanas.length}` },
+            { label: 'Piezas ancla',       value: `${anclas} (LinkedIn lunes)` },
+            { label: 'Podcast (sem 1 y 3)', value: 'Random MKT' },
+            { label: 'Artículos HH',       value: `${artHH} premium (sem 2 y 4)` },
+            { label: 'Comentarios auth.',  value: '~20 automáticos' },
           ]
         })().map(({ label, value }) => (
           <div key={label} style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 6 }}>
@@ -238,6 +275,53 @@ export default function PlanSidebar({ plan, tieneContenido, aprobMut }) {
             <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 10, color: '#373737', fontWeight: 500 }}>{value}</span>
           </div>
         ))}
+      </div>
+
+      {/* ── Autoridad Hans Hatch ── */}
+      <div style={{ background: '#fff', border: '1px solid #e8e5e0', borderRadius: 8, padding: '14px 16px' }}>
+        <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, fontWeight: 700, letterSpacing: '0.14em', textTransform: 'uppercase', color: '#ababab', marginBottom: 10 }}>
+          Autoridad 2026
+        </p>
+        {/* Calidad del contenido de autoridad en el plan actual */}
+        {(() => {
+          const semanas = plan.plan_json?.semanas || []
+          const todasPiezas = semanas.flatMap(s => s.piezas.filter(p => p.red !== 'sistema'))
+          const conDatoPropio = todasPiezas.filter(p => p.tiene_dato_propio).length
+          const anclas       = todasPiezas.filter(p => p.es_ancla).length
+          const conConexion  = todasPiezas.filter(p => p.conecta_con_ancla).length
+          const total        = todasPiezas.length || 1
+          const pctDato      = Math.round(conDatoPropio / total * 100)
+
+          return (
+            <div>
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 3 }}>
+                  <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 10, color: '#878787' }}>Piezas con dato propio</span>
+                  <span style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 10, color: '#373737', fontWeight: 700 }}>{pctDato}%</span>
+                </div>
+                <div style={{ background: '#f0eeea', borderRadius: 3, height: 5, overflow: 'hidden' }}>
+                  <div style={{ width: `${pctDato}%`, height: '100%', background: pctDato >= 50 ? '#86a43b' : '#f59e0b', borderRadius: 3 }} />
+                </div>
+                <p style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 9, color: '#ababab', marginTop: 2 }}>
+                  {conDatoPropio} de {total} piezas · meta: 50%+
+                </p>
+              </div>
+              <div style={{ display: 'flex', gap: 8 }}>
+                <div style={{ flex: 1, padding: '8px 10px', background: '#f5f5f5', borderRadius: 6, textAlign: 'center' }}>
+                  <p style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 18, fontWeight: 700, color: '#373737', margin: 0 }}>{anclas}</p>
+                  <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#ababab', margin: 0 }}>anclas</p>
+                </div>
+                <div style={{ flex: 1, padding: '8px 10px', background: '#f5f5f5', borderRadius: 6, textAlign: 'center' }}>
+                  <p style={{ fontFamily: '"Roboto Mono", monospace', fontSize: 18, fontWeight: 700, color: '#373737', margin: 0 }}>{conConexion}</p>
+                  <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#ababab', margin: 0 }}>conectadas</p>
+                </div>
+              </div>
+              <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#c8c4be', marginTop: 8, textAlign: 'center' }}>
+                Registra invitaciones y menciones vía Telegram: /invitacion /mencion
+              </p>
+            </div>
+          )
+        })()}
       </div>
 
     </div>

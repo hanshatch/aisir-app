@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
-import { RefreshCw, Sparkles, ChevronRight, ArrowLeft, Calendar } from 'lucide-react'
+import { RefreshCw, ChevronRight, ArrowLeft, Calendar } from 'lucide-react'
 import { api } from '@/api/client'
 import SemanaCard from '@/components/planeacion/SemanaCard'
 import PlanSidebar from '@/components/planeacion/PlanSidebar'
@@ -153,7 +153,7 @@ function ListaMeses({ planeaciones, onSelect, onGenerar, isPending }) {
 
 function DetalleMes({ plan, planeaciones, onVolver, qc }) {
   const [genError, setGenError] = useState(null)
-  const [contError, setContError] = useState(null)
+  const [generandoSemana, setGenerandoSemana] = useState(null)  // número de semana que está generando
 
   const tieneContenido = tieneContenidoGenerado(plan?.plan_json)
 
@@ -167,20 +167,22 @@ function DetalleMes({ plan, planeaciones, onVolver, qc }) {
     onError: (e) => setGenError(e.message),
   })
 
-  const contMut = useMutation({
-    mutationFn: (mes) => api.generarContenidoPlan(mes),
-    onSuccess: (data) => {
-      setContError(null)
-      if (data?.mock) { setContError('Sin conexión al servidor'); return }
-      qc.invalidateQueries({ queryKey: ['planeaciones'] })
-    },
-    onError: (e) => setContError(e.message),
-  })
-
   const aprobMut = useMutation({
     mutationFn: (mes) => api.aprobarPlaneacion(mes),
     onSuccess: () => qc.invalidateQueries({ queryKey: ['planeaciones'] }),
   })
+
+  async function handleGenerarSemana(numSemana) {
+    setGenerandoSemana(numSemana)
+    try {
+      await api.generarContenidoPlan(plan.mes, numSemana)
+      qc.invalidateQueries({ queryKey: ['planeaciones'] })
+    } catch (e) {
+      setGenError(e.message)
+    } finally {
+      setGenerandoSemana(null)
+    }
+  }
 
   return (
     <div style={{ padding: 32, maxWidth: 1000, margin: '0 auto' }}>
@@ -202,49 +204,29 @@ function DetalleMes({ plan, planeaciones, onVolver, qc }) {
             {fmtMes(plan.mes_nombre)}
           </h1>
           <p style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#ababab', marginTop: 4 }}>
-            {plan.mes} · ~{plan.total_piezas} piezas de contenido
+            {plan.mes} · ~{plan.total_piezas} piezas · genera el contenido semana por semana
           </p>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: 6 }}>
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button
-              onClick={() => genMut.mutate(plan.mes)}
-              disabled={genMut.isPending || contMut.isPending}
-              style={{
-                display: 'flex', alignItems: 'center', gap: 6,
-                padding: '7px 13px',
-                background: '#fff', border: '1px solid #e4e1db',
-                borderRadius: 6, cursor: genMut.isPending ? 'not-allowed' : 'pointer',
-                fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 500, color: '#878787',
-              }}
-            >
-              <RefreshCw size={12} style={{ animation: genMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
-              {genMut.isPending ? 'Generando…' : 'Regenerar estructura'}
-            </button>
+          <button
+            onClick={() => genMut.mutate(plan.mes)}
+            disabled={genMut.isPending || generandoSemana !== null}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 6,
+              padding: '7px 13px',
+              background: '#fff', border: '1px solid #e4e1db',
+              borderRadius: 6, cursor: genMut.isPending ? 'not-allowed' : 'pointer',
+              fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 500, color: '#878787',
+            }}
+          >
+            <RefreshCw size={12} style={{ animation: genMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
+            {genMut.isPending ? 'Regenerando…' : 'Regenerar estructura'}
+          </button>
 
-            {plan.estado !== 'en_ejecucion' && (
-              <button
-                onClick={() => { setContError(null); contMut.mutate(plan.mes) }}
-                disabled={genMut.isPending || contMut.isPending}
-                style={{
-                  display: 'flex', alignItems: 'center', gap: 6,
-                  padding: '7px 13px',
-                  background: contMut.isPending ? '#eef2ff' : '#6366f1',
-                  border: '1px solid #6366f1',
-                  borderRadius: 6, cursor: contMut.isPending ? 'not-allowed' : 'pointer',
-                  fontFamily: 'Roboto, sans-serif', fontSize: 12, fontWeight: 600, color: '#fff',
-                }}
-              >
-                <Sparkles size={12} style={{ animation: contMut.isPending ? 'spin 1s linear infinite' : 'none' }} />
-                {contMut.isPending ? 'Generando contenido (~30s)…' : tieneContenido ? 'Regenerar contenido' : 'Generar contenido'}
-              </button>
-            )}
-          </div>
-
-          {(genError || contError) && (
+          {genError && (
             <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 11, color: '#ef4444' }}>
-              {genError || contError}
+              {genError}
             </span>
           )}
         </div>
@@ -254,24 +236,16 @@ function DetalleMes({ plan, planeaciones, onVolver, qc }) {
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 280px', gap: 20, alignItems: 'start' }}>
 
         <div>
-          {/* Loading de contenido */}
-          {contMut.isPending && (
-            <div style={{
-              padding: '12px 16px', marginBottom: 12,
-              background: '#eef2ff', border: '1px solid #c7d2fe',
-              borderRadius: 8, display: 'flex', alignItems: 'center', gap: 8,
-            }}>
-              <Sparkles size={14} color="#6366f1" />
-              <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 12, color: '#6366f1' }}>
-                Generando propuestas creativas con IA… Tier 1 (matriz temática) → Tier 2 (7 redes en paralelo)
-              </span>
-            </div>
-          )}
-
           {/* Semanas */}
           <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
             {(plan.plan_json?.semanas || []).map(s => (
-              <SemanaCard key={s.numero} semana={s} mes={plan.mes} tieneContenido={tieneContenido} />
+              <SemanaCard
+                key={s.numero}
+                semana={s}
+                mes={plan.mes}
+                generandoSemana={generandoSemana === s.numero}
+                onGenerarContenido={plan.estado !== 'en_ejecucion' ? handleGenerarSemana : null}
+              />
             ))}
           </div>
 

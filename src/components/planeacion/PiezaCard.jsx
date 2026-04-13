@@ -20,6 +20,21 @@ const FUNNEL_COLOR = { alcance:'#6366f1', autoridad:'#86a43b', comunidad:'#f59e0
 
 const HOOK_TIPO_EMOJI = { dato:'📊', pregunta:'❓', contrarian:'⚡', historia:'📖', prediccion:'🔮' }
 
+const CATEGORIA_STYLE = {
+  original: { label:'✦ Original', color:'#6366f1', bg:'#eef2ff', border:'#c7d2fe' },
+  momento:  { label:'⚡ Momento',  color:'#f59e0b', bg:'#fffbeb', border:'#fde68a' },
+  archivo:  { label:'📁 Archivo',  color:'#86a43b', bg:'#f0f6e8', border:'#c3d88a' },
+  repost:   { label:'📁 Archivo',  color:'#86a43b', bg:'#f0f6e8', border:'#c3d88a' }, // legacy
+}
+
+const PILAR_VOZ_LABEL = {
+  el_practicante:       'El Practicante',
+  el_estratega:         'El Estratega',
+  el_profesor_practica: 'El Profesor que Practica',
+  el_constructor:       'El Constructor',
+  la_voz_honesta:       'La Voz Honesta',
+}
+
 // ─── Content Renderer ─────────────────────────────────────────────────────────
 
 const VIDEO_FORMATOS = new Set(['reel', 'video_nativo', 'video_corto', 'video_largo', 'short', 'video'])
@@ -257,9 +272,43 @@ export default function PiezaCard({ pieza, mes }) {
         padding: '8px 14px', borderTop: '1px solid #f0eeea',
         display: 'flex', flexWrap: 'wrap', gap: 6, alignItems: 'center',
       }}>
-        {pieza.pilar && (
-          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, color: '#86a43b', background: '#f0f6e8', border: '1px solid #c3d88a', borderRadius: 4, padding: '1px 6px' }}>
-            {pieza.pilar.replace('_', ' ')}
+        {/* Categoría 50/20/30 */}
+        {pieza.categoria && CATEGORIA_STYLE[pieza.categoria] && (() => {
+          const cat = CATEGORIA_STYLE[pieza.categoria]
+          return (
+            <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: 700,
+              color: cat.color, background: cat.bg, border: `1px solid ${cat.border}`,
+              borderRadius: 4, padding: '1px 6px' }}>
+              {cat.label}
+            </span>
+          )
+        })()}
+        {/* Pilar de voz (solo original) */}
+        {pieza.pilar_voz && (
+          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9,
+            color: '#6366f1', background: '#eef2ff', border: '1px solid #c7d2fe',
+            borderRadius: 4, padding: '1px 6px', fontStyle: 'italic' }}>
+            {PILAR_VOZ_LABEL[pieza.pilar_voz] || pieza.pilar_voz}
+          </span>
+        )}
+        {/* Dato propio (autoridad) */}
+        {pieza.tiene_dato_propio && pieza.fuente_dato && pieza.fuente_dato !== 'ninguna' && (
+          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9, fontWeight: 700,
+            color: '#86a43b', background: '#f0f6e8', border: '1px solid #c3d88a',
+            borderRadius: 4, padding: '1px 6px' }}>
+            📊 {pieza.fuente_dato === 'hatch_co' ? 'hatch co.' : pieza.fuente_dato === 'soy_marketing' ? 'Soy.Marketing' : pieza.fuente_dato === 'academia' ? 'Academia' : pieza.fuente_dato}
+          </span>
+        )}
+        {/* Conexión con ancla */}
+        {pieza.conecta_con_ancla && !pieza.es_ancla && (
+          <span style={{ fontFamily: 'Roboto, sans-serif', fontSize: 9,
+            color: '#878787', background: '#f5f5f5', border: '1px solid #e4e1db',
+            borderRadius: 4, padding: '1px 6px' }}>
+            {pieza.conecta_con_ancla === 'amplifica_dato' ? '↗ amplifica'
+              : pieza.conecta_con_ancla === 'prueba_tesis' ? '✓ prueba tesis'
+              : pieza.conecta_con_ancla === 'angulo_diferente' ? '↺ ángulo diferente'
+              : pieza.conecta_con_ancla === 'exclusivo_wa' ? '🔒 exclusivo WA'
+              : pieza.conecta_con_ancla}
           </span>
         )}
         {pieza.funnel && (
