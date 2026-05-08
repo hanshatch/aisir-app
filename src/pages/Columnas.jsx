@@ -549,14 +549,6 @@ export default function Columnas() {
             ))}
           </div>
 
-          <div className="mt-4 flex items-center gap-2 px-4 py-3" style={{
-            background: '#ffffff', border: '1px solid #e4e1db', borderRadius: 8,
-          }}>
-            <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#ababab', flexShrink: 0 }} />
-            <p style={{ color: '#ababab', fontFamily: 'Roboto, sans-serif', fontSize: 12 }}>
-              Datos de demostración. Conectar a <code style={{ fontFamily: '"Roboto Mono", monospace' }}>GET /api/columnas</code> cuando el endpoint esté disponible en el backend.
-            </p>
-          </div>
         </>
       )}
     </div>
