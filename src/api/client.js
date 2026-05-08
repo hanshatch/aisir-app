@@ -1,6 +1,6 @@
 import { mockFor } from './mock'
 
-const API = '/api'
+const API = import.meta.env.VITE_API_URL || '/api'
 
 // En desarrollo sin backend, cae al mock automáticamente
 async function req(path, opts = {}) {
